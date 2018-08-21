@@ -52,6 +52,12 @@ export default {
 						pageSize: 10
 					}
 				});
+				yield put({
+					type: 'setParam',
+					payload: {
+            			modalShow: false
+            		}
+				});
 			}
         },
 
@@ -79,6 +85,12 @@ export default {
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getGrade' });
+				yield put({
+					type: 'setParam',
+					payload: {
+            			modal2Show: false
+            		}
+				});
 			}
         },
 

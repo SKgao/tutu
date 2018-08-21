@@ -9,7 +9,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Popconfirm, Tabs, Modal, Radio, Badge, Select } from 'antd';
+import { Form, DatePicker, Input, Button, Popconfirm, Tabs, Modal, Radio, Badge, Select, message } from 'antd';
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -200,12 +200,16 @@ const AppverUpdate = ({
 
 	// 添加App类型
 	const handleAddapptype = () => {
-		dispatch({
-			type: 'appver/addApptype',
-			payload: {
-				name: appname
-			}
-		})
+		if (appname.trim()) {
+			dispatch({
+				type: 'appver/addApptype',
+				payload: {
+					name: appname
+				}
+			})
+		} else{
+            message.warning('请输入App名称')
+		}
 	}
 
 	// 筛选app类型
@@ -213,7 +217,7 @@ const AppverUpdate = ({
 		dispatch({
 			type: 'appver/setParam',
 			payload: {
-				appTypeId: val
+				appTypeId: val.appname
 			}
 		})
 	}
@@ -238,7 +242,13 @@ const AppverUpdate = ({
 
 	// 表单取消
 	const handleReset = () => {
-		resetFields();
+		resetFields()
+		dispatch({
+			type: 'appver/setParam',
+			payload: {
+				modalShow: false
+			}
+		})
 	}
 
 	// 上传文件回调

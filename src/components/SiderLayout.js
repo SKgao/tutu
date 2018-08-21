@@ -16,7 +16,7 @@ const SiderLayout = ({
 		if(item.children && item.children.length) {
 			let ico = (item.icon && item.icon !== 'tongji') ? item.icon: 'bars'
 			let arr = item.children.map(e => e.level)
-			let path = (item.modelpage) ? item.modelpage : item.id
+			let path = (item.modelpage) ? item.modelpage : item.path
 			return ((arr && arr[0] < 2) || !arr[0])
 				? (
 					<SubMenu 
@@ -40,7 +40,7 @@ const SiderLayout = ({
 				)
 		} else {
 			let _ico = (item.icon && item.icon !== 'tongji') ? item.icon : ''
-			let _path = (item.modelpage) ? item.modelpage : item.id
+			let _path = item.path
 			return (item.level && item.level == 2) ? null : (
 				   <Menu.Item key={_path} title={item.name}>
 						{_ico && <Icon type={_ico} />}

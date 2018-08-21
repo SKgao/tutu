@@ -15,10 +15,7 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ 
-				type: 'getRole',
-				payload: ''
-			})
+			dispatch({ type: 'getRole' })
 		}
 	},
 
@@ -52,10 +49,13 @@ export default {
 			const res = yield call(api.addRole, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'getRole',
-					payload: ''
-				})
+				yield put({ type: 'getRole' });
+				yield put({ 
+					type: 'setParam',
+					payload: {
+						modalShow: false
+					}
+				 });
 			}
 		},
 

@@ -97,6 +97,7 @@ const TeachingManage = ({
     
     // 表格列
     let columns = (activeKey === '0') ? bookColumns : gradeColumns;
+    let dataSource = (activeKey === '0') ? bookList :  gradeList;
     
     /**
      * 删除教材
@@ -148,7 +149,13 @@ const TeachingManage = ({
 
     // 表单取消
     const handleReset  = () => {
-        resetFields();
+        resetFields()
+        dispatch({
+    		type: 'teachingmanage/setParam',
+    		payload: {
+    			modalShow: false
+    		}
+    	})
     }
 
     // 选择年级
@@ -186,8 +193,7 @@ const TeachingManage = ({
     const handleTabChange = (key = '0') => {
         if (key === '1') {
             dispatch({
-            	type: 'teachingmanage/getGrade',
-            	payload: key
+            	type: 'teachingmanage/getGrade'
             })
         }
     	dispatch({
@@ -361,7 +367,7 @@ const TeachingManage = ({
 			
 
             <TableLayout
-                dataSource={bookList}
+                dataSource={dataSource}
                 allColumns={columns}
                 />
             <PaginationLayout
