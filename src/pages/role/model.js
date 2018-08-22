@@ -17,6 +17,7 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
 			dispatch({ type: 'getRole' })
+			dispatch({ type: 'getSliderBar' })
 		}
 	},
 
@@ -76,9 +77,12 @@ export default {
 			}
 		},
 
-		*setauthRole({ payload }, { call }) {
+		*setauthRole({ payload }, { call, put }) {
 			const res = yield call(api.setauthRole, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				yield put({ type: 'app/fetch' });
+				message.success(res.data.message);
+			}
 		},
 
 		*menusRole({ payload }, { call }) {

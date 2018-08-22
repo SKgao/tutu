@@ -17,7 +17,7 @@ class MyUpload extends Component {
         if (file.event && file.event.type === 'progress') {
             formData.append('file', file.fileList[0].originFileObj)
             axios.post('file/upload', formData)
-                .then(function (res) {
+                .then((res) => {
                     if (res.data.code === 0) {
                         message.success('上传成功！')
                         uploadSuccess && uploadSuccess(res.data.data)
@@ -25,7 +25,7 @@ class MyUpload extends Component {
                         message.error(res.data.message)
                     }
                 })
-                .catch(function (err) {
+                .catch((err) => {
                     console.log('上传失败！')
                 });
         }

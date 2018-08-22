@@ -17,14 +17,15 @@ const ValidForm = ({
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
             if (!err) {
-                for (let key in values) {
-                    if (key === 'id' || key === 'parentId' || key === 'sortValue' || key === 'menuScope') {
-                        if (values[key]) {
-                            values[key] = values[key] - 0
-                        }
-                    }
-                }
-                submitForm && submitForm(values);
+                // for (let key in values) {
+                //     if (key === 'parentId' || key === 'sortValue' || key === 'menuScope') {
+                //         if (values[key]) {
+                //             values[key] = values[key] - 0
+                //         }
+                //     }
+                // }
+                console.log(values);
+                //submitForm && submitForm(values);
             }
         });
     }
@@ -55,7 +56,7 @@ const ValidForm = ({
                     >
                     {getFieldDecorator('parentId', {
                         rules: [{
-                            required: true, message: '请输入父级id！（必须为数字）',
+                            required: true, message: '请输入父级id！（必须为数字）'
                         }],
                     })(
                         <Input placeholder="一级菜单传0"/>
@@ -102,7 +103,7 @@ const ValidForm = ({
                     label="作用"
                     >
                     {getFieldDecorator('menuScope', {
-                        rules: [{ required: true, message: '请选择菜单作用!' }],
+                        rules: [{ required: true, message: '请选择菜单作用!', type: 'number' }],
                     })(
                         <RadioGroup>
                             <Radio value="1">左侧菜单</Radio>

@@ -402,6 +402,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
+									initialValue: '1',
 									rules: [{ message: '请选择是否强制更新!' }],
 								})(
 									<RadioGroup>
@@ -416,6 +417,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
+									initialValue: '1',
 									rules: [{ message: '请选择格式!' }],
 								})(
 									<RadioGroup>

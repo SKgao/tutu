@@ -16,14 +16,13 @@ const RoleSetting = ({
     let { tableData, modalShow, account, siderList, menuIds, defaultCheckedKeys } = roleSetting;
     let { getFieldDecorator, getFieldValue } = form;
 
-    console.log('defaultCheckedKeys', defaultCheckedKeys)
     const columns = [
         {
-            title: '用户名',
+            title: '角色名',
             dataIndex: 'name',
             sorter: true
         }, {
-        	title: '用户id',
+        	title: '角色id',
         	dataIndex: 'id',
         	sorter: true
         }, {
@@ -37,7 +36,7 @@ const RoleSetting = ({
                             <div>
                                 <Tree
                                     checkable
-                                    defaultCheckedKeys={["116", "115", "114", "113", "112"]}
+                                    defaultCheckedKeys={defaultCheckedKeys}
                                     onCheck={checkTree}
                                 >
                                     {
@@ -49,7 +48,7 @@ const RoleSetting = ({
                             </div>
                         } 
                         trigger="click">
-                        <Button type="primary" size="small" onClick={ getSiderData }>授权</Button>
+                        <Button type="primary" size="small">授权</Button>
                     </Popover>
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
@@ -70,7 +69,7 @@ const RoleSetting = ({
 				</TreeNode>
 			)
 		} else {
-			return <TreeNode title={item.menuName} key={item.id + ''} />
+			return <TreeNode title={item.menuName} key={item.id + ''} disableCheckbox={item.id === 113}/>
 		}
     }
     

@@ -58,6 +58,7 @@ export default {
 			const res = yield call(api.deleteMenu, payload);
 			if (res) {
 				message.success(res.data.message);
+				yield put({ type: 'app/fetch' });
 				yield put({
 					type: 'save',
 					payload: {
