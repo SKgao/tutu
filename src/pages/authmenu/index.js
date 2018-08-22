@@ -7,7 +7,7 @@ import TablePopoverLayout from '@/components/TablePopoverLayout';
 import VaildForm from './VaildForm';
 import { filterObj } from '@/utils/tools';
 
-import { Form, Button, Popconfirm, Modal, Icon, DatePicker, Badge } from 'antd';
+import { Form, Button, Popconfirm, Modal, Icon, DatePicker, Badge, Input } from 'antd';
 import moment from 'moment';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -17,7 +17,7 @@ const Authmenu = ({
     ...props
 }) => {
     let { dispatch } = props;
-    let { tableData, modalShow, startTime, endTime } = authmenu;
+    let { tableData, modalShow, menuName } = authmenu;
 
     const columns = [
         {
@@ -168,15 +168,24 @@ const Authmenu = ({
                 endTime: t[1] + ':00'
             }
         })
-    }
+	}
+	
+	// 输入框收入
+	const handleInput = (e) => {
+		dispatch({
+        	type: 'authmenu/setParam',
+        	payload: {
+                menuName: e.target.value
+            }
+        })
+	}
 
     // 搜索
     const handleSearch = () => {
     	let PP = {
     		pageNum: 1,
     		pageSize: 10,
-    		startTime: startTime,
-    		endTime: endTime
+			menuName: menuName
     	}
     	dispatch({
     		type: 'authmenu/getMenu',
@@ -189,7 +198,7 @@ const Authmenu = ({
 		<div>
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
-                    <FormItem label="时间">
+                    {/* <FormItem label="时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
                             showTime={{
@@ -199,6 +208,11 @@ const Authmenu = ({
                             format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
+					</FormItem> */}
+					
+					{/*菜单名*/}
+                    <FormItem label="菜单名">
+                        <Input placeholder="输入菜单名" onChange={(e) => handleInput(e)}/>
                     </FormItem>
 
                     <FormItem>
@@ -220,7 +234,10 @@ const Authmenu = ({
                 footer={null}
                 >
                 <Form>
-                    <VaildForm submitForm={submitForm}>
+					<VaildForm 
+					   submitForm={submitForm}
+					   resetForm={() => changeModalState(false)}
+					   >
                     </VaildForm>
                 </Form>
             </Modal>

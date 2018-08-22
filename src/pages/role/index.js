@@ -13,9 +13,10 @@ const RoleSetting = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, account, siderList, menuIds } = roleSetting;
+    let { tableData, modalShow, account, siderList, menuIds, defaultCheckedKeys } = roleSetting;
     let { getFieldDecorator, getFieldValue } = form;
 
+    console.log('defaultCheckedKeys', defaultCheckedKeys)
     const columns = [
         {
             title: '用户名',
@@ -36,6 +37,7 @@ const RoleSetting = ({
                             <div>
                                 <Tree
                                     checkable
+                                    defaultCheckedKeys={["116", "115", "114", "113", "112"]}
                                     onCheck={checkTree}
                                 >
                                     {
@@ -61,14 +63,14 @@ const RoleSetting = ({
 	const renderTree = item => {
 		if (item.children && item.children.length) {
             return (
-				<TreeNode title={item.menuName} key={item.id}>
+				<TreeNode title={item.menuName} key={item.id + ''}>
 					{
 						item.children.map(subitem => renderTree(subitem))
 					}
 				</TreeNode>
 			)
 		} else {
-			return <TreeNode title={item.menuName} key={item.id} />
+			return <TreeNode title={item.menuName} key={item.id + ''} />
 		}
     }
     
@@ -114,6 +116,8 @@ const RoleSetting = ({
             		roleId: param.id
             	}
             })
+        } else {
+            message.warning('请选择菜单授权！')
         }
     }
 

@@ -6,6 +6,7 @@ const RadioGroup = Radio.Group;
 
 const ValidForm = ({
     submitForm,
+    resetForm,
     ...props
 }) => {
     let { form } = props;
@@ -23,14 +24,15 @@ const ValidForm = ({
                         }
                     }
                 }
-                submitForm(values);
+                submitForm && submitForm(values);
             }
         });
     }
 
     // 重置表单
     const handleReset = (e) => {
-    	resetFields();
+        resetFields();
+        resetForm && resetForm();
     }
 
 	return (
@@ -132,7 +134,8 @@ const ValidForm = ({
 };
 
 ValidForm.propTypes = {
-    submitForm: PropTypes.func // 表单提交
+    submitForm: PropTypes.func, // 表单提交
+    resetForm: PropTypes.func  // 表单重置
 };
 
 export default (Form.create()(ValidForm));

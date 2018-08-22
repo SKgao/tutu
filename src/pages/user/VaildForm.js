@@ -11,6 +11,7 @@ const ValidForm = ({
     uploadSuccess,
     getRoleList,
     roleList,
+    resetForm,
     ...props
 }) => {
     let { form } = props;
@@ -22,14 +23,15 @@ const ValidForm = ({
         validateFieldsAndScroll((err, values) => {
             if (!err) {
                 delete values['confirm'];
-                submitForm(values);
+                submitForm && submitForm(values);
             }
         });
     }
 
     // 重置表单
     const handleReset = (e) => {
-    	resetFields();
+        resetFields();
+        resetForm && resetForm();
     }
 
 	return (
@@ -158,6 +160,7 @@ ValidForm.propTypes = {
     uploadSuccess: PropTypes.func, // 上传成功
     getRoleList: PropTypes.func,   // 获取角色
     roleList: PropTypes.array,     // 角色列表
+    resetForm: PropTypes.func,     // 表单重置
 };
 
 export default (Form.create()(ValidForm));

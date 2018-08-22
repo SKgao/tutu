@@ -46,7 +46,7 @@ const TeachingManage = ({
         	dataIndex: 'icon',
             sorter: true,
             render: (text) => {
-               return (text) ? <img src={ text } style={{ width: 30, height: 40 }}/> : <span>无</span>
+               return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
             }
         }, {
         	title: '操作',

@@ -52,10 +52,10 @@ const AppverUpdate = ({
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleEnable(index, 'ver')}>启用</Button>
+                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleEnable(index, 'app')}>启用</Button>
 					}
 					{
-                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleDisable(index, 'ver')}>禁用</Button>
+                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleDisable(index, 'app')}>禁用</Button>
 					}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(index, 'app')}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>

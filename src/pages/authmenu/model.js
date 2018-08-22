@@ -6,9 +6,8 @@ export default {
 
 	state: {
 		tableData: [],
-		startTime: '',
-		endTime: '',
-		modalShow: false
+		modalShow: false,
+		menuName: '',  // 菜单名称
 	},
 
 	subscriptions: {
@@ -43,6 +42,12 @@ export default {
 					payload: {
 						pageNum: 1,
 						pageSize: 10
+					}
+				});
+				yield put({
+					type: 'setParam',
+					payload: {
+						modalShow: false
 					}
 				});
 			}

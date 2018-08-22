@@ -63,6 +63,12 @@ export default {
 						pageSize: 10
 					}
 				})
+				yield put({
+					type: 'setParam',
+					payload: {
+						modalShow: false
+					}
+				})
 			}
 		},
 
