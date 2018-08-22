@@ -47,6 +47,11 @@ const Routers = ({
 			path: '/appverUpdate',
 			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/index'),
 			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/model')]
+		},
+		{
+			path: '/sourceMaterial',
+			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/index'), 
+			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/model')]
 		}
 	]
 
@@ -64,10 +69,10 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
-						
+
 					</Switch>
 				</App>
-			</LocaleProvider>	
+			</LocaleProvider>
 		</ConnectedRouter>
 	);
 };

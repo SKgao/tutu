@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import UploadComponent from '@/components/UploadComponent';
+import UploadApk from '@/components/UploadApk';
 import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 
@@ -347,17 +347,6 @@ const AppverUpdate = ({
 						footer={null}
 						>
 						<Form>
-							<FormItem
-								label="版本名称"
-								{...formItemLayout}
-								>
-								{getFieldDecorator('versionName', {
-									rules: [{ required: true, message: '请输入版本名!', whitespace: false }],
-								})(
-									<Input placeholder="请输入版本名"/>
-								)}
-							</FormItem>
-
 							{/*App类型*/}
 							<FormItem 
 							    label="App类型"
@@ -377,26 +366,49 @@ const AppverUpdate = ({
 							</FormItem>
 
 							<FormItem
-								label="apk下载地址"
+								label="版本名称"
+								{...formItemLayout}
+								>
+								{getFieldDecorator('versionName', {
+									rules: [{ required: true, message: '请输入版本名!', whitespace: false }],
+								})(
+									<Input placeholder="请输入版本名"/>
+								)}
+							</FormItem>
+
+							<FormItem
+								label="apk上传"
 								{...formItemLayout}
 								>
 								{getFieldDecorator('apkUrl', {
-									rules: [{ message: '请上传apk包!' }],
+									rules: [{ required: true, message: '请上传apk包!' }],
 								})(
 									<MyUpload uploadSuccess={uploadSuccess}></MyUpload>
 								)}
 							</FormItem>
+
+							{/*<FormItem
+								label="apk下载地址"
+								{...formItemLayout}
+								>
+								{getFieldDecorator('apkUrl', {
+									rules: [{ required: true, message: 'apk下载地址!' }],
+								})(
+									<Input placeholder="apk下载地址!" disabled/>
+								)}
+							</FormItem>*/}
 
 							<FormItem
 								label="强制更新"
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
+									initialValue:1,
 									rules: [{ message: '请选择是否强制更新!' }],
 								})(
 									<RadioGroup>
-										<Radio value="1">不需要</Radio>
-										<Radio value="2">需要</Radio>
+										<Radio value={1}>不需要</Radio>
+										<Radio value={2}>需要</Radio>
 									</RadioGroup>
 								)}
 							</FormItem>
@@ -406,11 +418,12 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
+									initialValue:2,
 									rules: [{ message: '请选择格式!' }],
 								})(
 									<RadioGroup>
-										<Radio value="1">添加用户模块</Radio>
-										<Radio value="2">添加商城模块</Radio>
+										<Radio value={1}>添加用户模块</Radio>
+										<Radio value={2}>添加商城模块</Radio>
 									</RadioGroup>
 								)}
 							</FormItem>
