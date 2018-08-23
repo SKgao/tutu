@@ -26,7 +26,7 @@ class MyUpload extends Component {
                     }
                 })
                 .catch((err) => {
-                    console.log('上传失败！')
+                    
                 });
         }
     }
@@ -35,7 +35,7 @@ class MyUpload extends Component {
         return (
             <Upload onChange={this.handleUpload}>
                 <Button>
-                   <Icon type="upload"/> 上传文件
+                   <Icon type="upload"/> { this.props.uploadTxt || '上传文件'}
                 </Button>
             </Upload>
         );
@@ -43,7 +43,8 @@ class MyUpload extends Component {
 }
 
 MyUpload.propTypes = {
-	uploadSuccess: PropTypes.func // 上传成功回调
+    uploadSuccess: PropTypes.func, // 上传成功回调
+    uploadTxt: PropTypes.string    // 按钮文本
 };
 
 

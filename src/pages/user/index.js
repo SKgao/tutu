@@ -247,16 +247,6 @@ const UserSetting = ({
         })
     }
 
-    // 上传成功
-    const uploadSuccess = (url) => {
-        dispatch({
-        	type: 'userSetting/setParam',
-        	payload: {
-        		avatar: url
-        	}
-        })
-    }
-
     // 获取角色列表
     const getRoleList = () => {
         dispatch({ type: 'userSetting/getRoleList' })
@@ -315,7 +305,6 @@ const UserSetting = ({
                 >
                 <VaildForm 
                     submitForm={submitForm}
-                    uploadSuccess={uploadSuccess}
                     getRoleList={getRoleList}
                     roleList={roleList}
                     resetForm={() => changeModalState(false)}
