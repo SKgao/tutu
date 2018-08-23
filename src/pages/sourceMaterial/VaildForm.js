@@ -12,22 +12,14 @@ const ValidForm = ({
     ...props
 }) => {
     let { form } = props;
-    const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
+    const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
 
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
-            console.log(values);
             if (!err) {
-                for (let key in values) {
-                    if (key === 'text' || key === 'icon' || key === 'audio') {
-                        if (values[key]) {
-                            values[key] = values[key] - 0
-                        }
-                    }
-                }
-                submitForm(values);
+                submitForm && submitForm(values);
             }
         });
     }
@@ -39,12 +31,11 @@ const ValidForm = ({
     }
     // 上传图片回调
     const iconUploadSuccess = (url) => {
-        console.log(this.props.form.getFieldsValue())
-        // this.props.form.setFieldsValue('icon', url)
+        setFieldsValue({'icon': url})
     }
     // 上传音频回调
     const audioUploadSuccess = (url) => {
-        form.setFieldsValue('audio', url)
+        setFieldsValue({'audio': url})
     }
 	return (
         <div>
@@ -91,7 +82,7 @@ const ValidForm = ({
 };
 
 ValidForm.propTypes = {
-    submitForm: PropTypes.func // 表单提交
+    submitForm: PropTypes.func, // 表单提交
 };
 
 export default (Form.create()(ValidForm));

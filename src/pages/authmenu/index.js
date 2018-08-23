@@ -149,7 +149,7 @@ const Authmenu = ({
 					}/>
         }, {
         	title: '图标',
-        	dataIndex: 'icon'
+			dataIndex: 'icon'
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -213,8 +213,7 @@ const Authmenu = ({
     		type: 'authmenu/getMenu',
     		payload: filterObj(PP)
     	})
-    }
-   
+	}
 
 	return (
 		<div>
@@ -243,13 +242,11 @@ const Authmenu = ({
                 onCancel= { () => changeModalState(false) }
                 footer={null}
                 >
-                <Form>
-					<VaildForm 
-					   submitForm={submitForm}
-					   resetForm={() => changeModalState(false)}
-					   >
-                    </VaildForm>
-                </Form>
+                <VaildForm 
+					submitForm={submitForm}
+					resetForm={() => changeModalState(false)}
+					>
+				</VaildForm>
             </Modal>
 
             <TableLayout

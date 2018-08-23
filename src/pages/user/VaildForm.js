@@ -8,14 +8,13 @@ const Option = Select.Option;
 
 const ValidForm = ({
     submitForm,
-    uploadSuccess,
     getRoleList,
     roleList,
     resetForm,
     ...props
 }) => {
     let { form } = props;
-    const { getFieldDecorator, validateFieldsAndScroll, resetFields } = form;
+    const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     // 提交表单
     const handleSubmit = (e) => {
@@ -32,6 +31,11 @@ const ValidForm = ({
     const handleReset = (e) => {
         resetFields();
         resetForm && resetForm();
+    }
+
+    // 设置头像
+    const uploadSuccess = (url) => {
+        setFieldsValue({'avatar': url})
     }
 
 	return (
@@ -107,7 +111,7 @@ const ValidForm = ({
                     {getFieldDecorator('avatar', {
                         rules: [{ message: '请输入上传头像图片!' }],
                     })(
-                        <MyUpload uploadSuccess={uploadSuccess}></MyUpload>
+                        <MyUpload uploadSuccess={uploadSuccess} uploadTxt={'上传图片'}></MyUpload>
                     )}
                 </FormItem>
 
@@ -157,7 +161,6 @@ const ValidForm = ({
 
 ValidForm.propTypes = {
     submitForm: PropTypes.func, // 表单提交
-    uploadSuccess: PropTypes.func, // 上传成功
     getRoleList: PropTypes.func,   // 获取角色
     roleList: PropTypes.array,     // 角色列表
     resetForm: PropTypes.func,     // 表单重置

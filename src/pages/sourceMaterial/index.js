@@ -203,10 +203,8 @@ const sourceMaterial = ({
           cancelText="取消"
           footer={null}
           >
-          <Form>
-              <VaildForm submitForm={submitForm}>
-              </VaildForm>
-          </Form>
+           <VaildForm submitForm={submitForm}>
+           </VaildForm>
       </Modal>
       <TableLayout
           dataSource={materialList}
