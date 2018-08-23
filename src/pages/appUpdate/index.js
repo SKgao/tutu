@@ -9,7 +9,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Popconfirm, Tabs, Modal, Radio, Badge, Select } from 'antd';
+import { Form, DatePicker, Input, Button, Popconfirm, Tabs, Modal, Radio, Badge, Select, message } from 'antd';
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -52,10 +52,10 @@ const AppverUpdate = ({
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleEnable(index, 'ver')}>启用</Button>
+                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleEnable(index, 'app')}>启用</Button>
 					}
 					{
-                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleDisable(index, 'ver')}>禁用</Button>
+                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleDisable(index, 'app')}>禁用</Button>
 					}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(index, 'app')}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
@@ -200,12 +200,16 @@ const AppverUpdate = ({
 
 	// 添加App类型
 	const handleAddapptype = () => {
-		dispatch({
-			type: 'appver/addApptype',
-			payload: {
-				name: appname
-			}
-		})
+		if (appname.trim()) {
+			dispatch({
+				type: 'appver/addApptype',
+				payload: {
+					name: appname
+				}
+			})
+		} else{
+            message.warning('请输入App名称')
+		}
 	}
 
 	// 筛选app类型
@@ -213,7 +217,7 @@ const AppverUpdate = ({
 		dispatch({
 			type: 'appver/setParam',
 			payload: {
-				appTypeId: val
+				appTypeId: val.appname
 			}
 		})
 	}
@@ -238,7 +242,13 @@ const AppverUpdate = ({
 
 	// 表单取消
 	const handleReset = () => {
-		resetFields();
+		resetFields()
+		dispatch({
+			type: 'appver/setParam',
+			payload: {
+				modalShow: false
+			}
+		})
 	}
 
 	// 上传文件回调
@@ -403,7 +413,11 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
+<<<<<<< HEAD
 									initialValue:1,
+=======
+									initialValue: '1',
+>>>>>>> e9b2c9913659d91c1e9ea8e8fbdddab3c1e56f95
 									rules: [{ message: '请选择是否强制更新!' }],
 								})(
 									<RadioGroup>
@@ -418,7 +432,11 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
+<<<<<<< HEAD
 									initialValue:2,
+=======
+									initialValue: '1',
+>>>>>>> e9b2c9913659d91c1e9ea8e8fbdddab3c1e56f95
 									rules: [{ message: '请选择格式!' }],
 								})(
 									<RadioGroup>

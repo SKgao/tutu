@@ -7,7 +7,7 @@ import TablePopoverLayout from '@/components/TablePopoverLayout';
 import VaildForm from './VaildForm';
 import { filterObj } from '@/utils/tools';
 
-import { Form, Button, Popconfirm, Modal, Icon, DatePicker, Badge } from 'antd';
+import { Form, Button, Popconfirm, Modal, Icon, DatePicker, Badge, Input } from 'antd';
 import moment from 'moment';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -17,7 +17,7 @@ const Authmenu = ({
     ...props
 }) => {
     let { dispatch } = props;
-    let { tableData, modalShow, startTime, endTime } = authmenu;
+    let { tableData, modalShow, menuName, menuScope } = authmenu;
 
     const columns = [
         {
@@ -32,6 +32,53 @@ const Authmenu = ({
         	title: '菜单id',
         	dataIndex: 'id',
         	sorter: true
+        }, {
+        	title: '父级id',
+        	dataIndex: 'parentId',
+			sorter: true,
+			render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改父级id'}
+					valueData={[0, 1, 2, 3]}
+					defaultValue={text || 0}
+					onOk={v => 
+						dispatch({
+							type: 'authmenu/updateMenu',
+							payload: {
+								id: record.id,
+								parentId: v - 0
+							}
+						})
+					}/>
+        }, {
+        	title: '菜单作用',
+        	dataIndex: 'menuScope',
+			sorter: true,
+			render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改菜单作用'}
+					valueData={[{
+						id: 1,
+						name: '左侧菜单'
+					}, {
+						id: 2,
+						name: '按钮'
+					}, {
+						id: 3,
+						name: '接口'
+					}]}
+					optionKey={'id'}
+					optionItem={'name'}
+					defaultValue={text || 0}
+					onOk={v => 
+						dispatch({
+							type: 'authmenu/updateMenu',
+							payload: {
+								id: record.id,
+								menuScope: v - 0
+							}
+						})
+					}/>
         }, {
         	title: '菜单名称',
         	dataIndex: 'menuName',
@@ -102,21 +149,7 @@ const Authmenu = ({
 					}/>
         }, {
         	title: '图标',
-        	dataIndex: 'icon',
-            render: (text, record) =>
-				<TablePopoverLayout
-					title={'修改图标'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
-					onOk={v => 
-						dispatch({
-							type: 'authmenu/updateMenu',
-							payload: {
-								id: record.id,
-								icon: v
-							}
-						})
-					}/>
+        	dataIndex: 'icon'
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -158,25 +191,23 @@ const Authmenu = ({
 			}
         })
     }
-
-    // 选择时间框
-    const datepickerChange = (d, t) => {
-        dispatch({
+	
+	// 输入框收入
+	const handleInput = (e) => {
+		dispatch({
         	type: 'authmenu/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                menuName: e.target.value
             }
         })
-    }
+	}
 
     // 搜索
     const handleSearch = () => {
     	let PP = {
     		pageNum: 1,
     		pageSize: 10,
-    		startTime: startTime,
-    		endTime: endTime
+			menuName: menuName
     	}
     	dispatch({
     		type: 'authmenu/getMenu',
@@ -188,17 +219,10 @@ const Authmenu = ({
 	return (
 		<div>
 			<FormInlineLayout>
-			    <Form layout="inline" style={{ marginLeft: 15 }}>
-                    <FormItem label="时间">
-                        <RangePicker
-                            format="YYYY-MM-DD HH:mm"
-                            showTime={{
-                                hideDisabledOptions: true,
-                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
-                            }}
-                            format="YYYY-MM-DD HH:mm"
-                            onChange={datepickerChange}
-                            />
+			    <Form layout="inline" style={{ marginLeft: 15 }}>				
+					{/*菜单名*/}
+                    <FormItem label="菜单名">
+                        <Input placeholder="输入菜单名" onChange={(e) => handleInput(e)}/>
                     </FormItem>
 
                     <FormItem>
@@ -220,7 +244,10 @@ const Authmenu = ({
                 footer={null}
                 >
                 <Form>
-                    <VaildForm submitForm={submitForm}>
+					<VaildForm 
+					   submitForm={submitForm}
+					   resetForm={() => changeModalState(false)}
+					   >
                     </VaildForm>
                 </Form>
             </Modal>

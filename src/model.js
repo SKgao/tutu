@@ -57,7 +57,7 @@ export default {
 				type: 'save',
 				payload: {
 					datalist: datalist,
-					siderList: datalist.concat(authMenu),
+					siderList: authMenu,
 				}
 			});
 		},

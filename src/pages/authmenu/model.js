@@ -6,9 +6,8 @@ export default {
 
 	state: {
 		tableData: [],
-		startTime: '',
-		endTime: '',
-		modalShow: false
+		modalShow: false,
+		menuName: '',  // 菜单名称
 	},
 
 	subscriptions: {
@@ -45,6 +44,12 @@ export default {
 						pageSize: 10
 					}
 				});
+				yield put({
+					type: 'setParam',
+					payload: {
+						modalShow: false
+					}
+				});
 			}
 		},
 
@@ -53,6 +58,7 @@ export default {
 			const res = yield call(api.deleteMenu, payload);
 			if (res) {
 				message.success(res.data.message);
+				yield put({ type: 'app/fetch' });
 				yield put({
 					type: 'save',
 					payload: {

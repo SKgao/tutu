@@ -10,20 +10,20 @@ export default {
 		account: '',
 		modalShow: false,
 		siderList: [],
-		menuIds: []   // 授权菜单
+		menuIds: [],   // 授权菜单
+		defaultCheckedKeys: [],  // 权限树默认选中
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ 
-				type: 'getRole',
-				payload: ''
-			})
+			dispatch({ type: 'getRole' })
+			dispatch({ type: 'getSliderBar' })
 		}
 	},
 
 	effects: {
-		*getSliderBar({ payload }, { call, put }) {
+		*getSliderBar({ payload }, { call, put, select }) {
+			const { siderList } = yield select(state => state.app);
 			const res = yield call(api_authmenu.getMenu, {
 				pageNum: 1,
 				pageSize: 10
@@ -31,6 +31,7 @@ export default {
 			yield put({
 				type: 'save',
 				payload: {
+					defaultCheckedKeys: siderList.map(e => e.id + ''),
 					siderList: (res.data.data) ? res.data.data.data : []
 				}
 			});
@@ -52,10 +53,13 @@ export default {
 			const res = yield call(api.addRole, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'getRole',
-					payload: ''
-				})
+				yield put({ type: 'getRole' });
+				yield put({ 
+					type: 'setParam',
+					payload: {
+						modalShow: false
+					}
+				 });
 			}
 		},
 
@@ -73,9 +77,12 @@ export default {
 			}
 		},
 
-		*setauthRole({ payload }, { call }) {
+		*setauthRole({ payload }, { call, put }) {
 			const res = yield call(api.setauthRole, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				yield put({ type: 'app/fetch' });
+				message.success(res.data.message);
+			}
 		},
 
 		*menusRole({ payload }, { call }) {
