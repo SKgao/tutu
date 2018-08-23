@@ -69,7 +69,7 @@ const RoleSetting = ({
 				</TreeNode>
 			)
 		} else {
-			return <TreeNode title={item.menuName} key={item.id + ''} disableCheckbox={item.id === 113}/>
+			return <TreeNode title={item.menuName} key={item.id + ''}/>
 		}
     }
     

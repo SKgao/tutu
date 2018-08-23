@@ -149,7 +149,21 @@ const Authmenu = ({
 					}/>
         }, {
         	title: '图标',
-			dataIndex: 'icon'
+			dataIndex: 'icon',
+			render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改icon'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'authmenu/updateMenu',
+							payload: {
+								id: record.id,
+								icon: v
+							}
+						})
+					}/>
         }, {
         	title: '操作',
             dataIndex: 'action',

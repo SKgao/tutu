@@ -16,7 +16,7 @@ export default {
 				type: 'getMenu',
 				payload: {
 					pageNum: 1,
-					pageSize: 10
+					pageSize: 20
 				}
 			});
 		},
@@ -41,7 +41,7 @@ export default {
 					type: 'getMenu',
 					payload: {
 						pageNum: 1,
-						pageSize: 10
+						pageSize: 20
 					}
 				});
 				yield put({

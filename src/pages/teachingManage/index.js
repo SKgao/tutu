@@ -343,7 +343,6 @@ const TeachingManage = ({
                             {...formItemLayout}
                             >
                             {getFieldDecorator('icon', {
-                                initialValue: 'book',
                                 rules: [{
                                     message: '请上传书本素材!', 
                                     whitespace: true
