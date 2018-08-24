@@ -14,7 +14,6 @@ export default {
 		versionList: [], // 版本数据
 		modalShow: false,
 		activeKey: 'book',  // 默认tab-书籍管理
-		icon: '',        // 书籍封面
 		bookVersionName: '',   // 新增-教材版本名称
         gradeName: '',         // 新增-年级名称
 	},

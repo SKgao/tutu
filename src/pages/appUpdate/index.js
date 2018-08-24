@@ -15,14 +15,15 @@ const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 
 const AppverUpdate = ({
 	appver,
 	...props
 }) => {
 	let { dispatch, form } = props;
-	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId, apkUrl } = appver;
-	let { getFieldDecorator, validateFieldsAndScroll, resetFields } = form;
+	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId } = appver;
+	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
 	let appColumns = [
         {
@@ -229,7 +230,6 @@ const AppverUpdate = ({
 			if (!err) {
 				values.forceUpdate && (values.forceUpdate = values.forceUpdate - 0);
 				values.updateDescribe && (values.updateDescribe = values.updateDescribe - 0);
-				apkUrl && (values.apkUrl = apkUrl);
 				dispatch({
 					type: 'appver/addVersion',
 					payload: {
@@ -253,12 +253,7 @@ const AppverUpdate = ({
 
 	// 上传文件回调
 	const uploadSuccess = (url) => {
-		dispatch({
-			type: 'appver/setParam',
-			payload: {
-				apkUrl: url
-			}
-		})
+		setFieldsValue({'apkUrl': url})
 	}
 
 	// 搜索版本信息
@@ -393,28 +388,22 @@ const AppverUpdate = ({
 								{getFieldDecorator('apkUrl', {
 									rules: [{ required: true, message: '请上传apk包!' }],
 								})(
-									<MyUpload uploadSuccess={uploadSuccess}></MyUpload>
+									<MyUpload uploadSuccess={uploadSuccess} uploadTxt={'上传apk包'}></MyUpload>
 								)}
 							</FormItem>
-
-							{/*<FormItem
-								label="apk下载地址"
-								{...formItemLayout}
-								>
-								{getFieldDecorator('apkUrl', {
-									rules: [{ required: true, message: 'apk下载地址!' }],
-								})(
-									<Input placeholder="apk下载地址!" disabled/>
-								)}
-							</FormItem>*/}
 
 							<FormItem
 								label="强制更新"
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
+<<<<<<< HEAD
 									initialValue: '1',
 									rules: [{ message: '请选择是否强制更新!' }],
+=======
+									initialValue: 1,
+									rules: [{ required: true, message: '请选择是否强制更新!' }],
+>>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
 								})(
 									<RadioGroup>
 										<Radio value={1}>不需要</Radio>
@@ -424,17 +413,18 @@ const AppverUpdate = ({
 							</FormItem>
 
 							<FormItem
-								label="格式"
+								label="版本描述"
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
+<<<<<<< HEAD
 									initialValue: '2',
 									rules: [{ message: '请选择格式!' }],
+=======
+									rules: [{ required: true, message: '请输入版本描述!' }],
+>>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
 								})(
-									<RadioGroup>
-										<Radio value={1}>添加用户模块</Radio>
-										<Radio value={2}>添加商城模块</Radio>
-									</RadioGroup>
+									<TextArea placeholder="版本描述格式： 1.XXX 2.XXX 3.XXX" autosize={{ minRows: 3, maxRows: 6 }} />
 								)}
 							</FormItem>
 

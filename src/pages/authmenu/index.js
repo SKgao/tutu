@@ -149,7 +149,21 @@ const Authmenu = ({
 					}/>
         }, {
         	title: '图标',
-        	dataIndex: 'icon'
+			dataIndex: 'icon',
+			render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改icon'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'authmenu/updateMenu',
+							payload: {
+								id: record.id,
+								icon: v
+							}
+						})
+					}/>
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -213,8 +227,7 @@ const Authmenu = ({
     		type: 'authmenu/getMenu',
     		payload: filterObj(PP)
     	})
-    }
-   
+	}
 
 	return (
 		<div>
@@ -243,13 +256,11 @@ const Authmenu = ({
                 onCancel= { () => changeModalState(false) }
                 footer={null}
                 >
-                <Form>
-					<VaildForm 
-					   submitForm={submitForm}
-					   resetForm={() => changeModalState(false)}
-					   >
-                    </VaildForm>
-                </Form>
+                <VaildForm 
+					submitForm={submitForm}
+					resetForm={() => changeModalState(false)}
+					>
+				</VaildForm>
             </Modal>
 
             <TableLayout

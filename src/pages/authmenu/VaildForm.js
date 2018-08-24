@@ -17,15 +17,14 @@ const ValidForm = ({
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
             if (!err) {
-                // for (let key in values) {
-                //     if (key === 'parentId' || key === 'sortValue' || key === 'menuScope') {
-                //         if (values[key]) {
-                //             values[key] = values[key] - 0
-                //         }
-                //     }
-                // }
-                console.log(values);
-                //submitForm && submitForm(values);
+                for (let key in values) {
+                    if (key === 'parentId' || key === 'sortValue' || key === 'menuScope') {
+                        if (values[key]) {
+                            values[key] = values[key] - 0
+                        }
+                    }
+                }
+                submitForm && submitForm(values);
             }
         });
     }
@@ -103,7 +102,7 @@ const ValidForm = ({
                     label="作用"
                     >
                     {getFieldDecorator('menuScope', {
-                        rules: [{ required: true, message: '请选择菜单作用!', type: 'number' }],
+                        rules: [{ required: true, message: '请选择菜单作用!' }],
                     })(
                         <RadioGroup>
                             <Radio value="1">左侧菜单</Radio>

@@ -26,7 +26,7 @@ export default {
 			const { siderList } = yield select(state => state.app);
 			const res = yield call(api_authmenu.getMenu, {
 				pageNum: 1,
-				pageSize: 10
+				pageSize: 20
 			});
 			yield put({
 				type: 'save',

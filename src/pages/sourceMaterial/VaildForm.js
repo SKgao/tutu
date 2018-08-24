@@ -11,6 +11,10 @@ const ValidForm = ({
 }) => {
     let { form } = props;
     const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -20,6 +24,7 @@ const ValidForm = ({
         //   text: 3
         // })
         validateFieldsAndScroll((err, values) => {
+<<<<<<< HEAD
           //   if (!err) {
           //     console.log(111)
           //       for (let key in values) {
@@ -37,6 +42,13 @@ const ValidForm = ({
 
         })
       }
+=======
+            if (!err) {
+                submitForm && submitForm(values);
+            }
+        });
+    }
+>>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
 
     // 重置表单
     const handleReset = (e) => {
@@ -100,7 +112,7 @@ const ValidForm = ({
 };
 
 ValidForm.propTypes = {
-    submitForm: PropTypes.func // 表单提交
+    submitForm: PropTypes.func, // 表单提交
 };
 
 export default (Form.create()(ValidForm));
