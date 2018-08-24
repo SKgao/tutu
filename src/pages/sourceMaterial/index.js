@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
@@ -6,6 +5,7 @@ import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import VaildForm from './VaildForm';
+import EditForm from './editForm';
 
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
@@ -23,6 +23,7 @@ const sourceMaterial = ({
 }) => {
     let { dispatch, form } = props;
     let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text } = sourcematerial;
+
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
 
     // 鼠标放在图片上的事件
@@ -35,8 +36,8 @@ const sourceMaterial = ({
             dataIndex: 'text',
             sorter: true
         }, {
-        	title: '素材图标',
-        	dataIndex: 'icon',
+          title: '素材图标',
+          dataIndex: 'icon',
           sorter: true,
           render: (text) => {
              return (text) ? <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
@@ -44,21 +45,21 @@ const sourceMaterial = ({
                 </Popconfirm>: <span>无</span>
           }
         }, {
-        	title: '素材音频',
-        	dataIndex: 'audio',
+          title: '素材音频',
+          dataIndex: 'audio',
           sorter: true,
           render: (audio) => {
              return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
           }
         }, {
-        	title: '操作',
+          title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
-                    <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit('modal2Show', true)}>修改</Button>
+                    <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit(record)}>修改</Button>
                 </span>
             }
         }
@@ -70,35 +71,37 @@ const sourceMaterial = ({
      */
     const handleDelete = (param) => {
         dispatch({
-      		type: 'sourcematerial/deleteSource',
-      		payload: {
+          type: 'sourcematerial/deleteSource',
+          payload: {
                 id:param.id
             }
-      	})
+        })
     }
 
     // 搜索
     const handleSearch = () => {
         let PP = {
-        	pageNum: 1,
-        	pageSize: 10,
-        	startTime: startTime,
-        	endTime: endTime,
-        	text: text
+          pageNum: 1,
+          pageSize: 10,
+          startTime: startTime,
+          endTime: endTime,
+          text: text
         }
-     	dispatch({
-    		type: 'sourcematerial/getSource',
-    		payload: filterObj(PP)
-    	})
+      dispatch({
+        type: 'sourcematerial/getSource',
+        payload: filterObj(PP)
+      })
     }
     // 添加素材
     const submitForm = (e) => {
-        console.log(e)
         if (e!="false") {
             let PP = {
-                audio: getFieldValue('audio'),
-                icon: getFieldValue('icon'),
-                text: getFieldValue('text')
+                // audio: getFieldValue('audio'),
+                // icon: getFieldValue('icon'),
+                // text: getFieldValue('text')
+                audio: e.audio,
+                icon: e.icon,
+                text: e.text
             }
             dispatch({
                 type: 'sourcematerial/addSource',
@@ -107,36 +110,57 @@ const sourceMaterial = ({
         }else{
             handleSubmit('modalShow',false)
         }
-        
+    }
+    // 确定修改素材
+    const submitEditForm = (e) => {
+        if (e!="false") {
+            let PP = {
+                // audio: getFieldValue('audio'),
+                // icon: getFieldValue('icon'),
+                // text: getFieldValue('text')
+                audio: e.audio,
+                icon: e.icon,
+                text: e.text
+            }
+            dispatch({
+                type: 'sourcematerial/addSource',
+                payload: filterObj(PP)
+            })
+        }else{
+            handleSubmit('modal2Show',false)
+        }
     }
     // 显示添加素材modal
     const handleSubmit=(flag, show)=>{
-      dispatch({
-        type: 'sourcematerial/setParam',
-        payload: {
-              [flag]: show
-          }
-      })
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                [flag]: show
+            }
+        })
     }
     // 表单取消
     const handleReset  = () => {
         resetFields();
     }
     // 编辑素材 显示modal
-    const handleEdit=(flag, show)=>{
-      dispatch({
-        type: 'sourcematerial/setParam',
-        payload: {
-              [flag]: show
-          }
-      })
+    const handleEdit=(e)=>{
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                modal2Show: true,
+                icon:e.icon,
+                audio:e.audio,
+                text:e.text
+            }
+        })
     }
 
     // 选择时间框
     const datepickerChange = (d, t) => {
         dispatch({
-        	type: 'sourcematerial/setParam',
-        	payload: {
+          type: 'sourcematerial/setParam',
+          payload: {
                 startTime: t[0] + ':00',
                 endTime: t[1] + ':00'
             }
@@ -145,13 +169,12 @@ const sourceMaterial = ({
     // 文件上传成功
     const uploadSuccess = (url) => {
         dispatch({
-        	type: 'sourcematerial/setParam',
-        	payload: {
-        		icon: url
-        	}
+          type: 'sourcematerial/setParam',
+          payload: {
+            icon: url
+          }
         })
     }
-
     // 搜索素材内容
     const changeText = (event) => {
         dispatch({
@@ -161,8 +184,8 @@ const sourceMaterial = ({
             }
         })
     }
-	return (
-		<div>
+  return (
+    <div>
       <FormInlineLayout>
           <Form layout="inline" style={{ marginLeft: 15 }}>
               {/*时间*/}
@@ -177,7 +200,6 @@ const sourceMaterial = ({
                       onChange={datepickerChange}
                       />
               </FormItem>
-
               {/*素材内容*/}
               <FormItem label="素材内容">
                     {/*{getFieldDecorator('text')(<Input placeholder="请输入素材内容" onChange={ changeText(text)}/>)} {...getFieldProps('text', {})}*/}
@@ -195,19 +217,36 @@ const sourceMaterial = ({
           </Form>
       </FormInlineLayout>
 
-      <Modal
-          title="新增素材"
-          visible={modalShow}
-          onCancel= { () => handleSubmit('modalShow',false) }
-          okText="确认"
-          cancelText="取消"
-          footer={null}
-          >
-          <Form>
-              <VaildForm submitForm={submitForm}>
-              </VaildForm>
-          </Form>
-      </Modal>
+        <Modal
+            title="新增素材"
+            visible={modalShow}
+            onCancel= { () => handleSubmit('modalShow',false) }
+            okText="确认"
+            cancelText="取消"
+            footer={null}
+            sourcematerial={sourcematerial}
+            maskClosable={false}
+        >
+            {/*// <Form>
+            //     <VaildForm submitForm={submitForm}>
+            //     </VaildForm>
+            // </Form>*/}
+            <VaildForm submitForm={submitForm}>
+            </VaildForm>
+        </Modal>
+        <Modal
+            title="修改素材"
+            visible={modal2Show}
+            onCancel= { () => handleSubmit('modal2Show',false) }
+            okText="确认"
+            cancelText="取消"
+            footer={null}
+            sourcematerial={sourcematerial}
+            maskClosable={false}
+        >
+            {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
+            <EditForm></EditForm>
+        </Modal>
       <TableLayout
           dataSource={materialList}
           allColumns={columns}
@@ -216,8 +255,8 @@ const sourceMaterial = ({
           total={10}
           current={1}
           pageSize={10} />
-		</div>
-	)
+    </div>
+  )
 };
 
 sourceMaterial.propTypes = {

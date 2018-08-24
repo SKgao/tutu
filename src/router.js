@@ -70,12 +70,7 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
-<<<<<<< HEAD
-
-=======
 						<Route component={ErrorPage}/>
-						
->>>>>>> e9b2c9913659d91c1e9ea8e8fbdddab3c1e56f95
 					</Switch>
 				</App>
 			</LocaleProvider>

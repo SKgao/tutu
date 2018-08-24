@@ -1,59 +1,83 @@
-
 import PropTypes from 'prop-types';
+import { connect } from 'dva';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
-import audioUpload from '@/components/audioUpload';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
-const ValidForm = ({
-    submitForm,
+const editForm = ({
+    sourcematerial,
     ...props
 }) => {
-    let { form } = props;
+    let { form,dispatch } = props;
     const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
-
+    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text,iconUrl } = sourcematerial;
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
+        let data={
+            icon:icon|| '',
+            audio:audio|| '',
+            text:text||''
+        }
         validateFieldsAndScroll((err, values) => {
-            console.log(values);
-            if (!err) {
-                for (let key in values) {
-                    if (key === 'text' || key === 'icon' || key === 'audio') {
+            validateFieldsAndScroll((err, values) => {
+                if (!err) {
+                    for (let key in values) {
                         if (values[key]) {
-                            values[key] = values[key] - 0
+                            data[key]=values[key]
                         }
                     }
                 }
-                submitForm(values);
-            }
+            })
         });
+        console.log(data)
+        dispatch({
+            type: 'sourcematerial/editSource',
+            payload: data
+        }) 
     }
 
-    // 重置表单
+    // 取消重置表单
     const handleReset = (e) => {
-    	resetFields();
-        submitForm("false")
+        resetFields();
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                modal2Show:false
+            }
+        }) 
     }
-    // 上传图片回调
+    // 上传音频回调
     const iconUploadSuccess = (url) => {
-        console.log(this.props.form.getFieldsValue())
-        // this.props.form.setFieldsValue('icon', url)
+        // setFieldsValue({'icon': url})
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                icon:url
+            }
+        }) 
     }
     // 上传音频回调
     const audioUploadSuccess = (url) => {
-        form.setFieldsValue('audio', url)
+        // setFieldsValue({'audio': url})
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                audio:url
+            }
+        }) 
     }
 	return (
         <div>
-            <Form onSubmit={handleSubmit}>
+            <Form>
                 <FormItem
                     {...formItemLayout}
                     label="素材内容"
                     >
                     {getFieldDecorator('text', {
+                        initialValue:text || '',
                         rules: [{ required: true, message: '请输入素材内容!', whitespace: true }],
                     })(
                         <Input placeholder="请输入素材内容"/>
@@ -64,8 +88,30 @@ const ValidForm = ({
                     {...formItemLayout}
                     label="素材图标地址"
                     >
+                    {getFieldDecorator('icon',{
+                        initialValue:icon || ''
+                    })(
+                        <Input placeholder="请输入素材内容" disabled/>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="上传素材图标"
+                    >
                     {getFieldDecorator('icon')(
                         <MyUpload uploadSuccess={iconUploadSuccess}></MyUpload>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="音频地址"
+                    >
+                    {getFieldDecorator('audio',{
+                        initialValue:audio || ''
+                    })(
+                        <Input placeholder="请输入素材内容" disabled/>
                     )}
                 </FormItem>
 
@@ -90,8 +136,8 @@ const ValidForm = ({
 	)
 };
 
-ValidForm.propTypes = {
-    submitForm: PropTypes.func // 表单提交
+editForm.propTypes = {
+    sourcematerial: PropTypes.object // 表单提交
 };
 
-export default (Form.create()(ValidForm));
+export default connect(({sourcematerial}) => ({ sourcematerial }))(Form.create()(editForm));

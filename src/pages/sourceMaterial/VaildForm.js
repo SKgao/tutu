@@ -1,9 +1,7 @@
-
 import PropTypes from 'prop-types';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
-import audioUpload from '@/components/audioUpload';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
@@ -12,41 +10,52 @@ const ValidForm = ({
     ...props
 }) => {
     let { form } = props;
-    const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
-
+    const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
+        // submitForm({
+        //   audio: 1,
+        //   icon: 2,
+        //   text: 3
+        // })
         validateFieldsAndScroll((err, values) => {
-            console.log(values);
-            if (!err) {
-                for (let key in values) {
-                    if (key === 'text' || key === 'icon' || key === 'audio') {
-                        if (values[key]) {
-                            values[key] = values[key] - 0
-                        }
-                    }
-                }
-                submitForm(values);
-            }
-        });
-    }
+          //   if (!err) {
+          //     console.log(111)
+          //       for (let key in values) {
+          //           if (key === 'text' || key === 'icon' || key === 'audio') {
+          //               if (values[key]) {
+          //                   values[key] = values[key] - 0
+          //               }
+          //           }
+          //       }
+          //       submitForm(values);
+          // }
+          if (!err) {
+              submitForm && submitForm(values);
+          }
+
+        })
+      }
 
     // 重置表单
     const handleReset = (e) => {
-    	resetFields();
+        resetFields();
         submitForm("false")
     }
     // 上传图片回调
+    // const iconUploadSuccess = (url) => {
+    //     console.log(this.props.form.getFieldsValue())
+    // }
+    // 上传音频回调
     const iconUploadSuccess = (url) => {
-        console.log(this.props.form.getFieldsValue())
-        // this.props.form.setFieldsValue('icon', url)
+        setFieldsValue({'icon': url})
     }
     // 上传音频回调
     const audioUploadSuccess = (url) => {
-        form.setFieldsValue('audio', url)
+        setFieldsValue({'audio': url})
     }
-	return (
+    return (
         <div>
             <Form onSubmit={handleSubmit}>
                 <FormItem
@@ -86,8 +95,8 @@ const ValidForm = ({
                     <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
                 </FormItem>
             </Form>
-		</div>
-	)
+        </div>
+    )
 };
 
 ValidForm.propTypes = {

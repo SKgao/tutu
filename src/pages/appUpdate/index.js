@@ -413,11 +413,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
-<<<<<<< HEAD
-									initialValue:1,
-=======
 									initialValue: '1',
->>>>>>> e9b2c9913659d91c1e9ea8e8fbdddab3c1e56f95
 									rules: [{ message: '请选择是否强制更新!' }],
 								})(
 									<RadioGroup>
@@ -432,11 +428,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
-<<<<<<< HEAD
-									initialValue:2,
-=======
-									initialValue: '1',
->>>>>>> e9b2c9913659d91c1e9ea8e8fbdddab3c1e56f95
+									initialValue: '2',
 									rules: [{ message: '请选择格式!' }],
 								})(
 									<RadioGroup>
