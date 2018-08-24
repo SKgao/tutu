@@ -397,13 +397,8 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
-<<<<<<< HEAD
-									initialValue: '1',
-									rules: [{ message: '请选择是否强制更新!' }],
-=======
 									initialValue: 1,
 									rules: [{ required: true, message: '请选择是否强制更新!' }],
->>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
 								})(
 									<RadioGroup>
 										<Radio value={1}>不需要</Radio>
@@ -417,12 +412,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
-<<<<<<< HEAD
-									initialValue: '2',
 									rules: [{ message: '请选择格式!' }],
-=======
-									rules: [{ required: true, message: '请输入版本描述!' }],
->>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
 								})(
 									<TextArea placeholder="版本描述格式： 1.XXX 2.XXX 3.XXX" autosize={{ minRows: 3, maxRows: 6 }} />
 								)}
