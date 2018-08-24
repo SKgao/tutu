@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
 import PropTypes from 'prop-types';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
+<<<<<<< HEAD
 import audioUpload from '@/components/audioUpload';
+=======
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
@@ -12,6 +18,7 @@ const ValidForm = ({
     ...props
 }) => {
     let { form } = props;
+<<<<<<< HEAD
     const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
 
     // 提交表单
@@ -28,12 +35,27 @@ const ValidForm = ({
                     }
                 }
                 submitForm(values);
+=======
+    const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
+    // 提交表单
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // submitForm({
+        //   audio: 1,
+        //   icon: 2,
+        //   text: 3
+        // })
+        validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                submitForm && submitForm(values);
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
             }
         });
     }
 
     // 重置表单
     const handleReset = (e) => {
+<<<<<<< HEAD
     	resetFields();
         submitForm("false")
     }
@@ -47,6 +69,24 @@ const ValidForm = ({
         form.setFieldsValue('audio', url)
     }
 	return (
+=======
+        resetFields();
+        submitForm("false")
+    }
+    // 上传图片回调
+    // const iconUploadSuccess = (url) => {
+    //     console.log(this.props.form.getFieldsValue())
+    // }
+    // 上传音频回调
+    const iconUploadSuccess = (url) => {
+        setFieldsValue({'icon': url})
+    }
+    // 上传音频回调
+    const audioUploadSuccess = (url) => {
+        setFieldsValue({'audio': url})
+    }
+    return (
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
         <div>
             <Form onSubmit={handleSubmit}>
                 <FormItem
@@ -86,6 +126,7 @@ const ValidForm = ({
                     <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
                 </FormItem>
             </Form>
+<<<<<<< HEAD
 		</div>
 	)
 };
@@ -95,3 +136,14 @@ ValidForm.propTypes = {
 };
 
 export default (Form.create()(ValidForm));
+=======
+        </div>
+    )
+};
+
+ValidForm.propTypes = {
+    submitForm: PropTypes.func, // 表单提交
+};
+
+export default (Form.create()(ValidForm));
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8

@@ -21,7 +21,7 @@ const TeachingManage = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, icon, bookVersionName, gradeName, bookVersionId } = teachingmanage;
+    let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId } = teachingmanage;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue } = form;
     // 表格配置
     const columnsOpt = {
@@ -163,7 +163,7 @@ const TeachingManage = ({
             icon: getFieldValue('icon'),
             gradeId: getFieldValue('gradeId'),
             bookVersionId: getFieldValue('bookVersionId'),
-            icon: icon
+            icon: getFieldValue('icon')
         }
         dispatch({
         	type: 'teachingmanage/addBook',
@@ -243,14 +243,6 @@ const TeachingManage = ({
     // 文件上传成功
     const uploadSuccess = (url) => {
         setFieldsValue({'icon': url})
-        const _icon = getFieldValue('icon')
-        console.log(url, _icon)
-        // dispatch({
-        // 	type: 'teachingmanage/setParam',
-        // 	payload: {
-        // 		icon: url
-        // 	}
-        // })
     }
 
     // 存入输入框值
@@ -351,7 +343,6 @@ const TeachingManage = ({
                             {...formItemLayout}
                             >
                             {getFieldDecorator('icon', {
-                                initialValue: 'book',
                                 rules: [{
                                     message: '请上传书本素材!', 
                                     whitespace: true

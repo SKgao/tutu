@@ -18,17 +18,8 @@ const Authmenu = ({
 }) => {
     let { dispatch } = props;
     let { tableData, modalShow, menuName, menuScope } = authmenu;
-
     const columns = [
-        {
-            title: '创建时间',
-            dataIndex: 'createdAt',
-            sorter: true
-        }, {
-        	title: '更新时间',
-        	dataIndex: 'updatedAt',
-        	sorter: true
-        }, {
+		{
         	title: '菜单id',
         	dataIndex: 'id',
         	sorter: true
@@ -38,18 +29,26 @@ const Authmenu = ({
 			sorter: true,
 			render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改父级id'}
-					valueData={[0, 1, 2, 3]}
-					defaultValue={text || 0}
-					onOk={v => 
-						dispatch({
-							type: 'authmenu/updateMenu',
-							payload: {
-								id: record.id,
-								parentId: v - 0
-							}
-						})
-					}/>
+				title={'修改菜单名称'}
+				valueData={text || '无'}
+				defaultValue={text || '无'}
+				onOk={v => 
+					dispatch({
+						type: 'authmenu/updateMenu',
+						payload: {
+							id: record.id,
+							parentId: v - 0
+						}
+					})
+				}/>
+        }, {
+            title: '创建时间',
+            dataIndex: 'createdAt',
+            sorter: true
+        }, {
+        	title: '更新时间',
+        	dataIndex: 'updatedAt',
+        	sorter: true
         }, {
         	title: '菜单作用',
         	dataIndex: 'menuScope',
@@ -149,7 +148,21 @@ const Authmenu = ({
 					}/>
         }, {
         	title: '图标',
-        	dataIndex: 'icon'
+			dataIndex: 'icon',
+			render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改icon'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'authmenu/updateMenu',
+							payload: {
+								id: record.id,
+								icon: v
+							}
+						})
+					}/>
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -213,8 +226,7 @@ const Authmenu = ({
     		type: 'authmenu/getMenu',
     		payload: filterObj(PP)
     	})
-    }
-   
+	}
 
 	return (
 		<div>
@@ -243,13 +255,11 @@ const Authmenu = ({
                 onCancel= { () => changeModalState(false) }
                 footer={null}
                 >
-                <Form>
-					<VaildForm 
-					   submitForm={submitForm}
-					   resetForm={() => changeModalState(false)}
-					   >
-                    </VaildForm>
-                </Form>
+                <VaildForm 
+					submitForm={submitForm}
+					resetForm={() => changeModalState(false)}
+					>
+				</VaildForm>
             </Modal>
 
             <TableLayout

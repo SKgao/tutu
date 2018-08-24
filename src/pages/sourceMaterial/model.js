@@ -12,7 +12,13 @@ export default {
 		modalShow: false,
     modal2Show:false,
 		icon: '',//素材图标
+<<<<<<< HEAD
     audio:''//素材音频
+=======
+    audio:'',//素材音频
+    iconUrl:'',//素材地址
+    audioUrl:''//音频地址
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
 	},
 
 	subscriptions: {
@@ -55,9 +61,15 @@ export default {
     },
 
     *deleteSource({ payload }, { call }) {
+<<<<<<< HEAD
         console.log(payload);
         const res = yield call(api.deleteSource, payload);
         res && message.success(res.data.message);
+=======
+        const res = yield call(api.deleteSource, payload);
+        res && message.success(res.data.message);
+        
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
     },
     *editSource({ payload }, { call, put }) {
       const res = yield call(api.addSource, payload);
