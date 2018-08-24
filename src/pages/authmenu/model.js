@@ -16,7 +16,7 @@ export default {
 				type: 'getMenu',
 				payload: {
 					pageNum: 1,
-					pageSize: 10
+					pageSize: 20
 				}
 			});
 		},
@@ -25,12 +25,14 @@ export default {
 	effects: {
 		*getMenu({ payload }, { call, put }) {
 			const res = yield call(api.getMenu, payload);
-			yield put({
-				type: 'save',
-				payload: {
-					tableData: (res.data.data) ? res.data.data.data : []
-				}
-			});
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						tableData: (res.data.data) ? res.data.data.data : []
+					}
+				});
+			}
 		},
 		
 		*addMenu({ payload }, { call, put }) {
@@ -41,7 +43,7 @@ export default {
 					type: 'getMenu',
 					payload: {
 						pageNum: 1,
-						pageSize: 10
+						pageSize: 20
 					}
 				});
 				yield put({

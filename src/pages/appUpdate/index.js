@@ -411,7 +411,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
-									rules: [{ required: true, message: '请输入版本描述!' }],
+									rules: [{ message: '请选择格式!' }],
 								})(
 									<TextArea placeholder="版本描述格式： 1.XXX 2.XXX 3.XXX" autosize={{ minRows: 3, maxRows: 6 }} />
 								)}

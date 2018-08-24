@@ -39,9 +39,19 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "deleteLogs" */ './pages/systemManage/logManage/deleteLog/model')]
 		},
 		{
-			path: '/teachingManage',
-			component: () => import(/* webpackChunkName: "teachingManage" */ './pages/teachingManage/index'),
-			models: () => [import(/* webpackChunkName: "teachingManage" */ './pages/teachingManage/model')]
+			path: '/teachingManage/book',
+			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/model')]
+		},
+		{
+			path: '/teachingManage/unit',
+			component: () => import(/* webpackChunkName: "teachingManage/unit" */ './pages/teachingManage/unit/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/unit" */ './pages/teachingManage/unit/model')]
+		},
+		{
+			path: '/teachingManage/part',
+			component: () => import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/model')]
 		},
 		{
 			path: '/appverUpdate',
@@ -50,8 +60,16 @@ const Routers = ({
 		},
 		{
 			path: '/sourceMaterial',
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> dev
 			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/index'),
 			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/model')]
+=======
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/index'), 
+			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/model')]
+>>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
 		}
 	]
 
