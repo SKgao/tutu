@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import UploadApk from '@/components/UploadApk';
 import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 
@@ -40,7 +39,7 @@ const AppverUpdate = ({
 			render: (txt) => {
 				switch (txt) {
 					case 1:
-						return <Badge status="processing" text="正常"/>;	
+						return <Badge status="processing" text="正常"/>;
 					case 2:
 						return <Badge status="warning" text="不可用"/>;
 					default:
@@ -81,7 +80,7 @@ const AppverUpdate = ({
 			render: (txt) => {
 				switch (txt) {
 					case 1:
-						return <Badge status="processing" text="正常"/>;	
+						return <Badge status="processing" text="正常"/>;
 					case 2:
 						return <Badge status="warning" text="不可用"/>;
 					default:
@@ -132,7 +131,7 @@ const AppverUpdate = ({
 			}
     	})
 	}
-	
+
 	/**
 	 * 启用App、版本类型
 	 * @param  {object} 列数据
@@ -177,7 +176,7 @@ const AppverUpdate = ({
 			}
     	})
 	}
-	
+
 	// 选择时间框
 	const datepickerChange = (d, t) => {
 		dispatch({
@@ -353,7 +352,7 @@ const AppverUpdate = ({
 						>
 						<Form>
 							{/*App类型*/}
-							<FormItem 
+							<FormItem
 							    label="App类型"
 								{...formItemLayout}
 								>
@@ -441,4 +440,3 @@ AppverUpdate.propTypes = {
 };
 
 export default connect(({ appver }) => ({ appver }))(Form.create()(AppverUpdate));
-	

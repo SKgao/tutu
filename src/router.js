@@ -50,11 +50,7 @@ const Routers = ({
 		},
 		{
 			path: '/sourceMaterial',
-<<<<<<< HEAD
 			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/index'),
-=======
-			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/index'), 
->>>>>>> a52f9690781edb30fbd5ddb91ff06f03b42dd900
 			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/model')]
 		}
 	]

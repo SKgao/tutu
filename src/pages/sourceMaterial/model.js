@@ -7,7 +7,7 @@ export default {
 	state: {
     startTime: '',
     endTime: '',
-    text: '',  // 年级id
+    text: '',  // 素材内容
     materialList: [], // 素材数据
 		modalShow: false,
     modal2Show:false,
@@ -34,7 +34,9 @@ export default {
         yield put({
         	type: 'save',
         	payload: {
-        		materialList: (res.data.data) ? res.data.data.data: []
+        		materialList: (res.data.data) ? res.data.data.data: [],
+						modalShow:false,
+						modal2Show:false
         	}
         })
       }
@@ -44,6 +46,7 @@ export default {
       const res = yield call(api.addSource, payload);
       if (res) {
         message.success(res.data.message);
+				this.state.modalShow=false;
         yield put({
           type: 'getSource',
           payload: {

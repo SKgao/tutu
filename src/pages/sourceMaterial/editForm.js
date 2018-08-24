@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
-import audioUpload from '@/components/audioUpload';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 

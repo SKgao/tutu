@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
-import audioUpload from '@/components/audioUpload';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
@@ -12,56 +11,52 @@ const ValidForm = ({
     ...props
 }) => {
     let { form } = props;
-<<<<<<< HEAD
-    const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
-=======
     const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
->>>>>>> a52f9690781edb30fbd5ddb91ff06f03b42dd900
 
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
+        // submitForm({
+        //   audio: 1,
+        //   icon: 2,
+        //   text: 3
+        // })
         validateFieldsAndScroll((err, values) => {
-<<<<<<< HEAD
-            console.log(values);
-            if (!err) {
-                for (let key in values) {
-                    if (key === 'text' || key === 'icon' || key === 'audio') {
-                        if (values[key]) {
-                            values[key] = values[key] - 0
-                        }
-                    }
-                }
-                submitForm(values);
-=======
-            if (!err) {
-                submitForm && submitForm(values);
->>>>>>> a52f9690781edb30fbd5ddb91ff06f03b42dd900
-            }
-        });
-    }
+          //   if (!err) {
+          //     console.log(111)
+          //       for (let key in values) {
+          //           if (key === 'text' || key === 'icon' || key === 'audio') {
+          //               if (values[key]) {
+          //                   values[key] = values[key] - 0
+          //               }
+          //           }
+          //       }
+          //       submitForm(values);
+          // }
+          if (!err) {
+              submitForm && submitForm(values);
+          }
+
+        })
+      }
 
     // 重置表单
     const handleReset = (e) => {
-    	resetFields();
+    	 resetFields();
         submitForm("false")
     }
     // 上传图片回调
-    const iconUploadSuccess = (url) => {
-<<<<<<< HEAD
-        console.log(this.props.form.getFieldsValue())
-        // this.props.form.setFieldsValue('icon', url)
-    }
+    // const iconUploadSuccess = (url) => {
+    //     console.log(this.props.form.getFieldsValue())
+    // }
     // 上传音频回调
-    const audioUploadSuccess = (url) => {
-        form.setFieldsValue('audio', url)
-=======
+    const iconUploadSuccess = (url) => {
         setFieldsValue({'icon': url})
+        console.log(this.props.form.getFieldsValue())
     }
     // 上传音频回调
     const audioUploadSuccess = (url) => {
         setFieldsValue({'audio': url})
->>>>>>> a52f9690781edb30fbd5ddb91ff06f03b42dd900
     }
 	return (
         <div>
@@ -91,7 +86,7 @@ const ValidForm = ({
                     label="音频地址"
                     >
                     {getFieldDecorator('audio', {
-                        rules: [{ required: true, message: '请输入音频地址!' }],
+                        // rules: [{ required: true, message: '请输入音频地址!' }],
                     })(
                         <MyUpload uploadSuccess={audioUploadSuccess}></MyUpload>
                     )}
@@ -108,11 +103,7 @@ const ValidForm = ({
 };
 
 ValidForm.propTypes = {
-<<<<<<< HEAD
     submitForm: PropTypes.func // 表单提交
-=======
-    submitForm: PropTypes.func, // 表单提交
->>>>>>> a52f9690781edb30fbd5ddb91ff06f03b42dd900
 };
 
 export default (Form.create()(ValidForm));
