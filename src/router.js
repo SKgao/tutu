@@ -78,6 +78,10 @@ const Routers = ({
 			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/index'),
 			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/model')]
 		},
+		{
+			path: '/progress',
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/progress')
+		},
 	]
 
 	return (

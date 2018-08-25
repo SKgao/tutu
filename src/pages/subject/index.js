@@ -5,6 +5,7 @@ import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import ImportUpload from './importUpload';
+import ImportMeterial from './importMeterial';
 
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
@@ -21,7 +22,7 @@ const subjectIndex = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { subjectList,customsPassId,subjectTypeId,sort,tips,subjectTypeName,sourceIds,modalShow } = subjectmodel;
+    let { subjectList,customsPassId,subjectTypeId,sort,tips,subjectTypeName,sourceIds,modalShow,modal2Show } = subjectmodel;
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
     const columns = [
         {
@@ -81,6 +82,15 @@ const subjectIndex = ({
         type: 'subjectmodel/setParam',
         payload: {
             modalShow:true
+          }
+      })
+    }
+    // 显示导入素材页面
+    const handleSubmi=()=>{
+      dispatch({
+        type: 'subjectmodel/setParam',
+        payload: {
+            modal2Show:true
           }
       })
     }
@@ -155,10 +165,13 @@ const subjectIndex = ({
               <FormItem >
                     <Button type="primary" onClick={handleSubmit}>导入题目</Button>
               </FormItem>
-
+              <FormItem >
+                    <Button type="primary" onClick={handleSubmi}>素材导入</Button>
+              </FormItem>
           </Form>
       </FormInlineLayout>
       <ImportUpload modalShow={modalShow} />
+      <ImportMeterial modal2Show={modal2Show}/>
 
       <TableLayout
           dataSource={subjectList}

@@ -11,7 +11,8 @@ export default {
 		customsPassId : '',//关卡id
     sourceIds:'',//题目内容
 		sort: '',//排序
-    modalShow:false
+    modalShow:false,
+    modal2Show:false
 	},
 
 	subscriptions: {
@@ -34,7 +35,8 @@ export default {
         	type: 'save',
         	payload: {
         		subjectList: (res.data.data) ? res.data.data.data: [],
-            modalShow:false
+            modalShow:false,
+						modal2Show:false
         	}
         })
       }

@@ -7,37 +7,54 @@ import SelectBook from '@/components/selectBook';
 import { routerRedux } from 'dva/router';
 
 const FormItem = Form.Item;
-
 // let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
 /**
  * 上传文件组件
  */
-class ImportUpload extends Component {
+class ImportMeterial extends Component {
     constructor(props) {
-        super(props);
+        super(props),
         this.state ={
           fileList: [],
           uploading: false,
-          modalShow:this.props.modalShow,
+          modal2Show:this.props.modal2Show,
           textbookId:'',
           p:[],
-          fileName:[]
+          audioArray:[],
+          imageArray:[]
         }
     }
     componentWillReceiveProps(props){
-      this.setState({modalShow:this.props.modalShow})
+      this.setState({modal2Show:this.props.modal2Show})
     }
     handleUpload = () => {
-        let formData = new FormData();
-        const { fileList } = this.state;
-        let { uploadSuccess } = this.props
-        let _this=this;
-        formData.append('file',fileList[0])
-        formData.append('textbookId', this.state.textbookId)
-        axios.post('/subject/subject/import', formData)
+      let data={
+        audioArray:this.state.audioArray,
+        imageArray:this.state.imageArray
+      }
+        axios.post('/subject/source/import', data)
             .then((res) => {
                 if (res.data.code === 0) {
-                  this.linktoPart()
+                  let _this=this
+                    let timer=setInterval(function(){
+                      axios.get('/subject/subject/import/progress',null)
+                      .then((reset)=>{
+                        if (reset.data.code==0) {
+                          _this.setState({
+                            p:reset.data.data
+                          })
+                          console.log(_this.state.p)
+                          if (_this.state.p.indexOf("结束")!=-1) {
+                            clearInterval(timer)
+                            _this.setState({
+                              modal2Show:false
+                            })
+                          }
+                        }
+                      })
+                    },2000)
+
+                    // uploadSuccess && uploadSuccess(res.data.data)
                 } else {
                     message.error(res.data.message)
                 }
@@ -46,16 +63,11 @@ class ImportUpload extends Component {
 
             });
     }
-    linktoPart = (record) => {
-        routerRedux.push({
-            pathname: '/progress'
-        });
-    }
     // 表单取消
     handleReset  = () => {
         // resetFields();
         this.setState({
-          modalShow:false
+          modal2Show:false
         });
         this.setState(({ fileList }) => ({
           fileList: []
@@ -69,12 +81,34 @@ class ImportUpload extends Component {
     }
     render() {
         const { uploadTxt } = this.props;
-        // let {modalShow}=this.props
+        // let {modal2Show}=this.props
         // this.setState({
-        //   modalShow:this.props
+        //   modal2Show:this.props
         // });
         let audioArray=[]
-        const props = {
+        let imageArray=[]
+        const propsAudio = {
+          onRemove: (file) => {
+            this.setState(({ fileList }) => {
+              const index = fileList.indexOf(file);
+              const newFileList = fileList.slice();
+              newFileList.splice(index, 1);
+              return {
+                fileList: newFileList,
+              };
+            });
+          },
+          beforeUpload: (file) => {
+            audioArray.push(file.name)
+            this.setState({
+              fileName:audioArray
+            })
+            return false;
+          },
+          fileList: this.state.fileList,
+          multiple:true
+        };
+        const propsImg = {
           onRemove: (file) => {
             this.setState(({ fileList }) => {
               const index = fileList.indexOf(file);
@@ -89,6 +123,10 @@ class ImportUpload extends Component {
             this.setState(({ fileList }) => ({
               fileList: [...fileList, file],
             }));
+            imageArray.push(file.name)
+            this.setState({
+              fileName:imageArray
+            })
             return false;
           },
           fileList: this.state.fileList,
@@ -97,7 +135,7 @@ class ImportUpload extends Component {
         return (
           <Modal
                 title="导入题目"
-                visible={this.state.modalShow}
+                visible={this.state.modal2Show}
                 onCancel= {this.handleReset}
                 okText="确认"
                 cancelText="取消"
@@ -106,17 +144,24 @@ class ImportUpload extends Component {
             >
             <FormItem
               {...formItemLayout}
-              label="选择教材">
-              <SelectBook selectVule={this.selectBookVule}/>
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="选择导入文件">
-              <Upload {...props}>
+              label="选择音频素材">
+              <Upload {...propsAudio}>
                   <Button>
                       <Icon type="upload"/>
                       {
-                         uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '上传文件'
+                         uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '上传音频'
+                      }
+                  </Button>
+              </Upload>
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="选择图片">
+              <Upload {...propsImg}>
+                  <Button>
+                      <Icon type="upload"/>
+                      {
+                         uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '上传图片'
                       }
                   </Button>
               </Upload>
@@ -133,11 +178,11 @@ class ImportUpload extends Component {
     }
 }
 
-ImportUpload.propTypes = {
+ImportMeterial.propTypes = {
     uploadSuccess: PropTypes.func, // 上传成功回调
     uploadTxt: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.bool
     ])
 };
-export default ImportUpload;
+export default ImportMeterial;

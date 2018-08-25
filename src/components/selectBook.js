@@ -4,23 +4,29 @@ import PropTypes from 'prop-types';
 import { axios } from '@/configs/request';
 
 const Option = Select.Option;
-let children=[];
 /**
  * 上传文件组件
  */
 class SelectBook extends Component {
     constructor(props) {
         super(props);
+        this.state={
+          children:[]
+        }
     }
     componentWillMount(){
-      axios.get('/book/version/list', null)
+      axios.get('book/version/list', null)
           .then((res) => {
               if (res.data.code === 0) {
                 let data=res.data.data
+                let childrenData=[];
                 console.log(data);
                   for(let i=0;i<data.length;i++){
-                    children.push(<Option key={data[i].id} value={data[i].id}>{data[i].name}</Option>);
+                    childrenData.push(<Option key={data[i].id} value={data[i].id}>{data[i].name}</Option>);
                   }
+                  this.setState({
+                     children:childrenData
+                  })
               } else {
                   message.error(res.data.message)
               }
@@ -32,14 +38,13 @@ class SelectBook extends Component {
 
     handleChange = (value) => {
        let {selectVule} = this.props;
-       selectVule=value
-       console.log(selectVule);
+       selectVule&&selectVule(value)
     }
     render() {
 
         return (
           <Select style={{ width: 120 }} onChange={this.handleChange} placeholder="请选择教材">
-             {children}
+             {this.state.children}
            </Select>
         );
     }
