@@ -32,9 +32,9 @@ class MyUpload extends Component {
     }
 
     render() {
-        const { uploadTxt } = this.props;
+        const { uploadTxt, directory } = this.props;
         return (
-            <Upload onChange={this.handleUpload}>
+            <Upload onChange={this.handleUpload} directory={directory}>
                 <Button>
                     <Icon type="upload"/>
                     {
@@ -47,6 +47,7 @@ class MyUpload extends Component {
 }
 
 MyUpload.propTypes = {
+    directory: PropTypes.bool,     // 支持上传文件夹
     uploadSuccess: PropTypes.func, // 上传成功回调
     uploadTxt: PropTypes.oneOfType([
         PropTypes.string,
@@ -55,7 +56,8 @@ MyUpload.propTypes = {
 };
 
 MyUpload.defaultProps = {
-    uploadTxt: '上传文件'
+    uploadTxt: '上传文件',
+    directory: false
 };
 
 export default MyUpload;

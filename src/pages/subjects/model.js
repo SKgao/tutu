@@ -13,7 +13,8 @@ export default {
         sourceIds: '',       // 素材id
         subjectTypeId: '',   // 题目类型id
         startTime: '',
-        endTime: '',
+		endTime: '',
+		sourceIds: '',       // 搜索题目内容
         modalShow: false,    // 添加题目
         modal2Show: false,   // 添加素材
 		textbookId: '',      // 教材id
@@ -42,6 +43,13 @@ export default {
 							payload: { customsPassId, sort }
 						})
 					} else {
+						dispatch({ 
+							type: 'setParam',
+							payload: { 
+								customsPassId: 0,
+								sort: 0
+							}
+						})
 						dispatch({ 
 							type: 'getSubject',
 							payload: {

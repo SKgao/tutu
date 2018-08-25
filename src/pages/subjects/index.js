@@ -20,7 +20,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { subjectList, descList, modalShow, modal2Show, startTime, endTime, bookList, pageNum, pageSize, customsPassId, sort, textBookId } = subject;
+    let { subjectList, descList, modalShow, modal2Show, startTime, endTime, bookList, pageNum, pageSize, customsPassId, sort, textBookId, sourceIds } = subject;
     let { getFieldDecorator, getFieldValue, setFieldsValue, resetFields } = form;
     
     // 题目列表
@@ -67,7 +67,7 @@ const Subject = ({
     // 添加题目
     const handleSubmitSubject = () => {
         let obj = {
-            textbookId,
+            textbookId: textBookId,
             file: getFieldValue('file')
         }
         let formData = new FormData();
@@ -138,7 +138,7 @@ const Subject = ({
     const handleSearch = () => {
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, pageNum, pageSize })
+    		payload: filterObj({ startTime, endTime, sourceIds, pageNum, pageSize })
     	})
     }
    
@@ -149,7 +149,7 @@ const Subject = ({
         })
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, ...param })
+    		payload: filterObj({ startTime, endTime, sourceIds, ...param })
     	})
     }
 
@@ -168,6 +168,16 @@ const Subject = ({
         })
     }
 
+    // 输入题目名
+    const handleInput = (e) => {
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+                sourceIds: e.target.value
+            }
+        })
+    }
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -183,6 +193,11 @@ const Subject = ({
                             format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
+                    </FormItem>
+
+                    {/*题目*/}
+                    <FormItem label="题目">
+                        <Input placeholder="输入题目名" onChange={(e) => handleInput(e)}/>
                     </FormItem>
 
                     <FormItem>
@@ -273,24 +288,24 @@ const Subject = ({
                 >
                 <Form>
                     <FormItem
-                        label="音频素材集合"
+                        label="音频文件目录"
                         {...formItemLayout}
                         >
                         {getFieldDecorator('audioArray', {
                             rules: [{ message: '请上传音频素材!' }],
                         })(
-                            <MyUpload uploadSuccess={(url) => uploadSuccess(url, 'audioArray')} uploadTxt={'上传音频素材'}></MyUpload>
+                            <MyUpload directory={true} uploadSuccess={(url) => uploadSuccess(url, 'audioArray')} uploadTxt={'上传音频素材'}></MyUpload>
                         )}
                     </FormItem>
 
                     <FormItem
-                        label="图片素材集合"
+                        label="图片文件目录"
                         {...formItemLayout}
                         >
                         {getFieldDecorator('imageArray', {
                             rules: [{ message: '请上传图片素材!' }],
                         })(
-                            <MyUpload uploadSuccess={(url) => uploadSuccess(url, 'imageArray')} uploadTxt={'上传图片素材'}></MyUpload>
+                            <MyUpload directory={true} uploadSuccess={(url) => uploadSuccess(url, 'imageArray')} uploadTxt={'上传图片素材'}></MyUpload>
                         )}
                     </FormItem>
 

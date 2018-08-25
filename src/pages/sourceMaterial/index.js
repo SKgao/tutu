@@ -22,7 +22,7 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text } = sourcematerial;
+    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text, pageNum, pageSize } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
 
     // 鼠标放在图片上的事件
@@ -155,6 +155,17 @@ const sourceMaterial = ({
         })
     }
 
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'sourcematerial/getSource',
+    		payload: filterObj({ startTime, endTime, text, ...param })
+    	})
+    }
+
     // 选择时间框
     const datepickerChange = (d, t) => {
         dispatch({
@@ -247,13 +258,22 @@ const sourceMaterial = ({
             <EditForm></EditForm>
         </Modal>
       <TableLayout
+          pagination={false}
           dataSource={materialList}
           allColumns={columns}
           />
       <PaginationLayout
-          total={10}
-          current={1}
-          pageSize={10} />
+        total={sourcematerial.totalCount}
+        onChange={(page, pageSize) => handleChange({
+            pageNum: page,
+            pageSize
+        })}
+        onShowSizeChange={(current, pageSize) => handleChange({
+            pageNum: 1,
+            pageSize
+        })}
+        current={pageNum}
+        pageSize={pageSize} />
     </div>
   )
 };

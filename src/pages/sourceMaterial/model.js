@@ -14,7 +14,10 @@ export default {
 		icon: '',//素材图标
     audio:'',//素材音频
     iconUrl:'',//素材地址
-    audioUrl:''//音频地址
+    audioUrl:'',//音频地址
+    pageSize: 10,
+    pageNum: 1,
+    totalCount: 0
 	},
 
 	subscriptions: {
@@ -36,7 +39,8 @@ export default {
         yield put({
         	type: 'save',
         	payload: {
-        		materialList: (res.data.data) ? res.data.data.data: [],
+            materialList: (res.data.data) ? res.data.data.data: [],
+            totalCount: (res.data.data) ? res.data.data.totalCount : 0,
 						modalShow:false,
 						modal2Show:false
         	}
