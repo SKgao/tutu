@@ -2,25 +2,25 @@ import api from './service';
 import { message } from 'antd';
 
 export default {
-	namespace: "sourcematerial",
+	namespace: "partmodel",
 
 	state: {
     startTime: '',
     endTime: '',
-    text: '',  // 素材内容
-    materialList: [], // 素材数据
-		modalShow: false,
-    modal2Show:false,
-		icon: '',//素材图标
-    audio:'',//素材音频
-    iconUrl:'',//素材地址
-    audioUrl:''//音频地址
+    title: '',  // part名称
+    tips:'',//part描述
+    partList: [], // part数据
+		modalAddShow: false,
+    modalEditShow:false,
+		icon: '',//part图标
+    iconUrl:'',//part地址
+    unitsId:''
 	},
 
 	subscriptions: {
     setup({ dispatch, history }) {
     	dispatch({
-    		type: 'getSource',
+    		type: 'getPart',
     		payload: {
     			pageNum: 1,
     			pageSize: 10
@@ -30,13 +30,13 @@ export default {
 	},
 
 	effects: {
-		*getSource({ payload }, { call, put }) {
-      const res = yield call(api.getSource, payload);
+		*getPart({ payload }, { call, put }) {
+      const res = yield call(api.getPart, payload);
       if (res) {
         yield put({
         	type: 'save',
         	payload: {
-        		materialList: (res.data.data) ? res.data.data.data: [],
+        		partList: (res.data.data) ? res.data.data.data: [],
 						modalShow:false,
 						modal2Show:false
         	}
@@ -44,12 +44,12 @@ export default {
       }
     },
 
-    *addSource({ payload }, { call, put }) {
-      const res = yield call(api.addSource, payload);
+    *addPart({ payload }, { call, put }) {
+      const res = yield call(api.addPart, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
-          type: 'getSource',
+          type: 'getPart',
           payload: {
             pageNum: 1,
             pageSize: 10
@@ -58,16 +58,25 @@ export default {
       }
     },
 
-    *deleteSource({ payload }, { call }) {
-        const res = yield call(api.deleteSource, payload);
-        res && message.success(res.data.message);
+    *deletePart({ payload }, { call,put }) {
+        const res = yield call(api.deletePart, payload);
+        if (res) {
+          message.success(res.data.message);
+          yield put({
+            type: 'getPart',
+            payload: {
+              pageNum: 1,
+              pageSize: 10
+            }
+          });
+        }
     },
-    *editSource({ payload }, { call, put }) {
-      const res = yield call(api.editSource, payload);
+    *editPart({ payload }, { call, put }) {
+      const res = yield call(api.editPart, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
-          type: 'getSource',
+          type: 'getPart',
           payload: {
             pageNum: 1,
             pageSize: 10

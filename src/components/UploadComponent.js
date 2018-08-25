@@ -10,7 +10,7 @@ class MyUpload extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     handleUpload = (file) => {
         let formData = new FormData();
         let { uploadSuccess } = this.props
@@ -26,7 +26,7 @@ class MyUpload extends Component {
                     }
                 })
                 .catch((err) => {
-                    
+
                 });
         }
     }
@@ -53,9 +53,4 @@ MyUpload.propTypes = {
         PropTypes.bool
     ])
 };
-
-MyUpload.propTypes = {
-    uploadSuccess: PropTypes.func // 上传成功回调
-};
-
 export default MyUpload;

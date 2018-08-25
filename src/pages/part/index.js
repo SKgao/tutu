@@ -4,7 +4,7 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
-import VaildForm from './VaildForm';
+import AddForm from './addForm';
 import EditForm from './editForm';
 
 import moment from 'moment';
@@ -17,25 +17,20 @@ const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
 
-const sourceMaterial = ({
-    sourcematerial,
+const partIndex = ({
+    partmodel,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text } = sourcematerial;
+    let { partList, modalAddShow, modalEditShow, startTime, endTime, icon,title,tips,unitsId } = partmodel;
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
-
-    // 鼠标放在图片上的事件
-    const mouseEnter=(e)=>{
-
-    }
     const columns = [
         {
-            title: '素材内容',
-            dataIndex: 'text',
+            title: '单元',
+            dataIndex: 'unitsId',
             sorter: true
         }, {
-          title: '素材图标',
+          title: 'part图片',
           dataIndex: 'icon',
           sorter: true,
           render: (text) => {
@@ -44,12 +39,41 @@ const sourceMaterial = ({
                 </Popconfirm>: <span>无</span>
           }
         }, {
-          title: '素材音频',
-          dataIndex: 'audio',
+          title: 'part名称',
+          dataIndex: 'title',
           sorter: true,
-          render: (audio) => {
-             return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
-          }
+          render: (text, record) =>
+            <TablePopoverLayout
+    					title={'修改part名称'}
+    					valueData={text || '无'}
+    					defaultValue={text || '无'}
+    					onOk={v =>
+    						dispatch({
+    							type: 'partmodel/editPart',
+    							payload: {
+    								id: record.id,
+    								title: v
+    							}
+    						})
+    					}/>
+        }, {
+          title: 'part描述',
+          dataIndex: 'tips',
+          sorter: true,
+          render: (text,record) =>
+            <TablePopoverLayout
+    					title={'修改part描述'}
+    					valueData={text || '无'}
+    					defaultValue={text || '无'}
+    					onOk={v =>
+    						dispatch({
+    							type: 'partmodel/editPart',
+    							payload: {
+    								id: record.id,
+    								tips: v
+    							}
+    						})
+    					}/>
         }, {
           title: '操作',
             dataIndex: 'action',
@@ -65,12 +89,12 @@ const sourceMaterial = ({
     ]
 
     /**
-     * 删除教材
+     * 删除part
      * @param  {object} 列数据
      */
     const handleDelete = (param) => {
         dispatch({
-          type: 'sourcematerial/deleteSource',
+          type: 'partmodel/deletePart',
           payload: {
                 id:param.id
             }
@@ -83,15 +107,14 @@ const sourceMaterial = ({
           pageNum: 1,
           pageSize: 10,
           startTime: startTime,
-          endTime: endTime,
-          text: text
+          endTime: endTime
         }
       dispatch({
-        type: 'sourcematerial/getSource',
+        type: 'partmodel/getSource',
         payload: filterObj(PP)
       })
     }
-    // 添加素材
+    // 添加part
     const submitForm = (e) => {
         if (e!="false") {
             let PP = {
@@ -103,23 +126,23 @@ const sourceMaterial = ({
                 text: e.text
             }
             dispatch({
-                type: 'sourcematerial/addSource',
+                type: 'partmodel/addSource',
                 payload: filterObj(PP)
             })
         }else{
-            handleSubmit('modalShow',false)
+            handleSubmit('modalAddShow',false)
         }
     }
-    // 显示添加素材modal
+    // 显示添加partmodal
     const handleSubmit=(flag, show)=>{
       dispatch({
-        type: 'sourcematerial/setParam',
+        type: 'partmodel/setParam',
         payload: {
               [flag]: show
           }
       })
     }
-    // 确定修改素材
+    // 确定修改part
     const submitEditForm = (e) => {
         if (e!="false") {
             let PP = {
@@ -131,26 +154,26 @@ const sourceMaterial = ({
                 text: e.text
             }
             dispatch({
-                type: 'sourcematerial/addSource',
+                type: 'partmodel/addSource',
                 payload: filterObj(PP)
             })
         }else{
-            handleSubmit('modal2Show',false)
+            handleSubmit('modalEditShow',false)
         }
     }
     // 表单取消
     const handleReset  = () => {
         resetFields();
     }
-    // 编辑素材 显示modal
+    // 编辑part 显示modal
     const handleEdit=(e)=>{
         dispatch({
-            type: 'sourcematerial/setParam',
+            type: 'partmodel/setParam',
             payload: {
-                modal2Show: true,
+                modalEditShow: true,
                 icon:e.icon,
-                audio:e.audio,
-                text:e.text
+                title:e.title,
+                tips:e.tips
             }
         })
     }
@@ -158,7 +181,7 @@ const sourceMaterial = ({
     // 选择时间框
     const datepickerChange = (d, t) => {
         dispatch({
-          type: 'sourcematerial/setParam',
+          type: 'partmodel/setParam',
           payload: {
                 startTime: t[0] + ':00',
                 endTime: t[1] + ':00'
@@ -168,16 +191,16 @@ const sourceMaterial = ({
     // 文件上传成功
     const uploadSuccess = (url) => {
         dispatch({
-          type: 'sourcematerial/setParam',
+          type: 'partmodel/setParam',
           payload: {
             icon: url
           }
         })
     }
-    // 搜索素材内容
+    // 搜索part内容
     const changeText = (event) => {
         dispatch({
-            type: 'sourcematerial/setParam',
+            type: 'partmodel/setParam',
             payload: {
                 text: event.target.value
             }
@@ -188,7 +211,7 @@ const sourceMaterial = ({
       <FormInlineLayout>
           <Form layout="inline" style={{ marginLeft: 15 }}>
               {/*时间*/}
-              <FormItem label="时间">
+              {/*}<FormItem label="时间">
                   <RangePicker
                       format="YYYY-MM-DD HH:mm"
                       showTime={{
@@ -198,58 +221,50 @@ const sourceMaterial = ({
                       format="YYYY-MM-DD HH:mm"
                       onChange={datepickerChange}
                       />
-              </FormItem>
-              {/*素材内容*/}
-              <FormItem label="素材内容">
-                    {/*{getFieldDecorator('text')(<Input placeholder="请输入素材内容" onChange={ changeText(text)}/>)} {...getFieldProps('text', {})}*/}
-                    <Input placeholder="请输入素材内容" onChange={ changeText}/>
+              </FormItem>*/}
+              {/*part内容
+              <FormItem label="part内容">
+                    <Input placeholder="请输入part内容" onChange={ changeText}/>
               </FormItem>
 
               <FormItem>
                   <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
-              </FormItem>
+              </FormItem>*/}
 
               <FormItem>
-                  <Button type="primary" onClick={() => handleSubmit('modalShow', true)}>添加素材</Button>
+                  <Button type="primary" onClick={() => handleSubmit('modalAddShow', true)}>添加part</Button>
               </FormItem>
 
           </Form>
       </FormInlineLayout>
 
       <Modal
-            title="新增素材"
-            visible={modalShow}
-            onCancel= { () => handleSubmit('modalShow',false) }
+            title="新增part"
+            visible={modalAddShow}
+            onCancel= { () => handleSubmit('modalAddShow',false) }
             okText="确认"
             cancelText="取消"
             footer={null}
-            sourcematerial={sourcematerial}
             maskClosable={false}
         >
-            {/*// <Form>
-            //     <VaildForm submitForm={submitForm}>
-            //     </VaildForm>
-            // </Form>*/}
-            <VaildForm submitForm={submitForm}>
-            </VaildForm>
+            <AddForm>
+            </AddForm>
         </Modal>
         <Modal
-            title="修改素材"
-            visible={modal2Show}
-            onCancel= { () => handleSubmit('modal2Show',false) }
+            title="修改part"
+            visible={modalEditShow}
+            onCancel= { () => handleSubmit('modalEditShow',false) }
             okText="确认"
             cancelText="取消"
             footer={null}
-            sourcematerial={sourcematerial}
             maskClosable={false}
         >
-            {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
             <EditForm></EditForm>
         </Modal>
 
 
       <TableLayout
-          dataSource={materialList}
+          dataSource={partList}
           allColumns={columns}
           />
       <PaginationLayout
@@ -260,8 +275,8 @@ const sourceMaterial = ({
   )
 };
 
-sourceMaterial.propTypes = {
-    sourcematerial: PropTypes.object
+partIndex.propTypes = {
+    partmodel: PropTypes.object
 };
 
-export default connect(({ sourcematerial }) => ({ sourcematerial }))(Form.create()(sourceMaterial));
+export default connect(({ partmodel }) => ({ partmodel }))(Form.create()(partIndex));

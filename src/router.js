@@ -60,17 +60,19 @@ const Routers = ({
 		},
 		{
 			path: '/sourceMaterial',
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> dev
-			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/index'),
-			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/sourceMaterial/model')]
-=======
-			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/index'), 
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/index'),
 			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/model')]
->>>>>>> 759c83d66778bfc8d4196741174f161dd79208f8
-		}
+		},
+		{
+			path: '/units/part',
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/part/index'),
+			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/part/model')]
+		},
+		{
+			path: '/subject',
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/index'),
+			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/model')]
+		},
 	]
 
 	return (

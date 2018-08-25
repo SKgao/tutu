@@ -6,20 +6,21 @@ import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
-const editForm = ({
-    sourcematerial,
+const addForm = ({
+    partmodel,
     ...props
 }) => {
-    let { form,dispatch } = props;
+  let { dispatch, form } = props;
+  let { partList, modalAddShow, icon,title,tips,unitsId } = partmodel;
     const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
-    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text,iconUrl } = sourcematerial;
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
         let data={
             icon:icon|| '',
-            audio:audio|| '',
-            text:text||''
+            title:title|| '',
+            tips:tips||'',
+            unitsId:64
         }
         validateFieldsAndScroll((err, values) => {
             validateFieldsAndScroll((err, values) => {
@@ -32,9 +33,8 @@ const editForm = ({
                 }
             })
         });
-        console.log(data)
         dispatch({
-            type: 'sourcematerial/editSource',
+            type: 'partmodel/addPart',
             payload: data
         })
     }
@@ -43,7 +43,7 @@ const editForm = ({
     const handleReset = (e) => {
         resetFields();
         dispatch({
-            type: 'sourcematerial/setParam',
+            type: 'partmodel/setParam',
             payload: {
                 modal2Show:false
             }
@@ -53,7 +53,7 @@ const editForm = ({
     const iconUploadSuccess = (url) => {
         // setFieldsValue({'icon': url})
         dispatch({
-            type: 'sourcematerial/setParam',
+            type: 'partmodel/setParam',
             payload: {
                 icon:url
             }
@@ -63,7 +63,7 @@ const editForm = ({
     const audioUploadSuccess = (url) => {
         // setFieldsValue({'audio': url})
         dispatch({
-            type: 'sourcematerial/setParam',
+            type: 'partmodel/setParam',
             payload: {
                 audio:url
             }
@@ -74,69 +74,55 @@ const editForm = ({
             <Form>
                 <FormItem
                     {...formItemLayout}
-                    label="素材内容"
+                    label="part名称"
                     >
-                    {getFieldDecorator('text', {
-                        initialValue:text || '',
-                        rules: [{ required: true, message: '请输入素材内容!', whitespace: true }],
+                    {getFieldDecorator('title', {
+                        initialValue:title || '',
+                        rules: [{ required: true, message: '请输入part名称!', whitespace: true }],
                     })(
-                        <Input placeholder="请输入素材内容"/>
+                        <Input placeholder="请输入part名称"/>
                     )}
                 </FormItem>
 
                 <FormItem
                     {...formItemLayout}
-                    label="素材图标地址"
+                    label="part描述"
                     >
-                    {getFieldDecorator('icon',{
-                        initialValue:icon || ''
+                    {getFieldDecorator('tips',{
+                        initialValue:tips || '',
+                        rules: [{ required: true, message: '请输入part描述!', whitespace: true }],
                     })(
-                        <Input placeholder="请输入素材内容" disabled/>
+                        <Input placeholder="请输入part描述"/>
                     )}
                 </FormItem>
 
                 <FormItem
                     {...formItemLayout}
-                    label="上传素材图标"
+                    label="part图标"
+                    >
+                    {getFieldDecorator('icon')(
+                        <img src={ icon } style={{ width: 30, height: 40 }}/>
+                    )}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="上传part图标"
                     >
                     {getFieldDecorator('icon')(
                         <MyUpload uploadSuccess={iconUploadSuccess}></MyUpload>
                     )}
                 </FormItem>
 
-                <FormItem
-                    {...formItemLayout}
-                    label="音频地址"
-                    >
-                    {getFieldDecorator('audio',{
-                        initialValue:audio || ''
-                    })(
-                        <Input placeholder="请输入素材内容" disabled/>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    {...formItemLayout}
-                    label="音频地址"
-                    >
-                    {getFieldDecorator('audio', {
-                        rules: [{ required: true, message: '请输入音频地址!' }],
-                    })(
-                        <MyUpload uploadSuccess={audioUploadSuccess}></MyUpload>
-                    )}
-                </FormItem>
-
                 <FormItem>
                     <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
-
                     <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
                 </FormItem>
             </Form>
 		</div>
 	)
 };
-editForm.propTypes = {
-    sourcematerial: PropTypes.object // 表单提交
+addForm.propTypes = {
+    partmodel: PropTypes.object // 表单提交
 };
 
-export default connect(({sourcematerial}) => ({ sourcematerial }))(Form.create()(editForm));
+export default connect(({partmodel}) => ({ partmodel }))(Form.create()(addForm));
