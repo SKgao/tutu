@@ -33,14 +33,6 @@ const TeachingManage = ({
                 dataIndex: 'name',
                 sorter: true
             }, {
-                title: '教材id',
-                dataIndex: 'id',
-                sorter: true
-            }, {
-                title: '教材版本id',
-                dataIndex: 'bookVersionId',
-                sorter: true
-            }, {
                 title: '创建时间',
                 dataIndex: 'createdAt',
                 sorter: true
@@ -87,10 +79,6 @@ const TeachingManage = ({
                                 }
                             })
                         }/>
-            }, {
-                title: '年级id',
-                dataIndex: 'id',
-                sorter: true
             }, {
                 title: '创建时间',
                 dataIndex: 'createdAt',

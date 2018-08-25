@@ -21,7 +21,6 @@ axios.interceptors.response.use(res => {
 	let msg = res.data.message
 	switch (code) {
 		case 45:
-			message.error(msg);
 			routerRedux.push('/login');
 			return false;
 		case 0:

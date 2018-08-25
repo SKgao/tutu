@@ -217,6 +217,7 @@ const sourceMaterial = ({
           </Form>
       </FormInlineLayout>
 
+<<<<<<< HEAD
         <Modal
             title="新增素材"
             visible={modalShow}
@@ -247,6 +248,19 @@ const sourceMaterial = ({
             {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
             <EditForm></EditForm>
         </Modal>
+=======
+      <Modal
+          title="新增素材"
+          visible={modalShow}
+          onCancel= { () => handleSubmit('modalShow',false) }
+          okText="确认"
+          cancelText="取消"
+          footer={null}
+          >
+           <VaildForm submitForm={submitForm}>
+           </VaildForm>
+      </Modal>
+>>>>>>> 57026022b93bafb2ae39be8c73a6537fb34a5037
       <TableLayout
           dataSource={materialList}
           allColumns={columns}

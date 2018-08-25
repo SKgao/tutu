@@ -1,5 +1,5 @@
 import api from './service';
-import api_teachingManage from '@/pages/teachingManage/service';
+import api_teachingManage from '@/pages/teachingManage/book/service';
 import { message } from 'antd';
 
 export default {

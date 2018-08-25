@@ -41,8 +41,8 @@ const Routers = ({
 		},
 		{
 			path: '/teachingManage/book',
-			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/index'),
-			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/model')]
+			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/model')]
 		},
 		{
 			path: '/teachingManage/unit',
@@ -81,10 +81,7 @@ const Routers = ({
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
 						<Route component={ErrorPage}/>
-<<<<<<< HEAD
-=======
 						
->>>>>>> 55535da9261a9d023fedcfed95b6a67037cee409
 					</Switch>
 				</App>
 			</LocaleProvider>

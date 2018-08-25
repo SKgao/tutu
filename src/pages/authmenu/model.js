@@ -25,12 +25,20 @@ export default {
 	effects: {
 		*getMenu({ payload }, { call, put }) {
 			const res = yield call(api.getMenu, payload);
-			yield put({
-				type: 'save',
-				payload: {
-					tableData: (res.data.data) ? res.data.data.data : []
-				}
-			});
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						tableData: []
+					}
+				});
+				yield put({
+					type: 'save',
+					payload: {
+						tableData: (res.data.data) ? res.data.data.data : []
+					}
+				});
+			}
 		},
 		
 		*addMenu({ payload }, { call, put }) {

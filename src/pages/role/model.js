@@ -26,13 +26,13 @@ export default {
 			const { siderList } = yield select(state => state.app);
 			const res = yield call(api_authmenu.getMenu, {
 				pageNum: 1,
-				pageSize: 20
+				pageSize: 100
 			});
 			yield put({
 				type: 'save',
 				payload: {
 					defaultCheckedKeys: siderList.map(e => e.id + ''),
-					siderList: (res.data.data) ? res.data.data.data : []
+					siderList: (res.data.data) ? [...res.data.data.data] : []
 				}
 			});
 		},
