@@ -14,23 +14,25 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
-				let _search = location.search.slice(1)
-				let arr = (_search) ? _search.split('=') : []
-				if (arr.length) {
-					dispatch({ 
-						type: 'setParam',
-						payload: {
-							partsId: arr[1]
-						}
-					})
-					dispatch({ 
-						type: 'getPass',
-						payload: {
-							pageNum: 1,
-						    pageSize: 100,
-							partsId: arr[1]
-						}
-					})
+				if (location.pathname === '/teachingManage/pass') {
+					let _search = location.search.slice(1)
+					let arr = (_search) ? _search.split('=') : []
+					if (arr.length) {
+						dispatch({ 
+							type: 'setParam',
+							payload: {
+								partsId: arr[1]
+							}
+						})
+						dispatch({ 
+							type: 'getPass',
+							payload: {
+								pageNum: 1,
+								pageSize: 100,
+								partsId: arr[1]
+							}
+						})
+					}
 				}
 			});
 		}

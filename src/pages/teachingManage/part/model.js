@@ -14,23 +14,25 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
             return history.listen(location => {
-				let _search = location.search.slice(1)
-				let arr = (_search) ? _search.split('=') : []
-				if (arr.length) {
-					dispatch({ 
-						type: 'setParam',
-						payload: {
-							unitsId: arr[1]
-						}
-					})
-					dispatch({ 
-						type: 'getPart',
-						payload: {
-							pageNum: 1,
-						    pageSize: 100,
-							unitsId: arr[1]
-						}
-					})
+				if (location.pathname === '/teachingManage/part') {
+					let _search = location.search.slice(1)
+					let arr = (_search) ? _search.split('=') : []
+					if (arr.length) {
+						dispatch({ 
+							type: 'setParam',
+							payload: {
+								unitsId: arr[1]
+							}
+						})
+						dispatch({ 
+							type: 'getPart',
+							payload: {
+								pageNum: 1,
+								pageSize: 100,
+								unitsId: arr[1]
+							}
+						})
+					}
 				}
 			});
 		}

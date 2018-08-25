@@ -55,7 +55,7 @@ const PartPass = ({
             render: (text, record, index) => {
                 return <MyUpload uploadSuccess={(url) => {
                     changeIcon(url, record)
-                }} uploadTxt={0}></MyUpload>
+                }}></MyUpload>
             }
         }, {
         	title: '闯关人数',
@@ -95,10 +95,20 @@ const PartPass = ({
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
+
+                    <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
                 </span>
             }
         }
     ]
+
+    // 调转到关卡页面
+    const linktoProject = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/subjects',
+            search: `customsPassId=${record.id}&sort=${record.sort}`
+        }));
+    }
     
     /**
      * 删除角色
