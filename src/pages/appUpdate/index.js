@@ -2,27 +2,27 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import UploadComponent from '@/components/UploadComponent';
 import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Popconfirm, Tabs, Modal, Radio, Badge, Select } from 'antd';
+import { Form, DatePicker, Input, Button, Popconfirm, Tabs, Modal, Radio, Badge, Select, message } from 'antd';
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 
 const AppverUpdate = ({
 	appver,
 	...props
 }) => {
 	let { dispatch, form } = props;
-	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId, apkUrl } = appver;
-	let { getFieldDecorator, validateFieldsAndScroll, resetFields } = form;
+	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId } = appver;
+	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
 	let appColumns = [
         {
@@ -52,10 +52,10 @@ const AppverUpdate = ({
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleEnable(index, 'ver')}>启用</Button>
+                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleEnable(index, 'app')}>启用</Button>
 					}
 					{
-                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleDisable(index, 'ver')}>禁用</Button>
+                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleDisable(index, 'app')}>禁用</Button>
 					}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(index, 'app')}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
@@ -200,12 +200,16 @@ const AppverUpdate = ({
 
 	// 添加App类型
 	const handleAddapptype = () => {
-		dispatch({
-			type: 'appver/addApptype',
-			payload: {
-				name: appname
-			}
-		})
+		if (appname.trim()) {
+			dispatch({
+				type: 'appver/addApptype',
+				payload: {
+					name: appname
+				}
+			})
+		} else{
+            message.warning('请输入App名称')
+		}
 	}
 
 	// 筛选app类型
@@ -213,7 +217,7 @@ const AppverUpdate = ({
 		dispatch({
 			type: 'appver/setParam',
 			payload: {
-				appTypeId: val
+				appTypeId: val.appname
 			}
 		})
 	}
@@ -225,7 +229,6 @@ const AppverUpdate = ({
 			if (!err) {
 				values.forceUpdate && (values.forceUpdate = values.forceUpdate - 0);
 				values.updateDescribe && (values.updateDescribe = values.updateDescribe - 0);
-				apkUrl && (values.apkUrl = apkUrl);
 				dispatch({
 					type: 'appver/addVersion',
 					payload: {
@@ -238,17 +241,18 @@ const AppverUpdate = ({
 
 	// 表单取消
 	const handleReset = () => {
-		resetFields();
+		resetFields()
+		dispatch({
+			type: 'appver/setParam',
+			payload: {
+				modalShow: false
+			}
+		})
 	}
 
 	// 上传文件回调
 	const uploadSuccess = (url) => {
-		dispatch({
-			type: 'appver/setParam',
-			payload: {
-				apkUrl: url
-			}
-		})
+		setFieldsValue({'apkUrl': url})
 	}
 
 	// 搜索版本信息
@@ -347,17 +351,6 @@ const AppverUpdate = ({
 						footer={null}
 						>
 						<Form>
-							<FormItem
-								label="版本名称"
-								{...formItemLayout}
-								>
-								{getFieldDecorator('versionName', {
-									rules: [{ required: true, message: '请输入版本名!', whitespace: false }],
-								})(
-									<Input placeholder="请输入版本名"/>
-								)}
-							</FormItem>
-
 							{/*App类型*/}
 							<FormItem 
 							    label="App类型"
@@ -377,13 +370,24 @@ const AppverUpdate = ({
 							</FormItem>
 
 							<FormItem
-								label="apk下载地址"
+								label="版本名称"
+								{...formItemLayout}
+								>
+								{getFieldDecorator('versionName', {
+									rules: [{ required: true, message: '请输入版本名!', whitespace: false }],
+								})(
+									<Input placeholder="请输入版本名"/>
+								)}
+							</FormItem>
+
+							<FormItem
+								label="apk上传"
 								{...formItemLayout}
 								>
 								{getFieldDecorator('apkUrl', {
-									rules: [{ message: '请上传apk包!' }],
+									rules: [{ required: true, message: '请上传apk包!' }],
 								})(
-									<MyUpload uploadSuccess={uploadSuccess}></MyUpload>
+									<MyUpload uploadSuccess={uploadSuccess} uploadTxt={'上传apk包'}></MyUpload>
 								)}
 							</FormItem>
 
@@ -392,26 +396,24 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('forceUpdate', {
-									rules: [{ message: '请选择是否强制更新!' }],
+									initialValue: 1,
+									rules: [{ required: true, message: '请选择是否强制更新!' }],
 								})(
 									<RadioGroup>
-										<Radio value="1">不需要</Radio>
-										<Radio value="2">需要</Radio>
+										<Radio value={1}>不需要</Radio>
+										<Radio value={2}>需要</Radio>
 									</RadioGroup>
 								)}
 							</FormItem>
 
 							<FormItem
-								label="格式"
+								label="版本描述"
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
 									rules: [{ message: '请选择格式!' }],
 								})(
-									<RadioGroup>
-										<Radio value="1">添加用户模块</Radio>
-										<Radio value="2">添加商城模块</Radio>
-									</RadioGroup>
+									<TextArea placeholder="版本描述格式： 1.XXX 2.XXX 3.XXX" autosize={{ minRows: 3, maxRows: 6 }} />
 								)}
 							</FormItem>
 

@@ -14,26 +14,32 @@ class MyUpload extends Component {
     handleUpload = (file) => {
         let formData = new FormData();
         let { uploadSuccess } = this.props
-        formData.append('file', file.fileList[0].originFileObj)
-        axios.post('file/upload', formData)
-            .then(function (res) {
-                if (res.data.code === 0) {
-                    message.success('上传成功！')
-                    uploadSuccess && uploadSuccess(res.data.data)
-                } else {
-                    message.error(res.data.message)
-                }
-            })
-            .catch(function (err) {
-                console.log('上传失败！')
-            });
+        if (file.event && file.event.type === 'progress') {
+            formData.append('file', file.fileList[0].originFileObj)
+            axios.post('file/upload', formData)
+                .then((res) => {
+                    if (res.data.code === 0) {
+                        message.success('上传成功！')
+                        uploadSuccess && uploadSuccess(res.data.data)
+                    } else {
+                        message.error(res.data.message)
+                    }
+                })
+                .catch((err) => {
+                    
+                });
+        }
     }
 
     render() {
+        const { uploadTxt } = this.props;
         return (
             <Upload onChange={this.handleUpload}>
                 <Button>
-                   <Icon type="upload"/> 上传文件
+                    <Icon type="upload"/>
+                    {
+                       uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '上传文件'
+                    }
                 </Button>
             </Upload>
         );
@@ -41,8 +47,15 @@ class MyUpload extends Component {
 }
 
 MyUpload.propTypes = {
-	uploadSuccess: PropTypes.func // 过滤列回调
+    uploadSuccess: PropTypes.func, // 上传成功回调
+    uploadTxt: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.bool
+    ])
 };
 
+MyUpload.propTypes = {
+    uploadSuccess: PropTypes.func // 上传成功回调
+};
 
 export default MyUpload;

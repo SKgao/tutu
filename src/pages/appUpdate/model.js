@@ -12,8 +12,7 @@ export default {
 		startTime: '',
 		endTime: '',
 		appTypeId: '',
-		modalShow: false,
-		apkUrl: '',    // 上传apk包地址
+		modalShow: false
 	},
 
 	subscriptions: {
@@ -128,6 +127,12 @@ export default {
 					payload: {
 						pageNum: 1,
 						pageSize: 10
+					}
+				})
+				yield put({ 
+					type: 'setParam',
+					payload: {
+						modalShow: false
 					}
 				})
 			}

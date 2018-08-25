@@ -4,6 +4,7 @@ import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import dynamic from 'dva/dynamic';
 import App from './App';
+import ErrorPage from '@/components/ErrorPage';
 
 // 动态加载component和model
 const { ConnectedRouter } = routerRedux;
@@ -39,14 +40,34 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "deleteLogs" */ './pages/systemManage/logManage/deleteLog/model')]
 		},
 		{
-			path: '/teachingManage',
-			component: () => import(/* webpackChunkName: "teachingManage" */ './pages/teachingManage/index'),
-			models: () => [import(/* webpackChunkName: "teachingManage" */ './pages/teachingManage/model')]
+			path: '/teachingManage/book',
+			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/model')]
+		},
+		{
+			path: '/teachingManage/unit',
+			component: () => import(/* webpackChunkName: "teachingManage/unit" */ './pages/teachingManage/unit/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/unit" */ './pages/teachingManage/unit/model')]
+		},
+		{
+			path: '/teachingManage/part',
+			component: () => import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/model')]
+		},
+		{
+			path: '/teachingManage/pass',
+			component: () => import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/model')]
 		},
 		{
 			path: '/appverUpdate',
 			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/index'),
 			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/model')]
+		},
+		{
+			path: '/sourceMaterial',
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/index'), 
+			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/model')]
 		}
 	]
 
@@ -64,10 +85,11 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
+						<Route component={ErrorPage}/>
 						
 					</Switch>
 				</App>
-			</LocaleProvider>	
+			</LocaleProvider>
 		</ConnectedRouter>
 	);
 };

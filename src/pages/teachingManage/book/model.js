@@ -7,13 +7,15 @@ export default {
 	state: {
         startTime: '',
         endTime: '',
-        gradeId: '',  // 年级id
+		gradeId: '',  // 年级id
+		bookVersionId: '', // 版本id
         bookList: [], // 教材数据
-        gradeList: [], // 年级数据
+		gradeList: [], // 年级数据
+		versionList: [], // 版本数据
 		modalShow: false,
-		modal2Show: false,
-		activeKey: '0',  // 默认书籍
-		icon: ''         // 书籍封面
+		activeKey: 'book',  // 默认tab-书籍管理
+		bookVersionName: '',   // 新增-教材版本名称
+        gradeName: '',         // 新增-年级名称
 	},
 
 	subscriptions: {
@@ -52,6 +54,12 @@ export default {
 						pageSize: 10
 					}
 				});
+				yield put({
+					type: 'setParam',
+					payload: {
+            			modalShow: false
+            		}
+				});
 			}
         },
 
@@ -84,6 +92,31 @@ export default {
 
         *updateGrade({ payload }, { call }) {
             const res = yield call(api.updateGrade, payload);
+            res && message.success(res.data.message);
+		},
+
+		*getVersion({ payload }, { call, put }) {
+            const res = yield call(api.getVersion, payload);
+			if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+            			versionList: (res.data.data) ? res.data.data : []
+            		}
+            	})
+			}
+        },
+
+		*addVersion({ payload }, { call, put }) {
+            const res = yield call(api.addVersion, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getVersion' });
+			}
+        },
+
+        *updateVersion({ payload }, { call }) {
+            const res = yield call(api.updateVersion, payload);
             res && message.success(res.data.message);
 		},
 
