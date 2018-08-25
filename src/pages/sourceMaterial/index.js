@@ -217,17 +217,36 @@ const sourceMaterial = ({
           </Form>
       </FormInlineLayout>
 
-      <Modal
-          title="新增素材"
-          visible={modalShow}
-          onCancel= { () => handleSubmit('modalShow',false) }
-          okText="确认"
-          cancelText="取消"
-          footer={null}
-          >
-           <VaildForm submitForm={submitForm}>
-           </VaildForm>
-      </Modal>
+        <Modal
+            title="新增素材"
+            visible={modalShow}
+            onCancel= { () => handleSubmit('modalShow',false) }
+            okText="确认"
+            cancelText="取消"
+            footer={null}
+            sourcematerial={sourcematerial}
+            maskClosable={false}
+        >
+            {/*// <Form>
+            //     <VaildForm submitForm={submitForm}>
+            //     </VaildForm>
+            // </Form>*/}
+            <VaildForm submitForm={submitForm}>
+            </VaildForm>
+        </Modal>
+        <Modal
+            title="修改素材"
+            visible={modal2Show}
+            onCancel= { () => handleSubmit('modal2Show',false) }
+            okText="确认"
+            cancelText="取消"
+            footer={null}
+            sourcematerial={sourcematerial}
+            maskClosable={false}
+        >
+            {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
+            <EditForm></EditForm>
+        </Modal>
       <TableLayout
           dataSource={materialList}
           allColumns={columns}
