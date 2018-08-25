@@ -47,9 +47,12 @@ const UnitPart = ({
 						})
 					}/>
         }, {
-            title: 'icon',
-            dataIndex: '图片',
-            sorter: true
+            title: '图片',
+            dataIndex: 'icon',
+            sorter: true,
+            render: (text) => {
+                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+             }
         }, {
         	title: '修改图片',
         	dataIndex: 'updateicon',
@@ -156,9 +159,10 @@ const UnitPart = ({
     }
 
     // 文件上传成功
-    const uploadSuccess = (url) => {
-        setFieldsValue({'icon': url})
-    }
+    const uploadSuccess = (url) => setFieldsValue({'icon': url})
+
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
    
 	return (
 		<div>
@@ -166,6 +170,10 @@ const UnitPart = ({
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState(true)}>添加Part</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                     </FormItem>
                 </Form>
             </FormInlineLayout>

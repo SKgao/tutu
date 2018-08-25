@@ -8,7 +8,7 @@ export default {
 	addPass: data => axios.post('pass/add', data),
 
 	// 关卡列表
-    getPass: data => axios.get('pass/list' + data, data),
+    getPass: data => axios.get('pass/list/' + data.partsId, data),
     
     // 题型列表
     getSubject: data => axios.get('pass/subject'),

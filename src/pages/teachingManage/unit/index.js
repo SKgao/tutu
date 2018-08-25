@@ -54,9 +54,9 @@ const BookUnit = ({
         	title: '上传封面图',
         	dataIndex: 'updateicon',
             render: (text, record, index) => {
-                return <MyUpload uploadSuccess={(url) => {
+                return <MyUpload uploadTxt={0} uploadSuccess={(url) => {
                     changeIcon(url, record)
-                }} uploadTxt={0}></MyUpload>
+                }}></MyUpload>
             }
         }, {
         	title: '创建时间',
@@ -178,6 +178,9 @@ const BookUnit = ({
     const uploadSuccess = (url) => {
         setFieldsValue({'icon': url})
     }
+
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
    
 	return (
 		<div>
@@ -217,6 +220,10 @@ const BookUnit = ({
 
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState(true)}>添加单元</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                     </FormItem>
 
                 </Form>

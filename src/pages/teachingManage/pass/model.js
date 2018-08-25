@@ -1,5 +1,4 @@
 import api from './service';
-import api_teachingManage from '@/pages/teachingManage/book/service';
 import { message } from 'antd';
 
 export default {
@@ -39,12 +38,12 @@ export default {
 
 	effects: {
      	*getPass({ payload }, { call, put }) {
-            const res = yield call(api.getPass, payload);
+			const res = yield call(api.getPass, payload);
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
-						tableData: (res.data.data) ? res.data.data.data : []
+						tableData: (res.data) ? res.data.data : []
 					}
 				})
 			}

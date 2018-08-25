@@ -39,7 +39,7 @@ export default {
 	effects: {
 		  
 		*getPart({ payload }, { call, put }) {
-            const res = yield call(api.getPart, payload);
+			const res = yield call(api.getPart, payload);
 			if (res) {
 				yield put({
 					type: 'save',

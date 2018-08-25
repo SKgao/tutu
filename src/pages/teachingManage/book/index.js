@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
@@ -23,6 +24,7 @@ const TeachingManage = ({
     let { dispatch, form } = props;
     let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId } = teachingmanage;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue } = form;
+
     // 表格配置
     const columnsOpt = {
         bookList, gradeList, versionList,
@@ -55,6 +57,8 @@ const TeachingManage = ({
                         <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                             <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                         </Popconfirm>
+
+                        <Button type="primary" size="small" onClick={() => linktoUnit(record)} style={{ marginLeft: 10 }}>查看单元</Button>
                     </span>
                 }
             }
@@ -115,6 +119,13 @@ const TeachingManage = ({
                 sorter: true
             }
         ]
+    }
+
+    // 调转到单元页面
+    const linktoUnit = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/unit'
+        }));
     }
     
     /**
@@ -247,6 +258,7 @@ const TeachingManage = ({
 		<div>
             <Tabs
                 animated={false}
+                activeKey={activeKey}
                 onChange={handleTabChange}
             >
             <TabPane tab="书籍管理" key="book">

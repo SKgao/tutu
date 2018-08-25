@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
 
-import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, message, DatePicker } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Select} from 'antd';
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
+const Option = Select.Option;
 
 const PartPass = ({
     partPass,
@@ -100,8 +100,6 @@ const PartPass = ({
         }
     ]
     
-    
-
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -157,9 +155,10 @@ const PartPass = ({
     }
 
     // 文件上传成功
-    const uploadSuccess = (url) => {
-        setFieldsValue({'icon': url})
-    }
+    const uploadSuccess = (url) => setFieldsValue({'icon': url})
+
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
    
 	return (
 		<div>
@@ -167,6 +166,10 @@ const PartPass = ({
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState(true)}>添加关卡</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                     </FormItem>
                 </Form>
             </FormInlineLayout>
@@ -225,6 +228,27 @@ const PartPass = ({
                             rules: [{ required: true, message: '请输入关卡顺序!', whitespace: true }],
                         })(
                             <Input placeholder="请输入关卡顺序"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="题型"
+                        hasFeedback
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('subject', {
+                            rules: [{ required: true, message: '请选择题型!' }],
+                        })(
+                            <Select
+                                showSearch
+                                onFocus={() => dispatch({type: 'partPass/getSubject'})}
+                                >
+                                {
+                                    subjectList.map(item =>
+                                        <Option key={item.id} value={item.id}>{item.name}</Option>
+                                    )
+                                }
+                            </Select>
                         )}
                     </FormItem>
 
