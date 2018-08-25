@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import UploadApk from '@/components/UploadApk';
 import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 

@@ -22,10 +22,6 @@ const RoleSetting = ({
             dataIndex: 'name',
             sorter: true
         }, {
-        	title: '角色id',
-        	dataIndex: 'id',
-        	sorter: true
-        }, {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {

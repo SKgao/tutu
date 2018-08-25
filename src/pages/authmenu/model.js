@@ -29,6 +29,12 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
+						tableData: []
+					}
+				});
+				yield put({
+					type: 'save',
+					payload: {
 						tableData: (res.data.data) ? res.data.data.data : []
 					}
 				});

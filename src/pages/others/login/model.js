@@ -32,7 +32,6 @@ export default {
 				localStorage.setItem('token', res.data.data.token);
 				localStorage.setItem('account', res.data.data.account);
 				localStorage.setItem('HAS_LOGIN', true);
-				message.success('token is -->' + res.data.data.token);
 				// yield put({type: 'save', payload});
 				axios.defaults.headers = { 'token': res.data.data.token }
 				yield put(routerRedux.push('/'));

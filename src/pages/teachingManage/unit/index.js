@@ -43,26 +43,22 @@ const BookUnit = ({
 						})
 					}/>
         }, {
-        	title: '单元id',
-        	dataIndex: 'id',
-        	sorter: true
-        }, 
-        {
         	title: '封面图',
         	dataIndex: 'icon',
             sorter: true,
             render: (text, record, index) => {
+                console.log('icon--->', text)
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
-        }, 
-        {
+        }, {
         	title: '上传封面图',
         	dataIndex: 'updateicon',
             render: (text, record, index) => {
-                return <MyUpload uploadSuccess={(url) => changeIcon(url, record)} uploadTxt={0}></MyUpload>
+                return <MyUpload uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }} uploadTxt={0}></MyUpload>
             }
-        }, 
-        {
+        }, {
         	title: '创建时间',
         	dataIndex: 'textbookId',
         	sorter: true
@@ -93,14 +89,13 @@ const BookUnit = ({
 
     // 修改素材
     const changeIcon = (url, record) => {
-        console.log(url, record)
-        // dispatch({
-    	// 	type: 'bookUnit/updateUnit',
-    	// 	payload: {
-        //         id: record.id,
-        //         icon: url
-        //     }
-    	// })
+        dispatch({
+    		type: 'bookUnit/updateUnit',
+    		payload: {
+                id: record.id,
+                icon: url
+            }
+    	})
     }
 
     // 搜索

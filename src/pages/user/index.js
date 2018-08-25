@@ -116,10 +116,6 @@ const UserSetting = ({
 						})
 					}/>
         }, {
-        	title: '用户id',
-        	dataIndex: 'id',
-        	sorter: true
-        }, {
         	title: '角色',
         	dataIndex: 'roleName',
             sorter: true,

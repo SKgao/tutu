@@ -26,7 +26,7 @@ const App = ({
 }) => {
 	const { pathname } = location;
 	const { singleView, hideLeftView } = layoutConfig;
-	let { collapsed, datalist, siderList, breadCrumd, historyList, firstMenuText } = app;
+	let { collapsed, datalist, siderList, breadCrumd, historyList, firstMenuText, firPath, secPath } = app;
 
 
 	// 用户未登录跳转到登录页面
@@ -35,16 +35,16 @@ const App = ({
 	}
 
 	// 选中菜单
-	let firPath, secPath;
-	if(pathname && pathname.indexOf('/') > -1) {
-		let prePath = pathname.split('/').slice(0,-1).join('/')
-		firPath = [prePath];
-		secPath = [pathname];
-		let lastPath = pathname.split('/').slice(-1)[0];
-		if(lastPath.indexOf('-') > -1 && pathname.split('/').length >= 4) {
-			firPath.push(prePath + '/' + lastPath.split('-')[0])
-		}
-	}
+	// let firPath, secPath;
+	// if(pathname && pathname.indexOf('/') > -1) {
+	// 	let prePath = pathname.split('/').slice(0,-1).join('/')
+	// 	firPath = [prePath];
+	// 	secPath = [pathname];
+	// 	let lastPath = pathname.split('/').slice(-1)[0];
+	// 	if(lastPath.indexOf('-') > -1 && pathname.split('/').length >= 4) {
+	// 		firPath.push(prePath + '/' + lastPath.split('-')[0])
+	// 	}
+	// }
 
 	// 展开收缩菜单
 	const handleCollapse = () => {
@@ -80,6 +80,13 @@ const App = ({
 	const changeSiderMenu = e => {
 		if(pathname !== e.key) {
 			dispatch(routerRedux.push(e.key))
+			dispatch({
+				type: 'app/setPath',
+				payload: {
+					firPath: e.keyPath.slice(1),
+					secPath: [e.key]
+				}
+			})
 			dispatch({
 				type: 'app/historyNavsAdd',
 				payload: {

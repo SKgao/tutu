@@ -80,8 +80,8 @@ const SiderLayout = ({
 				<Menu
 					mode="inline"
 					theme="dark"
-					defaultOpenKeys={firPath}
 					defaultSelectedKeys={secPath}
+					defaultOpenKeys={firPath}
 					onClick={handleSiderMenu}>
 					{
 						sideMenus.map(item => renderMenu(item, true))
