@@ -29,6 +29,8 @@ export default {
 		breadCrumd: {},      // 面包屑
 		historyList: [],     // 历史导航
 		redirectUrl: '/',    // 登录后跳转页面
+		firPath: [],
+		secPath: []
 	},
 
 	subscriptions: {
@@ -117,6 +119,14 @@ export default {
 					collapsed: false,
 					showSider: !showSider
 				}
+			})
+		},
+
+		// 设置菜单默认展开项
+		*setPath({ payload }, { put, select }) {
+			yield put({
+				type: 'save',
+				payload: payload
 			})
 		},
 		

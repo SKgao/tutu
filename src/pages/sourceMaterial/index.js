@@ -246,8 +246,6 @@ const sourceMaterial = ({
             {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
             <EditForm></EditForm>
         </Modal>
-
-
       <TableLayout
           dataSource={materialList}
           allColumns={columns}

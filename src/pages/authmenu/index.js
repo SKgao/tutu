@@ -7,10 +7,8 @@ import TablePopoverLayout from '@/components/TablePopoverLayout';
 import VaildForm from './VaildForm';
 import { filterObj } from '@/utils/tools';
 
-import { Form, Button, Popconfirm, Modal, Icon, DatePicker, Badge, Input } from 'antd';
-import moment from 'moment';
+import { Form, Button, Popconfirm, Modal, Badge, Input } from 'antd';
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
 
 const Authmenu = ({
     authmenu,
@@ -30,8 +28,8 @@ const Authmenu = ({
 			render: (text, record) =>
 				<TablePopoverLayout
 				title={'修改菜单名称'}
-				valueData={text || '无'}
-				defaultValue={text || '无'}
+				valueData={text || '0'}
+				defaultValue={text || '0'}
 				onOk={v => 
 					dispatch({
 						type: 'authmenu/updateMenu',
@@ -41,14 +39,6 @@ const Authmenu = ({
 						}
 					})
 				}/>
-        }, {
-            title: '创建时间',
-            dataIndex: 'createdAt',
-            sorter: true
-        }, {
-        	title: '更新时间',
-        	dataIndex: 'updatedAt',
-        	sorter: true
         }, {
         	title: '菜单作用',
         	dataIndex: 'menuScope',
@@ -163,6 +153,14 @@ const Authmenu = ({
 							}
 						})
 					}/>
+        }, {
+            title: '创建时间',
+            dataIndex: 'createdAt',
+            sorter: true
+        }, {
+        	title: '更新时间',
+        	dataIndex: 'updatedAt',
+        	sorter: true
         }, {
         	title: '操作',
             dataIndex: 'action',

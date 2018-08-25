@@ -40,8 +40,8 @@ const Routers = ({
 		},
 		{
 			path: '/teachingManage/book',
-			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/index'),
-			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/model')]
+			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/model')]
 		},
 		{
 			path: '/teachingManage/unit',
@@ -52,6 +52,11 @@ const Routers = ({
 			path: '/teachingManage/part',
 			component: () => import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/index'),
 			models: () => [import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/model')]
+		},
+		{
+			path: '/teachingManage/pass',
+			component: () => import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/model')]
 		},
 		{
 			path: '/appverUpdate',

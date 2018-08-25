@@ -30,10 +30,6 @@ const AppverUpdate = ({
 			dataIndex: 'name',
 			sorter: true
 		}, {
-			title: '添加时间',
-			dataIndex: 'createdAt',
-			sorter: true
-		}, {
 			title: '状态',
 			dataIndex: 'status',
 			render: (txt) => {
@@ -46,6 +42,10 @@ const AppverUpdate = ({
 					    return <Badge status="warning" text="删除"/>;
 				}
 			}
+		}, {
+			title: '添加时间',
+			dataIndex: 'createdAt',
+			sorter: true
 		}, {
 			title: '操作',
 			dataIndex: 'action',
@@ -70,10 +70,6 @@ const AppverUpdate = ({
 			dataIndex: 'versionName',
 			sorter: true
 		}, {
-			title: '添加时间',
-			dataIndex: 'createdAt',
-			sorter: true
-		}, {
 			title: '状态',
 			dataIndex: 'status',
 			sorter: true,
@@ -92,6 +88,10 @@ const AppverUpdate = ({
 			dataIndex: 'forceUpdate',
 			sorter: true,
 			render: (txt) => <span>{ (txt == 1) ? '不需要' : '需要' }</span>
+		}, {
+			title: '添加时间',
+			dataIndex: 'createdAt',
+			sorter: true
 		}, {
 			title: '操作',
 			dataIndex: 'action',
