@@ -54,7 +54,7 @@ const BookUnit = ({
         	title: '上传封面图',
         	dataIndex: 'updateicon',
             render: (text, record, index) => {
-                return <MyUpload uploadTxt={0} uploadSuccess={(url) => {
+                return <MyUpload uploadTxt={'上传封面图'} uploadSuccess={(url) => {
                     changeIcon(url, record)
                 }}></MyUpload>
             }
@@ -175,9 +175,7 @@ const BookUnit = ({
     }
 
     // 文件上传成功
-    const uploadSuccess = (url) => {
-        setFieldsValue({'icon': url})
-    }
+    const uploadSuccess = (url) => setFieldsValue({'icon': url})
 
     // 返回
     const goBack = () => dispatch(routerRedux.goBack(-1))

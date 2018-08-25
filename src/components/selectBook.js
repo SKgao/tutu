@@ -17,7 +17,6 @@ class SelectBook extends Component {
           .then((res) => {
               if (res.data.code === 0) {
                 let data=res.data.data
-                console.log(data);
                   for(let i=0;i<data.length;i++){
                     children.push(<Option key={data[i].id} value={data[i].id}>{data[i].name}</Option>);
                   }
@@ -31,9 +30,8 @@ class SelectBook extends Component {
     }
 
     handleChange = (value) => {
-       let {selectVule} = this.props;
-       selectVule=value
-       console.log(selectVule);
+       let { selectVule } = this.props;
+       selectVule && selectVule(value)
     }
     render() {
 

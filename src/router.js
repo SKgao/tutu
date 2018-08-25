@@ -34,11 +34,6 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "authMenu" */ './pages/authmenu/model')]
 		},
 		{
-			path: '/system/logs/deleteLogs',
-			component: () => import(/* webpackChunkName: "deleteLogs" */ './pages/systemManage/logManage/deleteLog/index'),
-			models: () => [import(/* webpackChunkName: "deleteLogs" */ './pages/systemManage/logManage/deleteLog/model')]
-		},
-		{
 			path: '/teachingManage/book',
 			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/index'),
 			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/model')]
@@ -77,6 +72,11 @@ const Routers = ({
 			path: '/subject',
 			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/index'),
 			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/model')]
+		},
+		{
+			path: '/subjects',
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subjects/index'),
+			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/subjects/model')]
 		},
 	]
 

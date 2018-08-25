@@ -59,7 +59,7 @@ const UnitPart = ({
             render: (text, record, index) => {
                 return <MyUpload uploadSuccess={(url) => {
                     changeIcon(url, record)
-                }} uploadTxt={0}></MyUpload>
+                }}></MyUpload>
             }
         },{
             title: 'part描述',

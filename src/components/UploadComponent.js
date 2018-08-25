@@ -53,4 +53,9 @@ MyUpload.propTypes = {
         PropTypes.bool
     ])
 };
+
+MyUpload.defaultProps = {
+    uploadTxt: '上传文件'
+};
+
 export default MyUpload;
