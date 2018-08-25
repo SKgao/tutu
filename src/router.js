@@ -55,6 +55,11 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/model')]
 		},
 		{
+			path: '/teachingManage/pass',
+			component: () => import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/model')]
+		},
+		{
 			path: '/appverUpdate',
 			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/index'),
 			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/model')]

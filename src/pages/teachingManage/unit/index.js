@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
@@ -47,7 +48,6 @@ const BookUnit = ({
         	dataIndex: 'icon',
             sorter: true,
             render: (text, record, index) => {
-                console.log('icon--->', text)
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
         }, {
@@ -70,6 +70,8 @@ const BookUnit = ({
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
+
+                    <Button type="primary" size="small" onClick={() => linktoPart(record)} style={{ marginLeft: 10 }}>查看part</Button>
                 </span>
             }
         }
@@ -96,6 +98,14 @@ const BookUnit = ({
                 icon: url
             }
     	})
+    }
+
+    // 调转到part页面
+    const linktoPart = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/part',
+            search: `unitsId=${record.id}`
+        }));
     }
 
     // 搜索
