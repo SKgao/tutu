@@ -283,7 +283,8 @@ const AppverUpdate = ({
 	return (
 		<div>
 			<Tabs
-                animated={false}
+				animated={false}
+				activeKey={activeKey}
 				onChange={handleTabChange}
             >
 			   <TabPane tab="App类型" key="0">

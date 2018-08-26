@@ -8,7 +8,10 @@ export default {
 		partList: [],
 		startTime: '',
 		endTime: '',
-		unitsId: 0
+		unitsId: 0,
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
@@ -28,7 +31,7 @@ export default {
 							type: 'getPart',
 							payload: {
 								pageNum: 1,
-								pageSize: 100,
+								pageSize: 10,
 								unitsId: arr[1]
 							}
 						})
@@ -46,7 +49,8 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						partList: (res.data.data) ? res.data.data.data : []
+						partList: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				})
 			}
@@ -54,32 +58,24 @@ export default {
 
 		*addPart({ payload }, { call, put, select }) {
 			const res = yield call(api.addPart, payload);
-			const { unitsId } = yield select(state => state.unitPart);
+			const { unitsId, pageNum, pageSize } = yield select(state => state.unitPart);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
                     type: 'getPart',
-                    payload: {
-                        pageNum: 1,
-						pageSize: 100,
-						unitsId
-                    }
+                    payload: { pageNum, pageSize, unitsId }
                 });
 			}
 		},
 		
 		*updatePart({ payload }, { call, put, select }) {
 			const res = yield call(api.updatePart, payload);
-			const { unitsId } = yield select(state => state.unitPart);
+			const { unitsId, pageNum, pageSize } = yield select(state => state.unitPart);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
                     type: 'getPart',
-                    payload: {
-                        pageNum: 1,
-						pageSize: 100,
-						unitsId
-                    }
+                    payload: { pageNum, pageSize, unitsId }
                 });
 			}
 		},

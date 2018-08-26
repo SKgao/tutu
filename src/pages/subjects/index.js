@@ -10,9 +10,10 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Popconfirm, Modal, message, Select, Icon, Upload } from 'antd';
+import { Form, DatePicker, Input, Button, Popconfirm, Modal, message, Select, Icon, Upload, Tabs, Card, Col, Row, Progress } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 const { RangePicker } = DatePicker;
 
 const Subject = ({
@@ -20,7 +21,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { subjectList, descList, modalShow, modal2Show, startTime, endTime, bookList, pageNum, pageSize, customsPassId, sort, textBookId, sourceIds } = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey, sourceProgress, subjectProgress} = subject;
     let { getFieldDecorator, getFieldValue, setFieldsValue, resetFields } = form;
     
     // 题目列表
@@ -61,38 +62,27 @@ const Subject = ({
         }
     ]
 
-    const columns = (customsPassId) ? descCol : subjectCol;
-    const dataSource = (customsPassId) ? descList : subjectList;
+    const columns = (customsPassId) ? descCol : subjectCol
+    const dataSource = (customsPassId) ? subject.descList : subject.subjectList
 
     // 添加题目
     const handleSubmitSubject = () => {
-        let obj = {
-            textbookId: textBookId,
-            file: getFieldValue('file')
-        }
-        let formData = new FormData();
-        for (let key in obj) {
-            if (obj[key] || obj[key] === 0) {
-                formData.append(key, obj[key]);
-            }
-        }
+        let { textbookId, file } = subject
+        let formData = new FormData()
+        formData.append('textbookId', textbookId)
+        file[0] && formData.append('file', file[0])
         dispatch({
         	type: 'subject/addSubject',
         	payload: formData
         })
     }
 
-    // 添加素材
+    // 添加题目资源(音频集合、图片集合)
     const handleSubmitSource = () => {
-        let audioArray = getFieldValue('audioArray')
-        let imageArray = getFieldValue('imageArray')
-        let obj = {
-            audioArray: audioArray ? [audioArray] : '',
-            imageArray: imageArray ? [imageArray] : ''
-        }
+        let { audioArray, imageArray } = subject
         dispatch({
         	type: 'subject/addSource',
-        	payload: filterObj(obj)
+        	payload: { audioArray, imageArray }
         })
     }
     
@@ -160,6 +150,17 @@ const Subject = ({
         }
     }
 
+    // 上传音频、图片目录
+    const uploadFileArray = (file, fileList, array) => {
+        dispatch({
+            type: 'subject/setParam',
+            payload: {
+                [array]: fileList.map(e => e.name)
+            }
+        })
+        return false;
+    }
+
     // 改版教材id
     const changeTextBookId = (param) => {
         dispatch({
@@ -178,167 +179,220 @@ const Subject = ({
         })
     }
 
+    // 切换tabs标签页
+    const handleTabChange = (key = '0') => {
+        if (key === '1') {
+            dispatch({ type: 'subject/progressSource' })
+            dispatch({ type: 'subject/progressSubject' })
+        }
+    	dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+				activeKey: key
+			}
+    	})
+	}
+
 	return (
 		<div>
-			<FormInlineLayout>
-			    <Form layout="inline" style={{ marginLeft: 15 }}>
-                    {/*时间*/}
-                    <FormItem label="时间">
-                        <RangePicker
-                            format="YYYY-MM-DD HH:mm"
-                            showTime={{
-                                hideDisabledOptions: true,
-                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
-                            }}
-                            format="YYYY-MM-DD HH:mm"
-                            onChange={datepickerChange}
-                            />
-                    </FormItem>
+            <Tabs
+                animated={false}
+                activeKey={activeKey}
+				onChange={handleTabChange}
+            >
+                <TabPane tab="题目列表" key="0">
+                    <FormInlineLayout>
+                        <Form layout="inline" style={{ marginLeft: 15 }}>
+                            {/*时间*/}
+                            <FormItem label="时间">
+                                <RangePicker
+                                    format="YYYY-MM-DD HH:mm"
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm"
+                                    onChange={datepickerChange}
+                                    />
+                            </FormItem>
 
-                    {/*题目*/}
-                    <FormItem label="题目">
-                        <Input placeholder="输入题目名" onChange={(e) => handleInput(e)}/>
-                    </FormItem>
+                            {/*题目*/}
+                            <FormItem label="题目">
+                                <Input placeholder="输入题目名" onChange={(e) => handleInput(e)}/>
+                            </FormItem>
 
-                    <FormItem>
-                        <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
-                    </FormItem>
+                            <FormItem>
+                                <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
+                            </FormItem>
 
-                    <FormItem>
-                        <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
-                    </FormItem>
+                            <FormItem>
+                                <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
+                            </FormItem>
 
-                    <FormItem>
-                        <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
-                    </FormItem>
-                    
-                    {
-                        !customsPassId  ? null : 
-                        <FormItem>
-                            <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
-                        </FormItem>
-                    }
+                            <FormItem>
+                                <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
+                            </FormItem>
+                            
+                            {
+                                !customsPassId  ? null : 
+                                <FormItem>
+                                    <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
+                                </FormItem>
+                            }
 
-                </Form>
-            </FormInlineLayout>
+                        </Form>
+                    </FormInlineLayout>
 
-            <Modal
-                title="导入题目"
-                visible={modalShow}
-                onOk={ () => changeModalState('modalShow', false) }
-                onCancel= { () => changeModalState('modalShow', false) }
-                okText="确认"
-                cancelText="取消"
-                footer={null}
-                >
-                <Form>
-                    <FormItem
-                        label="教材"
-                        hasFeedback
-                        {...formItemLayout}
+                    <Modal
+                        title="导入题目"
+                        visible={modalShow}
+                        onOk={ () => changeModalState('modalShow', false) }
+                        onCancel= { () => changeModalState('modalShow', false) }
+                        okText="确认"
+                        cancelText="取消"
+                        footer={null}
                         >
-                        {getFieldDecorator('textBookId', {
-                            rules: [{ required: true, message: '请选择教材!' }],
-                        })(
-                            <Select
-                                showSearch
-                                onChange={v => changeTextBookId({ textBookId: v })}
-                                onFocus={() => dispatch({type: 'subject/getBook'})}
+                        <Form>
+                            <FormItem
+                                label="教材"
+                                hasFeedback
+                                {...formItemLayout}
                                 >
-                                {
-                                    bookList.map(item =>
-                                        <Option key={item.id} value={item.id}>{item.name}</Option>
-                                    )
-                                }
-                            </Select>
-                        )}
-                    </FormItem>
+                                {getFieldDecorator('textbookId', {
+                                    initialValue: subject.textbookId,
+                                    rules: [{ required: true, message: '请选择教材!' }],
+                                })(
+                                    <Select
+                                        showSearch
+                                        onChange={v => changeTextBookId({ textbookId: v })}
+                                        onFocus={() => dispatch({type: 'subject/getBook'})}
+                                        >
+                                        {
+                                            subject.bookList.map(item =>
+                                                <Option key={item.id} value={item.id}>{item.name}</Option>
+                                            )
+                                        }
+                                    </Select>
+                                )}
+                            </FormItem>
 
-                    <FormItem
-                        label="题目"
-                        {...formItemLayout}
+                            <FormItem
+                                label="题目"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('file', {
+                                    rules: [{ required: true, message: '请上传题目包!' }],
+                                })(
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'file')}>
+                                        <Button>
+                                            <Icon type="upload"/>上传题目
+                                        </Button>
+                                    </Upload>
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                {...formItemLayout}>
+                                <Button type="primary" onClick={handleSubmitSubject} style={{ marginLeft: 75 }}>提交</Button>
+                                <Button onClick={() => handleReset('modalShow')} style={{ marginLeft: 15 }}>取消</Button>
+                            </FormItem>
+                        </Form>
+                    </Modal>
+
+                    <Modal
+                        title="导入素材"
+                        visible={modal2Show}
+                        onOk={ () => changeModalState('modal2Show', false) }
+                        onCancel= { () => changeModalState('modal2Show', false) }
+                        okText="确认"
+                        cancelText="取消"
+                        footer={null}
                         >
-                        {getFieldDecorator('file', {
-                            rules: [{ required: true, message: '请上传题目包!' }],
-                        })(
-                            <Upload onChange={handleUpload}>
-                                <Button>
-                                    <Icon type="upload"/>上传题目
-                                </Button>
-                            </Upload>
-                        )}
-                    </FormItem>
+                        <Form>
+                            <FormItem
+                                label="音频文件目录"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('audioArray', {
+                                    // rules: [{ message: '请上传音频素材!' }],
+                                })(
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                        <Button>
+                                            <Icon type="upload"/>上传音频
+                                        </Button>
+                                    </Upload>
+                                )}
+                            </FormItem>
 
-                    <FormItem
-                        {...formItemLayout}>
-                        <Button type="primary" onClick={handleSubmitSubject} style={{ marginLeft: 75 }}>提交</Button>
-                        <Button onClick={() => handleReset('modalShow')} style={{ marginLeft: 15 }}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Modal>
+                            <FormItem
+                                label="图片文件目录"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('imageArray', {
+                                // rules: [{ message: '请上传图片素材!' }],
+                                })(
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                        <Button>
+                                            <Icon type="upload"/>上传图片
+                                        </Button>
+                                    </Upload>
+                                )}
+                            </FormItem>
 
-            <Modal
-                title="导入素材"
-                visible={modal2Show}
-                onOk={ () => changeModalState('modal2Show', false) }
-                onCancel= { () => changeModalState('modal2Show', false) }
-                okText="确认"
-                cancelText="取消"
-                footer={null}
-                >
-                <Form>
-                    <FormItem
-                        label="音频文件目录"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('audioArray', {
-                            rules: [{ message: '请上传音频素材!' }],
-                        })(
-                            <MyUpload directory={true} uploadSuccess={(url) => uploadSuccess(url, 'audioArray')} uploadTxt={'上传音频素材'}></MyUpload>
-                        )}
-                    </FormItem>
+                            <FormItem
+                                {...formItemLayout}>
+                                <Button type="primary" onClick={handleSubmitSource} style={{ marginLeft: 45 }}>提交</Button>
+                                <Button onClick={() => handleReset('modal2Show')} style={{ marginLeft: 15 }}>取消</Button>
+                            </FormItem>
+                        </Form>
+                    </Modal>
 
-                    <FormItem
-                        label="图片文件目录"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('imageArray', {
-                            rules: [{ message: '请上传图片素材!' }],
-                        })(
-                            <MyUpload directory={true} uploadSuccess={(url) => uploadSuccess(url, 'imageArray')} uploadTxt={'上传图片素材'}></MyUpload>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        {...formItemLayout}>
-                        <Button type="primary" onClick={handleSubmitSource} style={{ marginLeft: 45 }}>提交</Button>
-                        <Button onClick={() => handleReset('modal2Show')} style={{ marginLeft: 15 }}>取消</Button>
-                    </FormItem>
-                </Form>
-            </Modal>
-             
-            <div>
-                <TableLayout
-                    pagination={false}
-                    dataSource={dataSource}
-                    allColumns={columns}
-                    />
+                    <div>
+                        <TableLayout
+                            pagination={false}
+                            dataSource={dataSource}
+                            allColumns={columns}
+                            />
+                        {
+                            customsPassId ? null :
+                            <PaginationLayout
+                                total={subject.totalCount}
+                                onChange={(page, pageSize) => handleChange({
+                                    pageNum: page,
+                                    pageSize
+                                })}
+                                onShowSizeChange={(current, pageSize) => handleChange({
+                                    pageNum: 1,
+                                    pageSize
+                                })}
+                                current={pageNum}
+                                pageSize={pageSize} />
+                        }
+                    </div>
+                </TabPane>
+                
                 {
                     customsPassId ? null :
-                    <PaginationLayout
-                        total={subject.totalCount}
-                        onChange={(page, pageSize) => handleChange({
-                            pageNum: page,
-                            pageSize
-                        })}
-                        onShowSizeChange={(current, pageSize) => handleChange({
-                            pageNum: 1,
-                            pageSize
-                        })}
-                        current={pageNum}
-                        pageSize={pageSize} />
+                    <TabPane tab="上传进度" key="1">
+                        <div style={{ padding: '5px 0' }}>
+                            <Row gutter={16}>
+                                <Col span={12}>
+                                    <Card title="素材上传进度" style={{ textAlign: 'center' }} hoverable>
+                                        <div dangerouslySetInnerHTML={{__html: subject.sourceTxt}} />
+                                        {/* <Progress type="circle" percent={subject.sourceProgress} status="active"/> */}
+                                    </Card>
+                                </Col>
+                                <Col span={12}>
+                                    <Card title="题目上传进度" style={{ textAlign: 'center' }} hoverable>
+                                        <div dangerouslySetInnerHTML={{__html: subject.subjectTxt}} />
+                                        {/* <Progress type="circle" percent={subject.subjectProgress} /> */}
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div>
+                    </TabPane>
                 }
-            </div>
+            </Tabs>
 		</div>
 	)
 };

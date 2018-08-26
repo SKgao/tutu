@@ -16,11 +16,10 @@ const Option = Select.Option;
 
 const PartPass = ({
     partPass,
-    location,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, subjectList} = partPass;
+    let { tableData, modalShow, subjectList, pageNum, pageSize} = partPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -80,7 +79,7 @@ const PartPass = ({
 						})
 					}/>
         }, {
-        	title: '总分数',
+        	title: '平均分',
         	dataIndex: 'totalScore',
             sorter: true
         }, {
@@ -162,6 +161,18 @@ const PartPass = ({
                 payload: filterObj(values)
             })
         });
+    }
+
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'partPass/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'partPass/getPass',
+    		payload: param
+    	})
     }
 
     // 文件上传成功
@@ -274,10 +285,21 @@ const PartPass = ({
                 dataSource={tableData}
                 allColumns={columns}
                 />
-            <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+            {
+                partPass.totalCount && 
+                <PaginationLayout
+                    total={partPass.totalCount}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    current={pageNum}
+                    pageSize={pageSize} />
+            }
 		</div>
 	)
 };

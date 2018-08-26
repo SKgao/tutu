@@ -22,9 +22,8 @@ const UnitPart = ({
     location,
     ...props
 }) => {
-    const { pathname } = location;
     let { dispatch, form } = props;
-    let { partList, modalShow, startTime, endTime} = unitPart;
+    let { partList, modalShow, pageNum, pageSize} = unitPart;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -157,6 +156,18 @@ const UnitPart = ({
             })
         });
     }
+    
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'unitPart/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'unitPart/getPart',
+    		payload: param
+    	})
+    }
 
     // 文件上传成功
     const uploadSuccess = (url) => setFieldsValue({'icon': url})
@@ -248,9 +259,17 @@ const UnitPart = ({
                 allColumns={columns}
                 />
             <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+                total={unitPart.totalCount}
+                onChange={(page, pageSize) => handleChange({
+                    pageNum: page,
+                    pageSize
+                })}
+                onShowSizeChange={(current, pageSize) => handleChange({
+                    pageNum: 1,
+                    pageSize
+                })}
+                current={pageNum}
+                pageSize={pageSize} />
 		</div>
 	)
 };

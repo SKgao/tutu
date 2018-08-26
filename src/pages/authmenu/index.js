@@ -15,7 +15,7 @@ const Authmenu = ({
     ...props
 }) => {
     let { dispatch } = props;
-    let { tableData, modalShow, menuName, menuScope } = authmenu;
+    let { tableData, modalShow, menuName, pageNum, pageSize, totalCount } = authmenu;
     const columns = [
 		{
         	title: '菜单id',
@@ -213,6 +213,18 @@ const Authmenu = ({
         })
 	}
 
+	// 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'authmenu/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'authmenu/getMenu',
+    		payload: filterObj({ menuName, ...param})
+    	})
+    }
+
     // 搜索
     const handleSearch = () => {
     	let PP = {
@@ -261,13 +273,22 @@ const Authmenu = ({
             </Modal>
 
             <TableLayout
+			    pagination={false}
                 dataSource={tableData}
                 allColumns={columns}
                 />
             <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+                total={totalCount}
+                onChange={(page, pageSize) => handleChange({
+                    pageNum: page,
+                    pageSize
+                })}
+                onShowSizeChange={(current, pageSize) => handleChange({
+                    pageNum: 1,
+                    pageSize
+                })}
+                current={pageNum}
+                pageSize={pageSize} />
 		</div>
 	)
 };

@@ -17,9 +17,17 @@ export default {
 		sourceIds: '',       // 搜索题目内容
         modalShow: false,    // 添加题目
         modal2Show: false,   // 添加素材
-		textbookId: '',      // 教材id
+		textbookId: 1,       // 教材id
 		customsPassId: 0,    // 关卡id
 		sort: 0,             // 题目顺序
+		audioArray: [],      // 音频文件
+		imageArray: [],      // 图片文件
+		file: [],            // 题目文件
+		activeKey: '0',      // tabs选项
+		sourceProgress: 0,   // 资源上传进度
+		subjectProgress: 0,  // 题目上传进度
+		sourceTxt: '暂无文件上传',
+		subjectTxt: '暂无文件上传',
         pageSize: 10,
         pageNum: 1,
         totalCount: 0
@@ -36,7 +44,11 @@ export default {
 						let sort = arr[1].split('=')[1] - 0
 						dispatch({ 
 							type: 'setParam',
-							payload: { customsPassId, sort }
+							payload: { 
+								activeKey: '0',
+								customsPassId,
+								sort
+							}
 						})
 						dispatch({ 
 							type: 'subjectDesc',
@@ -46,6 +58,7 @@ export default {
 						dispatch({ 
 							type: 'setParam',
 							payload: { 
+								activeKey: '0',
 								customsPassId: 0,
 								sort: 0
 							}
@@ -89,24 +102,58 @@ export default {
 			}
         },
 
-        *addSource({ payload }, { call, put }) {
+        *addSource({ payload }, { call, put, select }) {
 			const res = yield call(api.addSource, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({
+					type: 'setParam',
+					payload: {
+						audioArray: [],
+						imageArray: [],
+						modal2Show: false,
+						activeKey: '1'
+					}
+				})
+			}
         },
 
-        *progressSource({ payload }, { call, put }) {
+        *addSubject({ payload }, { call, put, select }) {
+			const res = yield call(api.addSubject, payload);
+			if (res) {
+				yield put({
+					type: 'setParam',
+					payload: {
+						file: [],
+						modalShow: false,
+						activeKey: '1'
+					}
+				})
+			}
+		},
+		
+		*progressSource({ payload }, { call, put }) {
 			const res = yield call(api.progressSource, payload);
-			res && message.success(res.data.message);
-        },
-
-        *addSubject({ payload }, { call, put }) {
-            const res = yield call(api.addSubject, payload);
-            res && message.success(res.data.message);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+                        sourceTxt: (res.data) ? res.data.data : '暂无文件上传'
+					}
+				})
+			}
         },
 
         *progressSubject({ payload }, { call, put }) {
-            const res = yield call(api.progressSubject, payload);
-            res && message.success(res.data.message);
+			const res = yield call(api.progressSubject, payload);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+                        subjectTxt: (res.data) ? res.data.data : '暂无文件上传'
+					}
+				})
+			}
         },
         
         *getBook({ payload }, { call, put, select }) {
