@@ -227,14 +227,9 @@ const Authmenu = ({
 
     // 搜索
     const handleSearch = () => {
-    	let PP = {
-    		pageNum: 1,
-    		pageSize: 10,
-			menuName: menuName
-    	}
     	dispatch({
     		type: 'authmenu/getMenu',
-    		payload: filterObj(PP)
+    		payload: filterObj({ pageNum, pageSize, menuName })
     	})
 	}
 

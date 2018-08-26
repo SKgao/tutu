@@ -65,8 +65,8 @@ const Routers = ({
 		},
 		{
 			path: '/units/part',
-			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/part/index'),
-			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/part/model')]
+			component: () => import(/* webpackChunkName: "/units/part" */ './pages/part/index'),
+			models: () => [import(/* webpackChunkName: "/units/part" */ './pages/part/model')]
 		},
 		{
 			path: '/subject',
@@ -77,6 +77,21 @@ const Routers = ({
 			path: '/subjects',
 			component: () => import(/* webpackChunkName: "subjects" */ './pages/subjects/index'),
 			models: () => [import(/* webpackChunkName: "subjects" */ './pages/subjects/model')]
+		},
+		{
+			path: '/member',
+			component: () => import(/* webpackChunkName: "member" */ './pages/member/index'),
+			models: () => [import(/* webpackChunkName: "member" */ './pages/member/model')]
+		},
+		{
+			path: '/order',
+			component: () => import(/* webpackChunkName: "order" */ './pages/order/index'),
+			models: () => [import(/* webpackChunkName: "order" */ './pages/order/model')]
+		},
+		{
+			path: '/activity',
+			component: () => import(/* webpackChunkName: "activity" */ './pages/activity/index'),
+			models: () => [import(/* webpackChunkName: "activity" */ './pages/activity/model')]
 		},
 		{
 			path: '/progress',

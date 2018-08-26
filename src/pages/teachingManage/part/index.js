@@ -255,6 +255,7 @@ const UnitPart = ({
             </Modal>
 
             <TableLayout
+                pagination={false}
                 dataSource={partList}
                 allColumns={columns}
                 />
