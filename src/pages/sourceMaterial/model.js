@@ -48,33 +48,44 @@ export default {
       }
     },
 
-    *addSource({ payload }, { call, put }) {
+    *addSource({ payload }, { call, put, select }) {
+      const { pageNum, pageSize } = yield select(state => state.sourcematerial);
       const res = yield call(api.addSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
           type: 'getSource',
           payload: {
-            pageNum: 1,
-            pageSize: 10
+            pageNum,
+            pageSize
           }
         });
       }
     },
 
-    *deleteSource({ payload }, { call }) {
+    *deleteSource({ payload }, { call, put, select }) {
+        const { materialList } = yield select(state => state.sourcematerial);
         const res = yield call(api.deleteSource, payload);
-        res && message.success(res.data.message);
+        if (res) {
+          message.success(res.data.message);
+          yield put({
+            type: 'save',
+            payload: {
+              materialList: materialList.filter(e => e.id !== payload.id)
+            }
+          })
+        }
     },
-    *editSource({ payload }, { call, put }) {
+    *editSource({ payload }, { call, put, select }) {
+      const { pageNum, pageSize } = yield select(state => state.sourcematerial);
       const res = yield call(api.editSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
           type: 'getSource',
           payload: {
-            pageNum: 1,
-            pageSize: 10
+            pageNum,
+            pageSize
           }
         });
       }

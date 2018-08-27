@@ -21,4 +21,7 @@ export default {
 
 	// 题目列表
 	getSubject: data => axios.post('subject/subject/list', data),
+
+	// 题目修改
+	updateSubject: data => axios.post('subject/subject/update', data),
 }

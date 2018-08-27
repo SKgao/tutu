@@ -4,13 +4,13 @@ import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
-import MyUpload from '@/components/UploadComponent';
-
+import TablePopoverLayout from '@/components/TablePopoverLayout';
 import moment from 'moment';
+import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Popconfirm, Modal, message, Select, Icon, Upload, Tabs, Card, Col, Row, Progress } from 'antd';
+import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -22,22 +22,64 @@ const Subject = ({
 }) => {
     let { dispatch, form } = props;
     let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey, sourceProgress, subjectProgress} = subject;
-    let { getFieldDecorator, getFieldValue, setFieldsValue, resetFields } = form;
+    let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
     const subjectCol = [
         {
             title: '题型名称',
             dataIndex: 'subjectTypeName',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改题型名称'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'subject/updateSubject',
+							payload: {
+								id: record.id,
+								subjectTypeName: v
+							}
+						})
+					}/>
         }, {
             title: '题目内容',
             dataIndex: 'sourceIds',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改题目内容'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'subject/updateSubject',
+							payload: {
+								id: record.id,
+								sourceIds: v
+							}
+						})
+					}/>
         }, {
             title: '题目顺序',
             dataIndex: 'sort',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改题目顺序'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'subject/updateSubject',
+							payload: {
+								id: record.id,
+								sort: v - 0
+							}
+						})
+					}/>
         }
     ]
     
@@ -58,12 +100,21 @@ const Subject = ({
         }, {
             title: '素材包',
             dataIndex: 'action',
-            render: (text) => <a href="#">查看素材包</a>
+            render: (text) => <a onClick={openNotification}>查看素材包</a>
         }
     ]
 
     const columns = (customsPassId) ? descCol : subjectCol
     const dataSource = (customsPassId) ? subject.descList : subject.subjectList
+
+    const openNotification = () => {
+        notification.open({
+            duration: 1,
+            message: '暂不支持查看素材包~',
+            description: '请等待后续开发。',
+            icon: <Icon type="smile-circle" style={{ color: '#108ee9' }} />
+        });
+      }
 
     // 添加题目
     const handleSubmitSubject = () => {
@@ -71,10 +122,29 @@ const Subject = ({
         let formData = new FormData()
         formData.append('textbookId', textbookId)
         file[0] && formData.append('file', file[0])
-        dispatch({
-        	type: 'subject/addSubject',
-        	payload: formData
-        })
+        // dispatch({
+        // 	type: 'subject/addSubject',
+        // 	payload: formData
+        // })
+        axios.post(`subject/subject/import`, formData)
+            .then((res) => {
+                console.log('res--->', res)
+                // if (res.data.code === 0) {
+                //     dispatch({
+                //         type: 'subject/setParam',
+                //         payload: {
+                //             file: [],
+                //             modalShow: false,
+                //             activeKey: '1'
+                //         }
+                //     })
+                // } else {
+                //     message.error(res.data.message)
+                // }
+            })
+            .catch((err) => {
+
+            });
     }
 
     // 添加题目资源(音频集合、图片集合)
