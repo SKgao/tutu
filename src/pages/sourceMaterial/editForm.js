@@ -32,7 +32,6 @@ const editForm = ({
                 }
             })
         });
-        console.log(data)
         dispatch({
             type: 'sourcematerial/editSource',
             payload: data
