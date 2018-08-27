@@ -6,20 +6,13 @@ export default {
 
 	state: {
 		tableData: [],
-		pageSize: 10,
-        pageNum: 1,
-        totalCount: 0
+		startTime: '',
+		endTime: ''
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {	
-			dispatch({ 
-				type: 'getActivity',
-				payload: {
-					pageNum: 1,
-					pageSize: 10
-				}
-			});
+			dispatch({ type: 'getActivity'});
 		},
 	},
 
@@ -30,8 +23,7 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						tableData: (res.data.data) ? res.data.data.data : [],
-						totalCount: (res.data.data) ? res.data.data.totalCount : 0
+						tableData: (res.data) ? res.data.data : []
 					}
 				});
 			}

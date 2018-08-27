@@ -12,7 +12,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -23,7 +23,7 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, audio, icon,text, pageNum, pageSize, activeKey } = sourcematerial;
+    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
 
     // 鼠标放在图片上的事件
@@ -145,7 +145,9 @@ const sourceMaterial = ({
         dispatch({
             type: 'sourcematerial/setParam',
             payload: {
-                [m]: false
+                [m]: false,
+                audioArray: [],
+                imageArray: []
             }
         })
     }
@@ -204,7 +206,8 @@ const sourceMaterial = ({
 
     // 上传音频、图片目录
     const uploadFileArray = (file, fileList, array) => {
-        dispatch({
+        const MAX_LEN = 1000
+        fileList.length < MAX_LEN  && dispatch({
             type: 'sourcematerial/setParam',
             payload: {
                 [array]: fileList.map(e => e.name)
@@ -215,10 +218,9 @@ const sourceMaterial = ({
 
     // 导入资源(音频集合、图片集合)
     const handleSubmitSource = () => {
-        let { audioArray, imageArray } = sourcematerial
         dispatch({
-        	type: 'sourcematerial/addSubjectSource',
-        	payload: { audioArray, imageArray }
+            type: 'sourcematerial/addSubjectSource',
+            payload: { audioArray, imageArray }
         })
     }
 
@@ -318,12 +320,13 @@ const sourceMaterial = ({
                     <Form>
                         <FormItem
                             label="音频文件目录"
+                            help={ audioArray.length ? `已选择${audioArray.length}个音频文件` : '请选择音频文件，不能超过500个' }
                             {...formItemLayout}
                             >
                             {getFieldDecorator('audioArray', {
                                 // rules: [{ message: '请上传音频素材!' }],
                             })(
-                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory showUploadList={false}>
                                     <Button>
                                         <Icon type="upload"/>上传音频
                                     </Button>
@@ -333,12 +336,13 @@ const sourceMaterial = ({
 
                         <FormItem
                             label="图片文件目录"
+                            help={imageArray.length ? `已选择${imageArray.length}个图片文件` : '请选择图片文件，不能超过500个'}
                             {...formItemLayout}
                             >
                             {getFieldDecorator('imageArray', {
                             // rules: [{ message: '请上传图片素材!' }],
                             })(
-                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory showUploadList={false}>
                                     <Button>
                                         <Icon type="upload"/>上传图片
                                     </Button>

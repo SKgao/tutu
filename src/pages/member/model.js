@@ -11,7 +11,7 @@ export default {
         pageNum: 1,
         totalCount: 0,
         startTime: '',
-        endTime: '',
+		endTime: '',
         userLevel: '', // 用户等级
 	},
 
@@ -47,7 +47,7 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						getMemberLevel: (res.data.data) ? res.data.data.data : []
+						memberLevelList: (res.data) ? res.data.data : []
 					}
 				});
 			}

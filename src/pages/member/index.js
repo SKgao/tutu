@@ -21,10 +21,60 @@ const Member = ({
 
     const columns = [
         {
-            title: '会员名',
-            dataIndex: 'name',
+            title: '图图号',
+            dataIndex: 'tutuNumber',
             sorter: true
-        } 
+        }, {
+            title: '用户名',
+            dataIndex: 'realName',
+            sorter: true
+        }, {
+            title: '用户等级',
+            dataIndex: 'userLevel',
+            sorter: true
+        }, {
+            title: '会员等级',
+            dataIndex: 'userLevelName',
+            sorter: true
+        }, {
+            title: '手机号',
+            dataIndex: 'mobile',
+            sorter: true,
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '性别',
+            dataIndex: 'sex',
+            sorter: true,
+            render: (text) => <span>{ text === 1 ? '男' :  '女' }</span>
+        }, {
+            title: '是否设立密码',
+            dataIndex: 'hasSetPassword',
+            sorter: true,
+            render: (text) => <span>{ text === 1 ? '是' :  '否' }</span>
+        }, {
+            title: '教材名',
+            dataIndex: 'bookVersionName',
+            sorter: true,
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '单元名',
+            dataIndex: 'unitName',
+            sorter: true
+        }, {
+            title: 'part名称',
+            dataIndex: 'partName',
+            sorter: true
+        }, {
+            title: 'part提示',
+            dataIndex: 'partTips',
+            sorter: true,
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '关卡名',
+            dataIndex: 'customPassName',
+            sorter: true,
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }
     ]
 
     // 操作分页
@@ -65,6 +115,16 @@ const Member = ({
     		payload: v
     	})
     }
+
+    // 输入框
+    const handleInput = (e, m) => {
+        dispatch({
+    		type: 'userSetting/setParam',
+    		payload: {
+                [m]: e.target.value
+            }
+    	})
+    }
    
 	return (
 		<div>
@@ -84,9 +144,9 @@ const Member = ({
                     </FormItem>
                  
                     {/*会员名*/}
-                    <FormItem label="会员名">
+                    {/* <FormItem label="会员名">
                         <Input placeholder="输入会员名"/>
-                    </FormItem>
+                    </FormItem> */}
 
                     {/*会员等级*/}
                     <FormItem label="会员等级">
@@ -97,7 +157,7 @@ const Member = ({
                             >
                             {
                                 memberLevelList.map(item =>
-                                    <Option key={item.userLevel} value={item.userLevel}>{item.userLevel}</Option>
+                                    <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
                                 )
                             }
                         </Select>
@@ -111,6 +171,7 @@ const Member = ({
             </FormInlineLayout>
 
             <TableLayout
+                pagination={false}
                 dataSource={memberList}
                 allColumns={columns}
                 />
