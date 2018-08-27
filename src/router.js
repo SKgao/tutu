@@ -4,6 +4,7 @@ import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import dynamic from 'dva/dynamic';
 import App from './App';
+import ErrorPage from '@/components/ErrorPage';
 
 // 动态加载component和model
 const { ConnectedRouter } = routerRedux;
@@ -113,7 +114,7 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
-
+                        <Route exact path='*' component={ErrorPage} />
 					</Switch>
 				</App>
 			</LocaleProvider>

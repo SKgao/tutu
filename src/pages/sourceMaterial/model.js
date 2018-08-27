@@ -11,10 +11,15 @@ export default {
     materialList: [], // 素材数据
 		modalShow: false,
     modal2Show:false,
+    modal3Show: false,
 		icon: '',//素材图标
     audio:'',//素材音频
     iconUrl:'',//素材地址
     audioUrl:'',//音频地址
+    audioArray: [],      // 音频文件
+    imageArray: [],      // 图片文件
+    sourceTxt: '暂无文件上传',
+    activeKey: '0',      // tabs选项
     pageSize: 10,
     pageNum: 1,
     totalCount: 0
@@ -61,6 +66,34 @@ export default {
           }
         });
       }
+    },
+
+    *addSubjectSource({ payload }, { call, put, select }) {
+			const res = yield call(api.addSubjectSource, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({
+					type: 'setParam',
+					payload: {
+						audioArray: [],
+						imageArray: [],
+            modal3Show: false,
+            activeKey: '1'
+					}
+				})
+			}
+    },
+
+    *progressSource({ payload }, { call, put }) {
+			const res = yield call(api.progressSource, payload);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+            sourceTxt: (res.data) ? res.data.data : '暂无文件上传'
+					}
+				})
+			}
     },
 
     *deleteSource({ payload }, { call, put, select }) {

@@ -5,6 +5,7 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
+import UploadProgress from '@/components/UploadProgress';
 import moment from 'moment';
 import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
@@ -21,7 +22,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey, sourceProgress, subjectProgress} = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
@@ -39,7 +40,8 @@ const Subject = ({
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
-								id: record.id,
+                                customsPassId: record.customsPassId - 0,
+                                sort: record.sort - 0,
 								subjectTypeName: v
 							}
 						})
@@ -57,7 +59,8 @@ const Subject = ({
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
-								id: record.id,
+                                customsPassId: record.customsPassId - 0,
+                                sort: record.sort - 0,
 								sourceIds: v
 							}
 						})
@@ -65,21 +68,7 @@ const Subject = ({
         }, {
             title: '题目顺序',
             dataIndex: 'sort',
-            sorter: true,
-            render: (text, record) =>
-				<TablePopoverLayout
-					title={'修改题目顺序'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
-					onOk={v => 
-						dispatch({
-							type: 'subject/updateSubject',
-							payload: {
-								id: record.id,
-								sort: v - 0
-							}
-						})
-					}/>
+            sorter: true
         }
     ]
     
@@ -122,30 +111,21 @@ const Subject = ({
         let formData = new FormData()
         formData.append('textbookId', textbookId)
         file[0] && formData.append('file', file[0])
-        // dispatch({
-        // 	type: 'subject/addSubject',
-        // 	payload: formData
-        // })
-        console.log(formData)
-        axios.post('subject/subject/import',formData)
+        axios.post('subject/subject/import', formData)
             .then((res) => {
-                console.log('res--->', res)
-                // if (res.data.code === 0) {
-                //     dispatch({
-                //         type: 'subject/setParam',
-                //         payload: {
-                //             file: [],
-                //             modalShow: false,
-                //             activeKey: '1'
-                //         }
-                //     })
-                // } else {
-                //     message.error(res.data.message)
-                // }
+                if (res.data.code === 0) {
+                    dispatch({
+                        type: 'subject/setParam',
+                        payload: {
+                            file: [],
+                            modalShow: false,
+                            activeKey: '1'
+                        }
+                    })
+                } else {
+                    message.error(res.data.message)
+                }
             })
-            .catch((err) => {
-
-            });
     }
 
     // 添加题目资源(音频集合、图片集合)
@@ -189,9 +169,6 @@ const Subject = ({
     	})
     }
 
-    // 文件上传成功
-    const uploadSuccess = (url, _m) => setFieldsValue({ [_m]: url })
-
     // 返回
     const goBack = () => dispatch(routerRedux.goBack(-1))
 
@@ -214,19 +191,12 @@ const Subject = ({
     	})
     }
 
-    // 上传题目
-    const handleUpload = (file) => {
-        if (file.event && file.event.type === 'progress') {
-            setFieldsValue({ 'file': file.fileList[0].originFileObj })
-        }
-    }
-
     // 上传音频、图片目录
     const uploadFileArray = (file, fileList, array) => {
         dispatch({
             type: 'subject/setParam',
             payload: {
-                [array]: fileList.map(e => e)
+                [array]: fileList.map(e => (array === 'file') ? e : e.name)
             }
         })
         return false;
@@ -252,10 +222,6 @@ const Subject = ({
 
     // 切换tabs标签页
     const handleTabChange = (key = '0') => {
-        if (key === '1') {
-            dispatch({ type: 'subject/progressSource' })
-            dispatch({ type: 'subject/progressSubject' })
-        }
     	dispatch({
     		type: 'subject/setParam',
     		payload: {
@@ -296,9 +262,9 @@ const Subject = ({
                                 <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                             </FormItem>
 
-                            <FormItem>
+                            {/* <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
-                            </FormItem>
+                            </FormItem> */}
 
                             <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
@@ -443,24 +409,13 @@ const Subject = ({
                 </TabPane>
                 
                 {
-                    customsPassId ? null :
+                    (customsPassId || activeKey === '0') ? null :
                     <TabPane tab="上传进度" key="1">
-                        <div style={{ padding: '5px 0' }}>
-                            <Row gutter={16}>
-                                <Col span={12}>
-                                    <Card title="素材上传进度" style={{ textAlign: 'center' }} hoverable>
-                                        <div dangerouslySetInnerHTML={{__html: subject.sourceTxt}} />
-                                        {/* <Progress type="circle" percent={subject.sourceProgress} status="active"/> */}
-                                    </Card>
-                                </Col>
-                                <Col span={12}>
-                                    <Card title="题目上传进度" style={{ textAlign: 'center' }} hoverable>
-                                        <div dangerouslySetInnerHTML={{__html: subject.subjectTxt}} />
-                                        {/* <Progress type="circle" percent={subject.subjectProgress} /> */}
-                                    </Card>
-                                </Col>
-                            </Row>
-                        </div>
+                        <UploadProgress
+                           cardTitle={'题目上传进度'}
+                           url={'subject/subject/import/progress'}
+                        >
+                        </UploadProgress>
                     </TabPane>
                 }
             </Tabs>

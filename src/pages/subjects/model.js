@@ -25,10 +25,6 @@ export default {
 		imageArray: [],      // 图片文件
 		file: [],            // 题目文件
 		activeKey: '0',      // tabs选项
-		sourceProgress: 0,   // 资源上传进度
-		subjectProgress: 0,  // 题目上传进度
-		sourceTxt: '暂无文件上传',
-		subjectTxt: '暂无文件上传',
         pageSize: 10,
         pageNum: 1,
         totalCount: 0
@@ -137,31 +133,7 @@ export default {
 			const res = yield call(api.updateSubject, payload);
 			res && message.success(res.data.message);
 		},
-		
-		*progressSource({ payload }, { call, put }) {
-			const res = yield call(api.progressSource, payload);
-			if (res) {
-				yield put({
-					type: 'save',
-					payload: {
-                        sourceTxt: (res.data) ? res.data.data : '暂无文件上传'
-					}
-				})
-			}
-        },
-
-        *progressSubject({ payload }, { call, put }) {
-			const res = yield call(api.progressSubject, payload);
-			if (res) {
-				yield put({
-					type: 'save',
-					payload: {
-                        subjectTxt: (res.data) ? res.data.data : '暂无文件上传'
-					}
-				})
-			}
-        },
-        
+		 
         *getBook({ payload }, { call, put, select }) {
 			const res = yield call(api_teachingManage.getBook, {
                 pageNum: 1,
