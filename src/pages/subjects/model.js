@@ -20,6 +20,7 @@ export default {
 		textbookId: 1,       // 教材id
 		customsPassId: 0,    // 关卡id
 		sort: 0,             // 题目顺序
+		
 		audioArray: [],      // 音频文件
 		imageArray: [],      // 图片文件
 		file: [],            // 题目文件
@@ -130,6 +131,11 @@ export default {
 					}
 				})
 			}
+		},
+
+		*updateSubject({ payload }, { call, put, select }) {
+			const res = yield call(api.updateSubject, payload);
+			res && message.success(res.data.message);
 		},
 		
 		*progressSource({ payload }, { call, put }) {

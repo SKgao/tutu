@@ -5,11 +5,10 @@ import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import VaildForm from './VaildForm';
-
+import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 
 import { Form, DatePicker, Input, Button, Popconfirm, message, Modal } from 'antd';
-import moment from 'moment';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
