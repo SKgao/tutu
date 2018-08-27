@@ -30,22 +30,22 @@ const AppverUpdate = ({
 			dataIndex: 'name',
 			sorter: true
 		}, {
-			title: '添加时间',
-			dataIndex: 'createdAt',
-			sorter: true
-		}, {
 			title: '状态',
 			dataIndex: 'status',
 			render: (txt) => {
 				switch (txt) {
 					case 1:
-						return <Badge status="processing" text="正常"/>;	
+						return <Badge status="processing" text="正常"/>;
 					case 2:
 						return <Badge status="warning" text="不可用"/>;
 					default:
 					    return <Badge status="warning" text="删除"/>;
 				}
 			}
+		}, {
+			title: '添加时间',
+			dataIndex: 'createdAt',
+			sorter: true
 		}, {
 			title: '操作',
 			dataIndex: 'action',
@@ -70,17 +70,13 @@ const AppverUpdate = ({
 			dataIndex: 'versionName',
 			sorter: true
 		}, {
-			title: '添加时间',
-			dataIndex: 'createdAt',
-			sorter: true
-		}, {
 			title: '状态',
 			dataIndex: 'status',
 			sorter: true,
 			render: (txt) => {
 				switch (txt) {
 					case 1:
-						return <Badge status="processing" text="正常"/>;	
+						return <Badge status="processing" text="正常"/>;
 					case 2:
 						return <Badge status="warning" text="不可用"/>;
 					default:
@@ -92,6 +88,10 @@ const AppverUpdate = ({
 			dataIndex: 'forceUpdate',
 			sorter: true,
 			render: (txt) => <span>{ (txt == 1) ? '不需要' : '需要' }</span>
+		}, {
+			title: '添加时间',
+			dataIndex: 'createdAt',
+			sorter: true
 		}, {
 			title: '操作',
 			dataIndex: 'action',
@@ -131,7 +131,7 @@ const AppverUpdate = ({
 			}
     	})
 	}
-	
+
 	/**
 	 * 启用App、版本类型
 	 * @param  {object} 列数据
@@ -176,7 +176,7 @@ const AppverUpdate = ({
 			}
     	})
 	}
-	
+
 	// 选择时间框
 	const datepickerChange = (d, t) => {
 		dispatch({
@@ -283,7 +283,8 @@ const AppverUpdate = ({
 	return (
 		<div>
 			<Tabs
-                animated={false}
+				animated={false}
+				activeKey={activeKey}
 				onChange={handleTabChange}
             >
 			   <TabPane tab="App类型" key="0">
@@ -352,7 +353,7 @@ const AppverUpdate = ({
 						>
 						<Form>
 							{/*App类型*/}
-							<FormItem 
+							<FormItem
 							    label="App类型"
 								{...formItemLayout}
 								>
@@ -440,4 +441,3 @@ AppverUpdate.propTypes = {
 };
 
 export default connect(({ appver }) => ({ appver }))(Form.create()(AppverUpdate));
-	

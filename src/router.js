@@ -4,7 +4,6 @@ import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import dynamic from 'dva/dynamic';
 import App from './App';
-import ErrorPage from '@/components/ErrorPage';
 
 // 动态加载component和model
 const { ConnectedRouter } = routerRedux;
@@ -35,11 +34,6 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "authMenu" */ './pages/authmenu/model')]
 		},
 		{
-			path: '/system/logs/deleteLogs',
-			component: () => import(/* webpackChunkName: "deleteLogs" */ './pages/systemManage/logManage/deleteLog/index'),
-			models: () => [import(/* webpackChunkName: "deleteLogs" */ './pages/systemManage/logManage/deleteLog/model')]
-		},
-		{
 			path: '/teachingManage/book',
 			component: () => import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/index'),
 			models: () => [import(/* webpackChunkName: "teachingManage/book" */ './pages/teachingManage/book/model')]
@@ -55,15 +49,54 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/model')]
 		},
 		{
+			path: '/teachingManage/pass',
+			component: () => import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/model')]
+		},
+		{
 			path: '/appverUpdate',
 			component: () => import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/index'),
 			models: () => [import(/* webpackChunkName: "appverUpdate" */ './pages/appUpdate/model')]
 		},
 		{
 			path: '/sourceMaterial',
-			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/index'), 
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/index'),
 			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/model')]
-		}
+		},
+		{
+			path: '/units/part',
+			component: () => import(/* webpackChunkName: "/units/part" */ './pages/part/index'),
+			models: () => [import(/* webpackChunkName: "/units/part" */ './pages/part/model')]
+		},
+		{
+			path: '/subject',
+			component: () => import(/* webpackChunkName: "subject" */ './pages/subject/index'),
+			models: () => [import(/* webpackChunkName: "subject" */ './pages/subject/model')]
+		},
+		{
+			path: '/subjects',
+			component: () => import(/* webpackChunkName: "subjects" */ './pages/subjects/index'),
+			models: () => [import(/* webpackChunkName: "subjects" */ './pages/subjects/model')]
+		},
+		{
+			path: '/member',
+			component: () => import(/* webpackChunkName: "member" */ './pages/member/index'),
+			models: () => [import(/* webpackChunkName: "member" */ './pages/member/model')]
+		},
+		{
+			path: '/order',
+			component: () => import(/* webpackChunkName: "order" */ './pages/order/index'),
+			models: () => [import(/* webpackChunkName: "order" */ './pages/order/model')]
+		},
+		{
+			path: '/activity',
+			component: () => import(/* webpackChunkName: "activity" */ './pages/activity/index'),
+			models: () => [import(/* webpackChunkName: "activity" */ './pages/activity/model')]
+		},
+		{
+			path: '/progress',
+			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/progress')
+		},
 	]
 
 	return (
@@ -80,8 +113,7 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
-						<Route component={ErrorPage}/>
-						
+
 					</Switch>
 				</App>
 			</LocaleProvider>

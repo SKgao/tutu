@@ -22,8 +22,7 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text } = sourcematerial;
-
+    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text, pageNum, pageSize } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
 
     // 鼠标放在图片上的事件
@@ -111,6 +110,15 @@ const sourceMaterial = ({
             handleSubmit('modalShow',false)
         }
     }
+    // 显示添加素材modal
+    const handleSubmit=(flag, show)=>{
+      dispatch({
+        type: 'sourcematerial/setParam',
+        payload: {
+              [flag]: show
+          }
+      })
+    }
     // 确定修改素材
     const submitEditForm = (e) => {
         if (e!="false") {
@@ -130,15 +138,6 @@ const sourceMaterial = ({
             handleSubmit('modal2Show',false)
         }
     }
-    // 显示添加素材modal
-    const handleSubmit=(flag, show)=>{
-        dispatch({
-            type: 'sourcematerial/setParam',
-            payload: {
-                [flag]: show
-            }
-        })
-    }
     // 表单取消
     const handleReset  = () => {
         resetFields();
@@ -154,6 +153,17 @@ const sourceMaterial = ({
                 text:e.text
             }
         })
+    }
+
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'sourcematerial/getSource',
+    		payload: filterObj({ startTime, endTime, text, ...param })
+    	})
     }
 
     // 选择时间框
@@ -217,7 +227,7 @@ const sourceMaterial = ({
           </Form>
       </FormInlineLayout>
 
-        <Modal
+      <Modal
             title="新增素材"
             visible={modalShow}
             onCancel= { () => handleSubmit('modalShow',false) }
@@ -248,13 +258,22 @@ const sourceMaterial = ({
             <EditForm></EditForm>
         </Modal>
       <TableLayout
+          pagination={false}
           dataSource={materialList}
           allColumns={columns}
           />
       <PaginationLayout
-          total={10}
-          current={1}
-          pageSize={10} />
+        total={sourcematerial.totalCount}
+        onChange={(page, pageSize) => handleChange({
+            pageNum: page,
+            pageSize
+        })}
+        onShowSizeChange={(current, pageSize) => handleChange({
+            pageNum: 1,
+            pageSize
+        })}
+        current={pageNum}
+        pageSize={pageSize} />
     </div>
   )
 };

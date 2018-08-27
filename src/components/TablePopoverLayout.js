@@ -74,7 +74,7 @@ class TablePopoverLayout extends Component {
 				content={
 					<div className="popover-group">
 						{
-							typeof(valueData) === 'string' && 
+							(typeof(valueData) === 'string' || typeof(valueData) === 'number') && 
 							<Input 
 								value={value}
 								onChange={e => this.handleChange(e.target.value)}

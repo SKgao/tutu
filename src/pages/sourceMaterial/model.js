@@ -7,14 +7,17 @@ export default {
 	state: {
     startTime: '',
     endTime: '',
-    text: '',  // 年级id
+    text: '',  // 素材内容
     materialList: [], // 素材数据
 		modalShow: false,
     modal2Show:false,
 		icon: '',//素材图标
     audio:'',//素材音频
     iconUrl:'',//素材地址
-    audioUrl:''//音频地址
+    audioUrl:'',//音频地址
+    pageSize: 10,
+    pageNum: 1,
+    totalCount: 0
 	},
 
 	subscriptions: {
@@ -36,7 +39,10 @@ export default {
         yield put({
         	type: 'save',
         	payload: {
-        		materialList: (res.data.data) ? res.data.data.data: []
+            materialList: (res.data.data) ? res.data.data.data: [],
+            totalCount: (res.data.data) ? res.data.data.totalCount : 0,
+						modalShow:false,
+						modal2Show:false
         	}
         })
       }
@@ -59,10 +65,9 @@ export default {
     *deleteSource({ payload }, { call }) {
         const res = yield call(api.deleteSource, payload);
         res && message.success(res.data.message);
-        
     },
     *editSource({ payload }, { call, put }) {
-      const res = yield call(api.addSource, payload);
+      const res = yield call(api.editSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({

@@ -35,7 +35,7 @@ const editForm = ({
         dispatch({
             type: 'sourcematerial/editSource',
             payload: data
-        }) 
+        })
     }
 
     // 取消重置表单
@@ -46,7 +46,7 @@ const editForm = ({
             payload: {
                 modal2Show:false
             }
-        }) 
+        })
     }
     // 上传音频回调
     const iconUploadSuccess = (url) => {
@@ -56,7 +56,7 @@ const editForm = ({
             payload: {
                 icon:url
             }
-        }) 
+        })
     }
     // 上传音频回调
     const audioUploadSuccess = (url) => {
@@ -66,7 +66,7 @@ const editForm = ({
             payload: {
                 audio:url
             }
-        }) 
+        })
     }
 	return (
         <div>
@@ -134,7 +134,6 @@ const editForm = ({
 		</div>
 	)
 };
-
 editForm.propTypes = {
     sourcematerial: PropTypes.object // 表单提交
 };
