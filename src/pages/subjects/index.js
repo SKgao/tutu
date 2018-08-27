@@ -126,7 +126,8 @@ const Subject = ({
         // 	type: 'subject/addSubject',
         // 	payload: formData
         // })
-        axios.post(`subject/subject/import`, formData)
+        console.log(formData)
+        axios.post('subject/subject/import',formData)
             .then((res) => {
                 console.log('res--->', res)
                 // if (res.data.code === 0) {
@@ -225,7 +226,7 @@ const Subject = ({
         dispatch({
             type: 'subject/setParam',
             payload: {
-                [array]: fileList.map(e => e.name)
+                [array]: fileList.map(e => e)
             }
         })
         return false;
