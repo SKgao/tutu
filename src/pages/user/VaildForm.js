@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Form, Input, Select, Button, Radio } from 'antd';
+import { Form, Input, Select, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
@@ -21,8 +21,12 @@ const ValidForm = ({
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
             if (!err) {
-                delete values['confirm'];
-                submitForm && submitForm(values);
+                if (values.confirm !== values.password) {
+                    message.warning('两次输入密码不相同!')
+                } else {
+                    delete values['confirm'];
+                    submitForm && submitForm(values);
+                }
             }
         });
     }
@@ -45,7 +49,7 @@ const ValidForm = ({
                     {...formItemLayout}
                     label="用户名"
                     >
-                    {getFieldDecorator('name', {
+                    {getFieldDecorator('account', {
                         rules: [{ required: true, message: '请输入用户名!', whitespace: true }],
                     })(
                         <Input placeholder="请输入用户名"/>
@@ -109,7 +113,7 @@ const ValidForm = ({
                     label="头像"
                     >
                     {getFieldDecorator('avatar', {
-                        rules: [{ message: '请输入上传头像图片!' }],
+                        // rules: [{ message: '请输入上传头像图片!' }],
                     })(
                         <MyUpload uploadSuccess={uploadSuccess} uploadTxt={'上传图片'}></MyUpload>
                     )}
@@ -133,7 +137,7 @@ const ValidForm = ({
                     label="角色"
                     >
                     {getFieldDecorator('roleid', {
-                        rules: [{ message: '请选择角色!' }],
+                        // rules: [{ message: '请选择角色!' }],
                     })(
                         <Select
                             showSearch

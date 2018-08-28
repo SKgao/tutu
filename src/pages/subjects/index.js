@@ -354,7 +354,7 @@ const Subject = ({
                                 {getFieldDecorator('audioArray', {
                                     // rules: [{ message: '请上传音频素材!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory multiple showUploadList={false}>
                                         <Button>
                                             <Icon type="upload"/>上传音频
                                         </Button>
@@ -369,7 +369,7 @@ const Subject = ({
                                 {getFieldDecorator('imageArray', {
                                 // rules: [{ message: '请上传图片素材!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory multiple showUploadList={false}>
                                         <Button>
                                             <Icon type="upload"/>上传图片
                                         </Button>
