@@ -1,5 +1,4 @@
 import api from './service';
-import api_teachingManage from '@/pages/teachingManage/book/service';
 import { message } from 'antd';
 
 export default {
@@ -10,28 +9,33 @@ export default {
         subjectList: [],
 		modalShow: false,
 		partsId: 0,  // partsId
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
-				let _search = location.search.slice(1)
-				let arr = (_search) ? _search.split('=') : []
-				if (arr.length) {
-					dispatch({ 
-						type: 'setParam',
-						payload: {
-							partsId: arr[1]
-						}
-					})
-					dispatch({ 
-						type: 'getPass',
-						payload: {
-							pageNum: 1,
-						    pageSize: 100,
-							partsId: arr[1]
-						}
-					})
+				if (location.pathname === '/teachingManage/pass') {
+					let _search = location.search.slice(1)
+					let arr = (_search) ? _search.split('=') : []
+					if (arr.length) {
+						dispatch({ 
+							type: 'setParam',
+							payload: {
+								partsId: arr[1]
+							}
+						})
+						dispatch({ 
+							type: 'getPass',
+							payload: {
+								pageNum: 1,
+								pageSize: 10,
+								partsId: arr[1]
+							}
+						})
+					}
 				}
 			});
 		}
@@ -39,12 +43,13 @@ export default {
 
 	effects: {
      	*getPass({ payload }, { call, put }) {
-            const res = yield call(api.getPass, payload);
+			const res = yield call(api.getPass, payload);
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
-						tableData: (res.data.data) ? res.data.data.data : []
+						tableData: (res.data) ? res.data.data : [],
+						totalCount: (res.data) ? res.data.totalCount : 0
 					}
 				})
 			}
@@ -64,32 +69,24 @@ export default {
 		
 		*addPass({ payload }, { call, put, select }) {
 			const res = yield call(api.addPass, payload);
-			const { partsId } = yield select(state => state.partPass);
+			const { partsId, pageNum, pageSize } = yield select(state => state.partPass);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
                     type: 'getPass',
-                    payload: {
-                        pageNum: 1,
-						pageSize: 100,
-						partsId
-                    }
+                    payload: { pageNum, pageSize, partsId}
                 });
 			}
         },
         
         *updatePass({ payload }, { call, put, select }) {
-			const { partsId } = yield select(state => state.partPass);
 			const res = yield call(api.updatePass, payload);
+			const { partsId, pageNum, pageSize } = yield select(state => state.partPass);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
                     type: 'getPass',
-                    payload: {
-                        pageNum: 1,
-						pageSize: 100,
-						partsId
-                    }
+                    payload: { pageNum, pageSize, partsId}
                 });
 			}
 		},

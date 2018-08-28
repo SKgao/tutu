@@ -10,8 +10,11 @@ export default {
 	// 添加素材
 	addSource: data => axios.post('/source/add', data),
 
+	// 题目-素材导入
+	addSubjectSource: data => axios.post('subject/source/import', data),
+
 	// 删除素材
-  deleteSource: data => axios.get('/source/delete/'+data.id, data),
-  // 修改素材
-  editSource: data => axios.post('/source/update', data),
+	deleteSource: data => axios.get('/source/delete/'+data.id, data),
+	// 修改素材
+	editSource: data => axios.post('/source/update', data),
 }

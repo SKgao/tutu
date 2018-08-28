@@ -1,26 +1,25 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
 
-import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, message, DatePicker } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Select} from 'antd';
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
+const Option = Select.Option;
 
 const PartPass = ({
     partPass,
-    location,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, subjectList} = partPass;
+    let { tableData, modalShow, subjectList, pageNum, pageSize} = partPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -55,7 +54,7 @@ const PartPass = ({
             render: (text, record, index) => {
                 return <MyUpload uploadSuccess={(url) => {
                     changeIcon(url, record)
-                }} uploadTxt={0}></MyUpload>
+                }}></MyUpload>
             }
         }, {
         	title: '闯关人数',
@@ -80,7 +79,7 @@ const PartPass = ({
 						})
 					}/>
         }, {
-        	title: '总分数',
+        	title: '平均分',
         	dataIndex: 'totalScore',
             sorter: true
         }, {
@@ -95,13 +94,21 @@ const PartPass = ({
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
+
+                    <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
                 </span>
             }
         }
     ]
-    
-    
 
+    // 调转到关卡页面
+    const linktoProject = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/subjects',
+            search: `customsPassId=${record.id}&sort=${record.sort}`
+        }));
+    }
+    
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -156,10 +163,23 @@ const PartPass = ({
         });
     }
 
-    // 文件上传成功
-    const uploadSuccess = (url) => {
-        setFieldsValue({'icon': url})
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'partPass/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'partPass/getPass',
+    		payload: param
+    	})
     }
+
+    // 文件上传成功
+    const uploadSuccess = (url) => setFieldsValue({'icon': url})
+
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
    
 	return (
 		<div>
@@ -167,6 +187,10 @@ const PartPass = ({
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState(true)}>添加关卡</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                     </FormItem>
                 </Form>
             </FormInlineLayout>
@@ -229,6 +253,27 @@ const PartPass = ({
                     </FormItem>
 
                     <FormItem
+                        label="题型"
+                        hasFeedback
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('subject', {
+                            rules: [{ required: true, message: '请选择题型!' }],
+                        })(
+                            <Select
+                                showSearch
+                                onFocus={() => dispatch({type: 'partPass/getSubject'})}
+                                >
+                                {
+                                    subjectList.map(item =>
+                                        <Option key={item.id} value={item.id}>{item.name}</Option>
+                                    )
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+
+                    <FormItem
                         {...formItemLayout}>
                         <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
                         <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
@@ -240,10 +285,21 @@ const PartPass = ({
                 dataSource={tableData}
                 allColumns={columns}
                 />
-            <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+            {
+                partPass.totalCount && 
+                <PaginationLayout
+                    total={partPass.totalCount}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    current={pageNum}
+                    pageSize={pageSize} />
+            }
 		</div>
 	)
 };

@@ -10,7 +10,7 @@ class MyUpload extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     handleUpload = (file) => {
         let formData = new FormData();
         let { uploadSuccess } = this.props
@@ -26,15 +26,15 @@ class MyUpload extends Component {
                     }
                 })
                 .catch((err) => {
-                    
+
                 });
         }
     }
 
     render() {
-        const { uploadTxt } = this.props;
+        const { uploadTxt, directory } = this.props;
         return (
-            <Upload onChange={this.handleUpload}>
+            <Upload onChange={this.handleUpload} directory={directory}>
                 <Button>
                     <Icon type="upload"/>
                     {
@@ -47,6 +47,7 @@ class MyUpload extends Component {
 }
 
 MyUpload.propTypes = {
+    directory: PropTypes.bool,     // 支持上传文件夹
     uploadSuccess: PropTypes.func, // 上传成功回调
     uploadTxt: PropTypes.oneOfType([
         PropTypes.string,
@@ -54,8 +55,9 @@ MyUpload.propTypes = {
     ])
 };
 
-MyUpload.propTypes = {
-    uploadSuccess: PropTypes.func // 上传成功回调
+MyUpload.defaultProps = {
+    uploadTxt: '上传文件',
+    directory: false
 };
 
 export default MyUpload;

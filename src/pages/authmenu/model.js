@@ -8,6 +8,9 @@ export default {
 		tableData: [],
 		modalShow: false,
 		menuName: '',  // 菜单名称
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
@@ -16,7 +19,7 @@ export default {
 				type: 'getMenu',
 				payload: {
 					pageNum: 1,
-					pageSize: 20
+					pageSize: 10
 				}
 			});
 		},
@@ -35,22 +38,21 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						tableData: (res.data.data) ? res.data.data.data : []
+						tableData: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				});
 			}
 		},
 		
-		*addMenu({ payload }, { call, put }) {
+		*addMenu({ payload }, { call, put, select }) {
 			const res = yield call(api.addMenu, payload);
+			const { menuName, pageNum, pageSize } = yield select(state => state.authmenu);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
 					type: 'getMenu',
-					payload: {
-						pageNum: 1,
-						pageSize: 20
-					}
+					payload: { menuName, pageNum, pageSize }
 				});
 				yield put({
 					type: 'setParam',

@@ -8,29 +8,34 @@ export default {
 		partList: [],
 		startTime: '',
 		endTime: '',
-		unitsId: 0
+		unitsId: 0,
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
             return history.listen(location => {
-				let _search = location.search.slice(1)
-				let arr = (_search) ? _search.split('=') : []
-				if (arr.length) {
-					dispatch({ 
-						type: 'setParam',
-						payload: {
-							unitsId: arr[1]
-						}
-					})
-					dispatch({ 
-						type: 'getPart',
-						payload: {
-							pageNum: 1,
-						    pageSize: 100,
-							unitsId: arr[1]
-						}
-					})
+				if (location.pathname === '/teachingManage/part') {
+					let _search = location.search.slice(1)
+					let arr = (_search) ? _search.split('=') : []
+					if (arr.length) {
+						dispatch({ 
+							type: 'setParam',
+							payload: {
+								unitsId: arr[1]
+							}
+						})
+						dispatch({ 
+							type: 'getPart',
+							payload: {
+								pageNum: 1,
+								pageSize: 10,
+								unitsId: arr[1]
+							}
+						})
+					}
 				}
 			});
 		}
@@ -39,12 +44,13 @@ export default {
 	effects: {
 		  
 		*getPart({ payload }, { call, put }) {
-            const res = yield call(api.getPart, payload);
+			const res = yield call(api.getPart, payload);
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
-						partList: (res.data.data) ? res.data.data.data : []
+						partList: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				})
 			}
@@ -52,32 +58,24 @@ export default {
 
 		*addPart({ payload }, { call, put, select }) {
 			const res = yield call(api.addPart, payload);
-			const { unitsId } = yield select(state => state.unitPart);
+			const { unitsId, pageNum, pageSize } = yield select(state => state.unitPart);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
                     type: 'getPart',
-                    payload: {
-                        pageNum: 1,
-						pageSize: 100,
-						unitsId
-                    }
+                    payload: { pageNum, pageSize, unitsId }
                 });
 			}
 		},
 		
 		*updatePart({ payload }, { call, put, select }) {
 			const res = yield call(api.updatePart, payload);
-			const { unitsId } = yield select(state => state.unitPart);
+			const { unitsId, pageNum, pageSize } = yield select(state => state.unitPart);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
                     type: 'getPart',
-                    payload: {
-                        pageNum: 1,
-						pageSize: 100,
-						unitsId
-                    }
+                    payload: { pageNum, pageSize, unitsId }
                 });
 			}
 		},

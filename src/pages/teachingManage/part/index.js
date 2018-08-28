@@ -22,9 +22,8 @@ const UnitPart = ({
     location,
     ...props
 }) => {
-    const { pathname } = location;
     let { dispatch, form } = props;
-    let { partList, modalShow, startTime, endTime} = unitPart;
+    let { partList, modalShow, pageNum, pageSize} = unitPart;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -47,16 +46,19 @@ const UnitPart = ({
 						})
 					}/>
         }, {
-            title: 'icon',
-            dataIndex: '图片',
-            sorter: true
+            title: '图片',
+            dataIndex: 'icon',
+            sorter: true,
+            render: (text) => {
+                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+             }
         }, {
         	title: '修改图片',
         	dataIndex: 'updateicon',
             render: (text, record, index) => {
                 return <MyUpload uploadSuccess={(url) => {
                     changeIcon(url, record)
-                }} uploadTxt={0}></MyUpload>
+                }}></MyUpload>
             }
         },{
             title: 'part描述',
@@ -154,11 +156,24 @@ const UnitPart = ({
             })
         });
     }
+    
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'unitPart/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'unitPart/getPart',
+    		payload: param
+    	})
+    }
 
     // 文件上传成功
-    const uploadSuccess = (url) => {
-        setFieldsValue({'icon': url})
-    }
+    const uploadSuccess = (url) => setFieldsValue({'icon': url})
+
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
    
 	return (
 		<div>
@@ -166,6 +181,10 @@ const UnitPart = ({
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState(true)}>添加Part</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                     </FormItem>
                 </Form>
             </FormInlineLayout>
@@ -236,13 +255,22 @@ const UnitPart = ({
             </Modal>
 
             <TableLayout
+                pagination={false}
                 dataSource={partList}
                 allColumns={columns}
                 />
             <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+                total={unitPart.totalCount}
+                onChange={(page, pageSize) => handleChange({
+                    pageNum: page,
+                    pageSize
+                })}
+                onShowSizeChange={(current, pageSize) => handleChange({
+                    pageNum: 1,
+                    pageSize
+                })}
+                current={pageNum}
+                pageSize={pageSize} />
 		</div>
 	)
 };
