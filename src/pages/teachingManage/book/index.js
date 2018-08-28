@@ -19,6 +19,7 @@ const TabPane = Tabs.TabPane;
 
 const TeachingManage = ({
     teachingmanage,
+    loading,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -434,6 +435,7 @@ const TeachingManage = ({
 			
 
             <TableLayout
+                loading={ loading.effects['teachingmanage/getBook'] }
                 dataSource={columnsOpt[activeKey + 'List']}
                 allColumns={columnsOpt[activeKey + 'Columns']}
                 />
@@ -449,5 +451,5 @@ TeachingManage.propTypes = {
     teachingmanage: PropTypes.object
 };
 
-export default connect(({ teachingmanage }) => ({ teachingmanage }))(Form.create()(TeachingManage));
+export default connect(({ teachingmanage, loading }) => ({ teachingmanage, loading }))(Form.create()(TeachingManage));
 	

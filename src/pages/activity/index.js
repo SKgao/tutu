@@ -12,6 +12,7 @@ const { RangePicker } = DatePicker;
 
 const Activity = ({
     activity,
+    loading,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -115,6 +116,7 @@ const Activity = ({
             <TableLayout
                 dataSource={tableData}
                 allColumns={columns}
+                loading={ loading.effects['activity/getActivity'] }
                 />
 		</div>
 	)
@@ -124,5 +126,5 @@ Activity.propTypes = {
     activity: PropTypes.object
 };
 
-export default connect(({ activity }) => ({ activity }))(Form.create()(Activity));
+export default connect(({ activity, loading }) => ({ activity, loading }))(Form.create()(Activity));
 	

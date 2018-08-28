@@ -103,7 +103,7 @@ class TableLayout extends Component {
 	}
 
 	render() {
-		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination } = this.props
+		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading } = this.props
 		return (
 			<div className="table-wrapper" style={{ padding: 10 }}>
 				{
@@ -148,7 +148,14 @@ class TableLayout extends Component {
 				    pagination={pagination}
 					dataSource={dataSource}
 					rowKey={(record, index) => index}
-					scroll={{x: this.state.scrollX || false, y: scrollY || false}}>
+					loading={{
+						spinning: loading,
+						delay: 100
+					}}
+					scroll={{
+						x: this.state.scrollX || false, 
+						y: scrollY || false
+					}}>
 					{
 						allColumns.map(item => this.renderColumn(item))
 					}
@@ -174,6 +181,7 @@ TableLayout.propTypes = {
 TableLayout.defaultProps = {
 	showToolbar: false,
 	pagination: true,
+	loading: false,
 	filterColumns: []
 }
 

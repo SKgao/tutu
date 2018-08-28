@@ -13,6 +13,7 @@ const { RangePicker } = DatePicker;
 
 const Member = ({
     member,
+    loading,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -174,6 +175,7 @@ const Member = ({
                 pagination={false}
                 dataSource={memberList}
                 allColumns={columns}
+                loading={ loading.effects['member/getMember'] }
                 />
             <PaginationLayout
                 total={totalCount}
@@ -195,5 +197,5 @@ Member.propTypes = {
     member: PropTypes.object
 };
 
-export default connect(({ member }) => ({ member }))(Form.create()(Member));
+export default connect(({ member, loading }) => ({ member, loading }))(Form.create()(Member));
 	

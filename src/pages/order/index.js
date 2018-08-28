@@ -13,6 +13,7 @@ const { RangePicker } = DatePicker;
 
 const Order = ({
     order,
+    loading,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -176,6 +177,7 @@ const Order = ({
                 pagination={false}
                 dataSource={orderList}
                 allColumns={columns}
+                loading={ loading.effects['order/getOrder'] }
                 />
             <PaginationLayout
                 total={totalCount}
@@ -197,5 +199,5 @@ Order.propTypes = {
     order: PropTypes.object
 };
 
-export default connect(({ order }) => ({ order }))(Form.create()(Order));
+export default connect(({ order, loading }) => ({ order, loading }))(Form.create()(Order));
 	

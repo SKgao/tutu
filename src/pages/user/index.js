@@ -14,6 +14,7 @@ const { RangePicker } = DatePicker;
 
 const UserSetting = ({
     userSetting,
+    loading,
     ...props
 }) => {
     let { dispatch } = props;
@@ -308,6 +309,7 @@ const UserSetting = ({
             </Modal>
 
             <TableLayout
+                loading={ loading.effects['userSetting/getUser'] }
                 dataSource={tableData}
                 allColumns={columns}
                 />
@@ -323,5 +325,5 @@ UserSetting.propTypes = {
     userSetting: PropTypes.object
 };
 
-export default connect(({ userSetting }) => ({ userSetting }))(UserSetting);
+export default connect(({ userSetting, loading }) => ({ userSetting, loading }))(UserSetting);
 	

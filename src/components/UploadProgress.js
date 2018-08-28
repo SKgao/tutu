@@ -25,6 +25,7 @@ class UploadProgress extends Component {
                         this.setState({ progressTxt: data })
                         ~data.indexOf('结束') && clearInterval(this.timer)
                     } else {
+                        clearInterval(this.timer)
                         message.error(res.data.message)
                     }
                 })

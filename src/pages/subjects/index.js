@@ -19,6 +19,7 @@ const { RangePicker } = DatePicker;
 
 const Subject = ({
     subject,
+    loading,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -389,6 +390,7 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
+                            loading={ loading.effects['subject/getSubject'] }
                             />
                         {
                             customsPassId ? null :
@@ -427,5 +429,5 @@ Subject.propTypes = {
     subject: PropTypes.object
 };
 
-export default connect(({ subject }) => ({ subject }))(Form.create()(Subject));
+export default connect(({ subject, loading }) => ({ subject, loading }))(Form.create()(Subject));
 	

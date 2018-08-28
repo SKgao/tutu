@@ -20,6 +20,7 @@ const TabPane = Tabs.TabPane;
 
 const sourceMaterial = ({
     sourcematerial,
+    loading,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -80,16 +81,9 @@ const sourceMaterial = ({
 
     // 搜索
     const handleSearch = () => {
-        let PP = {
-          pageNum: 1,
-          pageSize: 10,
-          startTime: startTime,
-          endTime: endTime,
-          text: text
-        }
       dispatch({
         type: 'sourcematerial/getSource',
-        payload: filterObj(PP)
+        payload: filterObj({ startTime, endTime, text, pageNum, pageSize })
       })
     }
     // 添加素材
@@ -206,7 +200,7 @@ const sourceMaterial = ({
 
     // 上传音频、图片目录
     const uploadFileArray = (file, fileList, array) => {
-        const MAX_LEN = 1000
+        const MAX_LEN = 500
         fileList.length < MAX_LEN  && dispatch({
             type: 'sourcematerial/setParam',
             payload: {
@@ -226,6 +220,12 @@ const sourceMaterial = ({
 
     // 切换tabs标签页
     const handleTabChange = (key = '0') => {
+        if (key === '0') {
+            dispatch({
+                type: 'sourcematerial/getSource',
+                payload: { pageNum, pageSize, startTime, endTime }
+            })
+        }
     	dispatch({
     		type: 'sourcematerial/setParam',
     		payload: {
@@ -361,6 +361,7 @@ const sourceMaterial = ({
                 pagination={false}
                 dataSource={materialList}
                 allColumns={columns}
+                loading={ loading.effects['sourcematerial/getSource'] }
                 />
             <PaginationLayout
                 total={sourcematerial.totalCount}
@@ -395,4 +396,4 @@ sourceMaterial.propTypes = {
     sourcematerial: PropTypes.object
 };
 
-export default connect(({ sourcematerial }) => ({ sourcematerial }))(Form.create()(sourceMaterial));
+export default connect(({ sourcematerial, loading }) => ({ sourcematerial, loading }))(Form.create()(sourceMaterial));

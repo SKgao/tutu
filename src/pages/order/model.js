@@ -12,7 +12,10 @@ export default {
         startTime: '',
         startPayTime: '',
         endTime: '',
-        endPayTime: '',
+		endPayTime: '',
+		tutuNumber: '', // 图图号
+		orderNo: '',   // 订单号
+		payType: '',   // 支付方式
         activityId: ''
 	},
 
@@ -60,4 +63,3 @@ export default {
 		}
 	},
 };
-	

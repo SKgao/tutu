@@ -18,7 +18,6 @@ export default {
     audioUrl:'',//音频地址
     audioArray: [],      // 音频文件
     imageArray: [],      // 图片文件
-    sourceTxt: '暂无文件上传',
     activeKey: '0',      // tabs选项
     pageSize: 10,
     pageNum: 1,
@@ -46,30 +45,27 @@ export default {
         	payload: {
             materialList: (res.data.data) ? res.data.data.data: [],
             totalCount: (res.data.data) ? res.data.data.totalCount : 0,
-						modalShow:false,
-						modal2Show:false
+						modalShow: false,
+						modal2Show: false
         	}
         })
       }
     },
 
     *addSource({ payload }, { call, put, select }) {
-      const { pageNum, pageSize } = yield select(state => state.sourcematerial);
+      const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
       const res = yield call(api.addSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
           type: 'getSource',
-          payload: {
-            pageNum,
-            pageSize
-          }
+          payload: { pageNum, pageSize, startTime, endTime }
         });
       }
     },
 
     *addSubjectSource({ payload }, { call, put, select }) {
-			const res = yield call(api.addSubjectSource, payload);
+      const res = yield call(api.addSubjectSource, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
@@ -84,42 +80,25 @@ export default {
 			}
     },
 
-    *progressSource({ payload }, { call, put }) {
-			const res = yield call(api.progressSource, payload);
-			if (res) {
-				yield put({
-					type: 'save',
-					payload: {
-            sourceTxt: (res.data) ? res.data.data : '暂无文件上传'
-					}
-				})
-			}
-    },
-
     *deleteSource({ payload }, { call, put, select }) {
-        const { materialList } = yield select(state => state.sourcematerial);
+      const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
         const res = yield call(api.deleteSource, payload);
         if (res) {
           message.success(res.data.message);
           yield put({
-            type: 'save',
-            payload: {
-              materialList: materialList.filter(e => e.id !== payload.id)
-            }
+            type: 'getSource',
+            payload: { pageNum, pageSize, startTime, endTime }
           })
         }
     },
     *editSource({ payload }, { call, put, select }) {
-      const { pageNum, pageSize } = yield select(state => state.sourcematerial);
+      const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
       const res = yield call(api.editSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
           type: 'getSource',
-          payload: {
-            pageNum,
-            pageSize
-          }
+          payload: { pageNum, pageSize, startTime, endTime }
         });
       }
     },

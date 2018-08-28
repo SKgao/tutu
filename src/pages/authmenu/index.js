@@ -11,7 +11,8 @@ import { Form, Button, Popconfirm, Modal, Badge, Input } from 'antd';
 const FormItem = Form.Item;
 
 const Authmenu = ({
-    authmenu,
+	authmenu,
+	loading,
     ...props
 }) => {
     let { dispatch } = props;
@@ -270,7 +271,8 @@ const Authmenu = ({
             <TableLayout
 			    pagination={false}
                 dataSource={tableData}
-                allColumns={columns}
+				allColumns={columns}
+				loading={ loading.effects['authmenu/getMenu'] }
                 />
             <PaginationLayout
                 total={totalCount}
@@ -292,4 +294,4 @@ Authmenu.propTypes = {
     authmenu: PropTypes.object
 };
 
-export default connect(({ authmenu }) => ({ authmenu }))(Authmenu);
+export default connect(({ authmenu, loading }) => ({ authmenu, loading }))(Authmenu);

@@ -18,6 +18,7 @@ const { TextArea } = Input;
 
 const AppverUpdate = ({
 	appver,
+	loading,
 	...props
 }) => {
 	let { dispatch, form } = props;
@@ -429,6 +430,7 @@ const AppverUpdate = ({
 			</Tabs>
 
 			<TableLayout
+			    loading={ loading.effects['appver/getAppList'] }
 				dataSource={dataSource}
 				allColumns={allColumns}
 			/>
@@ -440,4 +442,4 @@ AppverUpdate.propTypes = {
 	appver: PropTypes.object,
 };
 
-export default connect(({ appver }) => ({ appver }))(Form.create()(AppverUpdate));
+export default connect(({ appver, loading }) => ({ appver, loading }))(Form.create()(AppverUpdate));

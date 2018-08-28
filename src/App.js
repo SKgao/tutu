@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { withRouter, routerRedux } from 'dva/router';
 import axios from 'axios';
+import NProgress from 'nprogress';
 // import pathToRegexp from 'path-to-regexp';
 import layoutConfig from './configs/layout';
 
 import './scss/layout.scss';
+import 'nprogress/nprogress.css';
 
 import { Layout, Menu } from 'antd';
 import Loader from './components/Loader';
@@ -32,6 +34,17 @@ const App = ({
 	// 用户未登录跳转到登录页面
 	if (!localStorage.getItem('token') && pathname !== '/login') {
 		dispatch(routerRedux.push('/login'))
+	}
+
+	// 顶部加载条
+	let currHref = '';
+	const { href } = window.location;
+	if (currHref !== href) {
+		NProgress.start();
+		if (!loading.global) {
+			NProgress.done();
+			currHref = href;
+		}
 	}
 
 	// 选中菜单
