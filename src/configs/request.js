@@ -20,13 +20,13 @@ axios.interceptors.response.use(res => {
 	let code = res.data.code
 	let msg = res.data.message
 	switch (code) {
-		case 45:
-			routerRedux.push('/login');
+		case 46:
+			window.location.href = '#/login'
 			return false;
 		case 0:
 			return res;
 		default:
-		    (code !== 45) && message.error(msg);
+		    (code !== 45 || code !== 46) && message.error(msg);
 			return false;
 	}
 });

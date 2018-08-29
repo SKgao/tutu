@@ -273,6 +273,7 @@ const Authmenu = ({
                 dataSource={tableData}
 				allColumns={columns}
 				loading={ loading.effects['authmenu/getMenu'] }
+				scrollX={true}
                 />
             <PaginationLayout
                 total={totalCount}

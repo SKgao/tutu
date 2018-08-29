@@ -15,6 +15,10 @@ export default {
 
 	// 删除素材
 	deleteSource: data => axios.get('/source/delete/'+data.id, data),
+
+	// 批量删除素材
+	batchDeleteSource: data => axios.post('/source/delete/batch', data),
+
 	// 修改素材
 	editSource: data => axios.post('/source/update', data),
 }

@@ -30,16 +30,36 @@ const Member = ({
             dataIndex: 'realName',
             sorter: true
         }, {
-            title: '用户等级',
+            title: '用户头像',
+            dataIndex: 'icon',
+            sorter: true,
+            render: (text) => {
+                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+             }
+        }, {
+            title: '会员等级',
             dataIndex: 'userLevel',
             sorter: true
         }, {
-            title: '会员等级',
+            title: '等级名称',
             dataIndex: 'userLevelName',
+            sorter: true
+        }, {
+            title: '会员到期时间',
+            dataIndex: 'exprieTime',
             sorter: true
         }, {
             title: '手机号',
             dataIndex: 'mobile',
+            sorter: true,
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: 'E-mail',
+            dataIndex: 'email',
+            sorter: true
+        }, {
+            title: '会员生日',
+            dataIndex: 'birthday',
             sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
@@ -53,28 +73,48 @@ const Member = ({
             sorter: true,
             render: (text) => <span>{ text === 1 ? '是' :  '否' }</span>
         }, {
-            title: '教材名',
-            dataIndex: 'bookVersionName',
-            sorter: true,
-            render: (text) => <span>{ text ? text :  '无' }</span>
-        }, {
-            title: '单元名',
-            dataIndex: 'unitName',
+            title: '注册时间',
+            dataIndex: 'createdAt',
             sorter: true
         }, {
-            title: 'part名称',
-            dataIndex: 'partName',
-            sorter: true
-        }, {
-            title: 'part提示',
-            dataIndex: 'partTips',
-            sorter: true,
-            render: (text) => <span>{ text ? text :  '无' }</span>
-        }, {
-            title: '关卡名',
-            dataIndex: 'customPassName',
-            sorter: true,
-            render: (text) => <span>{ text ? text :  '无' }</span>
+            title: '最近闯关记录',
+            dataIndex: 'record',
+            children: [
+                {
+                    title: '教材名',
+                    dataIndex: 'bookVersionName',
+                    sorter: true,
+                    render: (text) => <span>{ text ? text :  '无' }</span>
+                }, {
+                    title: '练习教材名称',
+                    dataIndex: 'textbookNamePractice',
+                    sorter: true,
+                    render: (text) => <span>{ text ? text :  '无' }</span>
+                },  {
+                    title: '配音教材名称',
+                    dataIndex: 'textbookNameAudio',
+                    sorter: true,
+                    render: (text) => <span>{ text ? text :  '无' }</span>
+                }, {
+                    title: '单元名',
+                    dataIndex: 'unitName',
+                    sorter: true
+                }, {
+                    title: 'partTips',
+                    dataIndex: 'partTips',
+                    sorter: true,
+                    render: (text) => <span>{ text ? text :  '无' }</span>
+                }, {
+                    title: 'part名称',
+                    dataIndex: 'partName',
+                    sorter: true
+                }, {
+                    title: '关卡名',
+                    dataIndex: 'customPassName',
+                    sorter: true,
+                    render: (text) => <span>{ text ? text :  '无' }</span>
+                }
+            ]
         }
     ]
 
@@ -132,7 +172,7 @@ const Member = ({
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     {/*时间*/}
-                    <FormItem label="时间">
+                    {/* <FormItem label="时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
                             showTime={{
@@ -142,7 +182,7 @@ const Member = ({
                             format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
-                    </FormItem>
+                    </FormItem> */}
                  
                     {/*会员名*/}
                     {/* <FormItem label="会员名">
@@ -176,6 +216,7 @@ const Member = ({
                 dataSource={memberList}
                 allColumns={columns}
                 loading={ loading.effects['member/getMember'] }
+                scrollX={true}
                 />
             <PaginationLayout
                 total={totalCount}

@@ -11,7 +11,7 @@ import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message } from 'antd';
+import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message, Popconfirm, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -29,6 +29,22 @@ const Subject = ({
     // 题目列表
     const subjectCol = [
         {
+            title: '教材名称',
+            dataIndex: 'textBookName',
+            sorter: true
+        }, {
+            title: '单元名称',
+            dataIndex: 'unitsName',
+            sorter: true
+        }, {
+            title: 'part描述',
+            dataIndex: 'partsTips',
+            sorter: true
+        }, {
+            title: 'part标题',
+            dataIndex: 'partsTitle',
+            sorter: true
+        }, {
             title: '题型名称',
             dataIndex: 'subjectTypeName',
             sorter: true,
@@ -90,7 +106,7 @@ const Subject = ({
         }, {
             title: '素材包',
             dataIndex: 'action',
-            render: (text) => <a onClick={openNotification}>查看素材包</a>
+            render: (text) => <span>点击表格查看素材包</span>
         }
     ]
 
@@ -105,6 +121,41 @@ const Subject = ({
             icon: <Icon type="smile-circle" style={{ color: '#108ee9' }} />
         });
       }
+    
+    const expandedRowRender = () => {
+        const sourceCol = [
+            { 
+                title: '题目', 
+                dataIndex: 'text',
+                key: '_text' 
+            }, { 
+                title: '图标', 
+                dataIndex: 'icon',
+                key: '_icon',
+                render: (text) => {
+                    return (!text) ? <span>无</span> :
+                        <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
+                            <img src={ text } style={{ width: 30, height: 40 }}/>
+                        </Popconfirm>
+                }
+            }, { 
+                title: '音频', 
+                dataIndex: 'audio',
+                key: '_audio',
+                render: (audio) => {
+                    return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
+                 }
+            },
+        ]
+
+        return (
+            <Table
+              columns={sourceCol}
+              dataSource={dataSource[0].sourceVOS}
+              pagination={false}
+            />
+          )
+    }
 
     // 添加题目
     const handleSubmitSubject = () => {
@@ -390,6 +441,8 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
+                            expandedRowRender={customsPassId ? expandedRowRender : null}
+                            expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] }
                             />
                         {

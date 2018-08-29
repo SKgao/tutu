@@ -435,7 +435,7 @@ const TeachingManage = ({
 			
 
             <TableLayout
-                loading={ loading.effects['teachingmanage/getBook'] }
+                loading={ loading.effects['teachingmanage/getBook'] || loading.effects['teachingmanage/getVersion'] }
                 dataSource={columnsOpt[activeKey + 'List']}
                 allColumns={columnsOpt[activeKey + 'Columns']}
                 />

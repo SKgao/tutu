@@ -26,7 +26,7 @@ const Order = ({
             dataIndex: 'tutuNumber',
             sorter: true
         }, {
-            title: '用户类型',
+            title: '商品名称',
             dataIndex: 'itemName',
             sorter: true
         }, {
@@ -51,13 +51,13 @@ const Order = ({
             dataIndex: 'payTime',
             sorter: true
         }, {
-            title: '取消原因',
-            dataIndex: 'cancelReason',
+            title: '第三方交易号',
+            dataIndex: 'outNo',
             sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
-            title: '第三方交易号',
-            dataIndex: 'outNo',
+            title: '取消原因',
+            dataIndex: 'cancelReason',
             sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
@@ -126,7 +126,7 @@ const Order = ({
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     {/*时间*/}
-                    <FormItem label="时间">
+                    {/* <FormItem label="时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
                             showTime={{
@@ -136,7 +136,7 @@ const Order = ({
                             format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
-                    </FormItem>
+                    </FormItem> */}
 
                     {/*图图号*/}
                     <FormItem label="图图号">
@@ -178,6 +178,7 @@ const Order = ({
                 dataSource={orderList}
                 allColumns={columns}
                 loading={ loading.effects['order/getOrder'] }
+                scrollX={true}
                 />
             <PaginationLayout
                 total={totalCount}

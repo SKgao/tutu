@@ -30,6 +30,10 @@ const Login = ({
 
 	return (
 		<div className="form">
+		    <div className="logo">
+			    <img src="//img.chengxuyuantoutiao.com/group1/M00/00/00/rBDnNlt2pyeATwmRAACkk3_3iZY828.png"/>
+				<span>图图英语</span>
+			</div>
 			<form>
 				<FormItem hasFeedback>
 					{getFieldDecorator('username', {

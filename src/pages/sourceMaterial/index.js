@@ -214,7 +214,10 @@ const sourceMaterial = ({
     const handleSubmitSource = () => {
         dispatch({
             type: 'sourcematerial/addSubjectSource',
-            payload: { audioArray, imageArray }
+            payload: { 
+                audioArray: audioArray.filter(e => e !== '.DS_Store'),
+                imageArray: imageArray.filter(e => e !== '.DS_Store')
+            }
         })
     }
 
@@ -232,7 +235,27 @@ const sourceMaterial = ({
 				activeKey: key
 			}
     	})
-	}
+    }
+    
+    // table选中
+    const tableRowSelectd = (selectedRowKeys, selectedRows) => {
+        let sourceIds = selectedRows.map(e => e.id)
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: {
+                selectedRowKeys,
+				sourceIds
+			}
+    	})
+    }
+     
+    // 批量删除素材
+    const handleBatchDelete = () => {
+        dispatch({
+    		type: 'sourcematerial/batchDeleteSource',
+    		payload: sourcematerial.sourceIds
+    	})
+    }
 
   return (
     <div>
@@ -272,6 +295,12 @@ const sourceMaterial = ({
 
                     <FormItem>
                         <Button type="primary" onClick={() => handleSubmit('modal3Show', true)}>导入素材</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <Popconfirm title="是否删除选中素材?" onConfirm={handleBatchDelete}>
+                            <Button type="danger" disabled={!sourcematerial.sourceIds.length}>批量删除</Button>
+                        </Popconfirm>
                     </FormItem>
 
                 </Form>
@@ -358,6 +387,12 @@ const sourceMaterial = ({
                     </Form>
                 </Modal>
             <TableLayout
+                rowSelection={{
+                    fixed: true,
+                    type: 'checkbox',
+                    onChange: tableRowSelectd,
+                    selectedRowKeys: sourcematerial.selectedRowKeys
+                }}
                 pagination={false}
                 dataSource={materialList}
                 allColumns={columns}

@@ -21,7 +21,9 @@ export default {
     activeKey: '0',      // tabs选项
     pageSize: 10,
     pageNum: 1,
-    totalCount: 0
+    totalCount: 0,
+    sourceIds: [], // 批量删除素材
+    selectedRowKeys: [], // 默认选中项
 	},
 
 	subscriptions: {
@@ -91,6 +93,27 @@ export default {
           })
         }
     },
+
+    *batchDeleteSource({ payload }, { call, put, select }) {
+        const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
+        const res = yield call(api.batchDeleteSource, payload);
+        if (res) {
+          message.success(res.data.message);
+          yield put({
+            type: 'setParam',
+            payload: { 
+              sourceIds: [],
+              selectedRowKeys: []
+            }
+          })
+
+          yield put({
+            type: 'getSource',
+            payload: { pageNum, pageSize, startTime, endTime }
+          })
+        }
+    },
+
     *editSource({ payload }, { call, put, select }) {
       const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
       const res = yield call(api.editSource, payload);
