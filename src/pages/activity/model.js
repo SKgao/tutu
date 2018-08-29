@@ -1,34 +1,89 @@
 import api from './service';
 import { message } from 'antd';
+import { filterObj } from '@/utils/tools';
 
 export default {
 	namespace: 'activity',
 
 	state: {
-		tableData: [],
+		tableData: [],   // 表格数据
+		selectList: [],  // 下拉框数据
 		startTime: '',
-		endTime: ''
+		endTime: '',
+		beginAt: '',
+		endAt: '',
+		id: '',   // 活动id
+		pageSize: 10,
+        pageNum: 1,
+		totalCount: 0,
+		modalShow: false,
+		addStatus: 1,   // 添加活动的状态
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {	
-			dispatch({ type: 'getActivity'});
+			dispatch({ type: 'getActivity' });
 		},
 	},
 
 	effects: {
-		*getActivity({ payload }, { call, put }) {
-			const res = yield call(api.getActivity, payload);
+		*getActivity({ payload }, { call, put, select }) {
+			const { startTime, endTime, pageNum, pageSize, id } = yield select(state => state.activity);
+			const res = yield call(api.getActivity, filterObj({ id, startTime, endTime, pageNum, pageSize }));
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
-						tableData: (res.data) ? res.data.data : []
+						tableData: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				});
 			}
 		},
 
+		*addActivity({ payload }, { call, put, select }) {
+			const res = yield call(api.addActivity, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({	type: 'getActivity' });
+				yield put({
+					type: 'setParam',
+                    payload: {
+						modalShow: false,
+						addStatus: 1
+				    }			
+				})
+			}
+		},
+
+		*updateActivity({ payload }, { call, put }) {
+			const res = yield call(api.updateActivity, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({	type: 'getActivity' });
+			}
+		},
+
+		*deleteActivity({ payload }, { call, put }) {
+			const res = yield call(api.deleteActivity, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({	type: 'getActivity' });
+			}
+		},
+
+		*activeSelect({ payload }, { call, put }) {
+			const res = yield call(api.activeSelect, payload);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						selectList: (res.data) ? [{id: '', title: '全部'}, ...res.data.data] : []
+					}
+				});
+			}
+		},
+		
 		*setParam({ payload }, { put }) {
 			for (let key in payload) {
 				yield put({

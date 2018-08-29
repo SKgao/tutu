@@ -9,7 +9,8 @@ export default {
 		subjectList: [],     // 题目列表
 		descList: [],        // 题目详情
         bookList: [],        // 教材列表
-        customPassId: '',    // 关卡id
+		customPassId: '',    // 关卡id
+		customsPassName: '', // 题目名
         sourceIds: '',       // 素材id
         subjectTypeId: '',   // 题目类型id
         startTime: '',

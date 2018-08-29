@@ -23,7 +23,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey} = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey, customsPassName} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
@@ -45,12 +45,12 @@ const Subject = ({
             dataIndex: 'partsTitle',
             sorter: true
         }, {
-            title: '题型名称',
-            dataIndex: 'subjectTypeName',
+            title: '关卡名称',
+            dataIndex: 'customsPassName',
             sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改题型名称'}
+					title={'修改关卡名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v => 
@@ -59,7 +59,7 @@ const Subject = ({
 							payload: {
                                 customsPassId: record.customsPassId - 0,
                                 sort: record.sort - 0,
-								subjectTypeName: v
+								customsPassName: v
 							}
 						})
 					}/>
@@ -228,7 +228,7 @@ const Subject = ({
     const handleSearch = () => {
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, pageNum, pageSize })
+    		payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
     	})
     }
    
@@ -239,7 +239,7 @@ const Subject = ({
         })
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, ...param })
+    		payload: filterObj({ startTime, endTime, sourceIds, customsPassName, ...param })
     	})
     }
 
@@ -267,7 +267,7 @@ const Subject = ({
         dispatch({
     		type: 'subject/setParam',
     		payload: {
-                sourceIds: e.target.value
+                customsPassName: e.target.value
             }
         })
     }
@@ -305,9 +305,9 @@ const Subject = ({
                                     />
                             </FormItem>
 
-                            {/*题目*/}
-                            <FormItem label="题目">
-                                <Input placeholder="输入题目名" onChange={(e) => handleInput(e)}/>
+                            {/*关卡名称*/}
+                            <FormItem label="关卡名称">
+                                <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e)}/>
                             </FormItem>
 
                             <FormItem>

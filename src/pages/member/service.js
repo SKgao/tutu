@@ -8,5 +8,8 @@ export default {
     getMember: data => axios.post('member/list', data),
     
     // 会员等级列表
-	getMemberLevel: data => axios.get('member/level/list/combox', data),
+    getMemberLevel: data => axios.get('member/level/list/combox', data),
+    
+    // 修改会员扥飞机
+    updateUserLevel: data => axios.post('member/level/update', data),
 }

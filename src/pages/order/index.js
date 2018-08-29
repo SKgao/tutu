@@ -17,7 +17,7 @@ const Order = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { orderList, pageNum, pageSize, totalCount, orderNo, tutuNumber, activityId, startTime, endTime, payType } = order;
+    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, tutuNumber, activityId, startTime, endTime, payType } = order;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -78,18 +78,12 @@ const Order = ({
     		type: 'order/setParam',
     		payload: param
         })
-        dispatch({
-    		type: 'order/getOrder',
-    		payload: filterObj({ ...param, orderNo, tutuNumber, activityId, startTime, endTime, payType })
-    	})
+        dispatch({ type: 'order/getOrder' })
     }
 
     // 搜索
     const handleSearch = (param) => {
-        dispatch({
-    		type: 'order/getOrder',
-    		payload: filterObj({ pageNum, pageSize, orderNo, tutuNumber, activityId, startTime, endTime, payType })
-    	})
+        dispatch({ type: 'order/getOrder' })
     }
 
     // 选择时间框
@@ -148,7 +142,7 @@ const Order = ({
                         <Input placeholder="输入订单号" onChange={(e) => handleInput(e, 'orderNo')}/>
                     </FormItem>
 
-                    {/*会员等级*/}
+                    {/*支付类型*/}
                     <FormItem label="支付类型">
                         <Select
                             showSearch
@@ -161,9 +155,34 @@ const Order = ({
                         </Select>
                     </FormItem>
 
-                    {/*活动id*/}
-                    <FormItem label="活动id">
-                        <Input placeholder="输入活动id" onChange={(e) => handleInput(e, 'activityId')}/>
+                    {/*支付状态*/}
+                    <FormItem label="支付状态">
+                        <Select
+                            showSearch
+                            placeholder="请选择支付状态"
+                            onChange={v => changeSelect({ payType: v })}
+                            >
+                            <Option key={0} value={''}>全部</Option>
+                            <Option key={1} value={1}>待支付</Option>
+                            <Option key={2} value={2}>已支付</Option>
+                            <Option key={3} value={3}>用户取消</Option>
+                            <Option key={4} value={4}>超时关闭</Option>
+                        </Select>
+                    </FormItem>
+
+                    {/*活动筛选*/}
+                    <FormItem label="活动筛选">
+                        <Select
+                            showSearch
+                            onFocus={() => dispatch({type: 'order/activeSelect'})}
+                            onChange={v => changeSelect({id: v})}
+                            >
+                            {
+                                selectList.map(item =>
+                                    <Option key={item.id} value={item.id}>{item.title}</Option>
+                                )
+                            }
+                        </Select>
                     </FormItem>
 
                     <FormItem>

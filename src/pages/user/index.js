@@ -23,21 +23,7 @@ const UserSetting = ({
         {
             title: '用户名',
             dataIndex: 'account',
-            sorter: true,
-            render: (text, record) =>
-				<TablePopoverLayout
-					title={'修改用户名'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
-					onOk={v => 
-						dispatch({
-							type: 'userSetting/updateUser',
-							payload: {
-								id: record.id,
-								account: v
-							}
-						})
-					}/>
+            sorter: true
         }, {
         	title: '用户头像',
             dataIndex: 'avatar',

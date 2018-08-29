@@ -53,6 +53,11 @@ export default {
 			}
 		},
 
+		*updateUserLevel({ payload }, { call }) {
+			const res = yield call(api.updateUserLevel, payload);
+			res && message.success(res.data.message);
+		},
+
 		*setParam({ payload }, { put }) {
 			for (let key in payload) {
 				yield put({

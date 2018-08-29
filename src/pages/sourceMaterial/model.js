@@ -18,6 +18,7 @@ export default {
     audioUrl:'',//音频地址
     audioArray: [],      // 音频文件
     imageArray: [],      // 图片文件
+    sentensArray: [],    // 句子文件
     activeKey: '0',      // tabs选项
     pageSize: 10,
     pageNum: 1,
@@ -74,7 +75,8 @@ export default {
 					type: 'setParam',
 					payload: {
 						audioArray: [],
-						imageArray: [],
+            imageArray: [],
+            sentensArray: [],
             modal3Show: false,
             activeKey: '1'
 					}

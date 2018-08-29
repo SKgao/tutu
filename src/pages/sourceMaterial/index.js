@@ -24,7 +24,7 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray } = sourcematerial;
+    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
 
     // 鼠标放在图片上的事件
@@ -141,7 +141,8 @@ const sourceMaterial = ({
             payload: {
                 [m]: false,
                 audioArray: [],
-                imageArray: []
+                imageArray: [],
+                sentensArray: []
             }
         })
     }
@@ -179,15 +180,7 @@ const sourceMaterial = ({
             }
         })
     }
-    // 文件上传成功
-    const uploadSuccess = (url) => {
-        dispatch({
-          type: 'sourcematerial/setParam',
-          payload: {
-            icon: url
-          }
-        })
-    }
+
     // 搜索素材内容
     const changeText = (event) => {
         dispatch({
@@ -216,7 +209,8 @@ const sourceMaterial = ({
             type: 'sourcematerial/addSubjectSource',
             payload: { 
                 audioArray: audioArray.filter(e => e !== '.DS_Store'),
-                imageArray: imageArray.filter(e => e !== '.DS_Store')
+                imageArray: imageArray.filter(e => e !== '.DS_Store'),
+                sentensArray: sentensArray.filter(e => e !== '.DS_Store')
             }
         })
     }
@@ -374,6 +368,22 @@ const sourceMaterial = ({
                                 <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory multiple showUploadList={false}>
                                     <Button>
                                         <Icon type="upload"/>上传图片
+                                    </Button>
+                                </Upload>
+                            )}
+                        </FormItem>
+
+                        <FormItem
+                            label="句子素材目录"
+                            help={sentensArray.length ? `已选择${sentensArray.length}个句子文件` : '请选择句子文件，不能超过500个'}
+                            {...formItemLayout}
+                            >
+                            {getFieldDecorator('sentensArray', {
+                            // rules: [{ message: '请上传图片素材!' }],
+                            })(
+                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'sentensArray')} directory multiple showUploadList={false}>
+                                    <Button>
+                                        <Icon type="upload"/>上传句子文件
                                     </Button>
                                 </Upload>
                             )}

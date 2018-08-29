@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
+import TablePopoverLayout from '@/components/TablePopoverLayout';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 
@@ -39,7 +40,24 @@ const Member = ({
         }, {
             title: '会员等级',
             dataIndex: 'userLevel',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改会员等级'}
+					valueData={memberLevelList}
+					focusSelect={() => dispatch({type: 'member/getMemberLevel'})}
+					optionKey={'userLevel'}
+					optionItem={'levelName'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'member/updateUserLevel',
+							payload: {
+								id: record.id,
+								userLevel: v - 0
+							}
+						})
+					}/>
         }, {
             title: '等级名称',
             dataIndex: 'userLevelName',
