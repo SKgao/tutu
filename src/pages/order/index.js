@@ -160,7 +160,7 @@ const Order = ({
                         <Select
                             showSearch
                             placeholder="请选择支付状态"
-                            onChange={v => changeSelect({ payType: v })}
+                            onChange={v => changeSelect({ orderStatus: v })}
                             >
                             <Option key={0} value={''}>全部</Option>
                             <Option key={1} value={1}>待支付</Option>
@@ -175,7 +175,7 @@ const Order = ({
                         <Select
                             showSearch
                             onFocus={() => dispatch({type: 'order/activeSelect'})}
-                            onChange={v => changeSelect({id: v})}
+                            onChange={v => changeSelect({activityId: v})}
                             >
                             {
                                 selectList.map(item =>

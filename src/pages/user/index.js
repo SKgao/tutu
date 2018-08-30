@@ -295,6 +295,7 @@ const UserSetting = ({
             </Modal>
 
             <TableLayout
+                pagination={false}
                 loading={ loading.effects['userSetting/getUser'] }
                 dataSource={tableData}
                 allColumns={columns}

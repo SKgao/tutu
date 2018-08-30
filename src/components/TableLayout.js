@@ -35,7 +35,7 @@ class TableLayout extends Component {
 			)
 		} else {
 			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1) || (showColumns && showColumns.indexOf(item.dataIndex) === -1);
-			return hideColumn ? null : <Column {...item} key={item.dataIndex}/>
+			return hideColumn ? null : <Column {...item} key={item.dataIndex} sorter={(a, b) => a[item.dataIndex] - b[item.dataIndex]}/>
 		}
 	}
 	

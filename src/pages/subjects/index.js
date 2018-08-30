@@ -23,31 +23,26 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey, customsPassName} = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
     const subjectCol = [
         {
             title: '教材名称',
-            dataIndex: 'textBookName',
-            sorter: true
+            dataIndex: 'textBookName'
         }, {
             title: '单元名称',
-            dataIndex: 'unitsName',
-            sorter: true
+            dataIndex: 'unitsName'
         }, {
             title: 'part描述',
-            dataIndex: 'partsTips',
-            sorter: true
+            dataIndex: 'partsTips'
         }, {
             title: 'part标题',
-            dataIndex: 'partsTitle',
-            sorter: true
+            dataIndex: 'partsTitle'
         }, {
             title: '关卡名称',
             dataIndex: 'customsPassName',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改关卡名称'}
@@ -66,7 +61,6 @@ const Subject = ({
         }, {
             title: '题目内容',
             dataIndex: 'sourceIds',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改题目内容'}
@@ -226,10 +220,17 @@ const Subject = ({
 
     // 搜搜题目
     const handleSearch = () => {
-        dispatch({
-    		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
-    	})
+        if (customsPassId) {
+            dispatch({
+                type: 'subject/subjectDesc',
+                payload: filterObj({ customsPassId, sort })
+            })
+        } else {
+            dispatch({
+                type: 'subject/getSubject',
+                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
+            })
+        }
     }
    
     const handleChange = (param) => {
@@ -263,11 +264,12 @@ const Subject = ({
     }
 
     // 输入题目名
-    const handleInput = (e) => {
+    const handleInput = (e, m) => {
+        let val = e.target.value
         dispatch({
     		type: 'subject/setParam',
     		payload: {
-                customsPassName: e.target.value
+                [m]: (m === 'sort') ? val - 0 :  val
             }
         })
     }
@@ -307,12 +309,27 @@ const Subject = ({
 
                             {/*关卡名称*/}
                             <FormItem label="关卡名称">
-                                <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e)}/>
+                                <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
                             </FormItem>
+
+                            {
+                                customsPassId  ? null : 
+                                <FormItem label="题目">
+                                    <Input placeholder="输入题目名" onChange={(e) => handleInput(e, 'sourceIds')}/>
+                                </FormItem>
+                            }
+
+                            {
+                                !customsPassId  ? null : 
+                                <FormItem  label="题目顺序">
+                                    <Input placeholder="输入题目顺序" onChange={(e) => handleInput(e, 'sort')}/>
+                                </FormItem>
+                            }
 
                             <FormItem>
                                 <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                             </FormItem>
+                            
 
                             {/* <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>

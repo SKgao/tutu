@@ -12,7 +12,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message, Table, Tooltip  } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -39,7 +39,6 @@ const sourceMaterial = ({
         }, {
           title: '素材图标',
           dataIndex: 'icon',
-          sorter: true,
           render: (text) => {
              return (text) ? <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
                     <img src={ text } style={{ width: 30, height: 40 }}/>
@@ -48,10 +47,31 @@ const sourceMaterial = ({
         }, {
           title: '素材音频',
           dataIndex: 'audio',
-          sorter: true,
           render: (audio) => {
              return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
           }
+        }, {
+            title: '音标',
+            dataIndex: 'phonetic'
+        }, {
+            title: '单次释义',
+            dataIndex: 'translation',
+            render: (text) => <span>{ text.replace(/\[|\]|\"/g, '') }</span>
+        }, {
+            title: '多次释义',
+            dataIndex: 'explainsArray',
+            render: (text) => {
+                let str = text.replace(/\[|\]|\"/g, '')
+                if (!str) {
+                    return <span>无</span>
+                } else if (str.length < 20) {
+                    return <span>{ str }</span>
+                } else {
+                    return <Tooltip title={str}>
+                        <span>{ str.substr(0, 20) + '...' }</span>
+                    </Tooltip>
+                }
+            }
         }, {
           title: '操作',
             dataIndex: 'action',
@@ -397,6 +417,7 @@ const sourceMaterial = ({
                     </Form>
                 </Modal>
             <TableLayout
+                //expandedRowRender={ record => <span>{ record.explainsArray }</span> }
                 rowSelection={{
                     fixed: true,
                     type: 'checkbox',

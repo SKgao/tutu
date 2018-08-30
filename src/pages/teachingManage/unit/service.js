@@ -11,8 +11,8 @@ export default {
 	getUnit: data => axios.post('unit/list', data),
 
 	// 删除单元
-    deleteUnit: data => axios.get('role/del/' + data, data),
+    deleteUnit: data => axios.get('unit/del/' + data, data),
     
     // 修改单元
-	updateUnit: data => axios.get('unit/update', data)
+	updateUnit: data => axios.post('unit/update', data)
 }

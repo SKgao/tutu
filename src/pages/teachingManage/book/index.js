@@ -23,9 +23,9 @@ const TeachingManage = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId } = teachingmanage;
+    let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId, pageNum, pageSize, totalCount } = teachingmanage;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue } = form;
-
+    
     // 表格配置
     const columnsOpt = {
         bookList, gradeList, versionList,
@@ -33,12 +33,10 @@ const TeachingManage = ({
         bookColumns: [
             {
                 title: '教材名',
-                dataIndex: 'name',
-                sorter: true
+                dataIndex: 'name'
             }, {
                 title: '创建时间',
-                dataIndex: 'createdAt',
-                sorter: true
+                dataIndex: 'createdAt'
             }, {
                 title: '年级',
                 dataIndex: 'gradeId',
@@ -69,7 +67,6 @@ const TeachingManage = ({
             {
                 title: '年级名称',
                 dataIndex: 'gradeName',
-                sorter: true,
                 render: (text, record) =>
                     <TablePopoverLayout
                         title={'修改年级名称'}
@@ -85,12 +82,8 @@ const TeachingManage = ({
                             })
                         }/>
             }, {
-                title: '创建时间',
-                dataIndex: 'createdAt',
-                sorter: true
-            }, {
-                title: '状态',
-                dataIndex: 'status',
+                title: '年级id',
+                dataIndex: 'id',
                 sorter: true
             }
         ],
@@ -99,7 +92,6 @@ const TeachingManage = ({
             {
                 title: '教材版本名称',
                 dataIndex: 'name',
-                sorter: true,
                 render: (text, record) =>
                     <TablePopoverLayout
                         title={'修改教材版本名称'}
@@ -142,18 +134,7 @@ const TeachingManage = ({
 
     // 搜索
     const handleSearch = () => {
-        let PP = {
-        	pageNum: 1,
-        	pageSize: 10,
-        	startTime: startTime,
-        	endTime: endTime,
-            gradeId: gradeId,
-            bookVersionId: bookVersionId
-        }
-     	dispatch({
-    		type: 'teachingmanage/getBook',
-    		payload: filterObj(PP)
-    	})
+     	dispatch({ type: 'teachingmanage/getBook'})
     }
 
     // 添加书籍
@@ -253,7 +234,16 @@ const TeachingManage = ({
 				[paramName]: e.target.value
 			}
 		})
-	}
+    }
+    
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'teachingmanage/setParam',
+    		payload: param
+        })
+        dispatch({ type: 'teachingmanage/getBook' })
+    }
    
 	return (
 		<div>
@@ -282,6 +272,7 @@ const TeachingManage = ({
                         <FormItem label="年级">
                             <Select
                                 showSearch
+                                placeholder="请选择年级"
                                 onFocus={() => dispatch({type: 'teachingmanage/getGrade'})}
                                 onChange={v => changeSelect({gradeId: v})}
                                 >
@@ -297,6 +288,7 @@ const TeachingManage = ({
                         <FormItem label="教材版本">
                             <Select
                                 showSearch
+                                placeholder="请选择教材版本"
                                 onFocus={() => dispatch({type: 'teachingmanage/getVersion'})}
                                 onChange={v => changeSelect({bookVersionId: v})}
                                 >
@@ -362,6 +354,7 @@ const TeachingManage = ({
                                 rules: [{ required: true, message: '请选择年级!' }],
                             })(
                                 <Select
+                                    placeholder="请选择年级"
                                     showSearch
                                     onFocus={() => dispatch({type: 'teachingmanage/getGrade'})}
                                     >
@@ -383,6 +376,7 @@ const TeachingManage = ({
                                 rules: [{ required: true, message: '请选择教材版本!' }],
                             })(
                                 <Select
+                                    placeholder="请选择教材版本"
                                     showSearch
                                     onFocus={() => dispatch({type: 'teachingmanage/getVersion'})}
                                     >
@@ -435,14 +429,26 @@ const TeachingManage = ({
 			
 
             <TableLayout
+                pagination={false}
                 loading={ loading.effects['teachingmanage/getBook'] || loading.effects['teachingmanage/getVersion'] }
                 dataSource={columnsOpt[activeKey + 'List']}
                 allColumns={columnsOpt[activeKey + 'Columns']}
                 />
-            <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+            {
+                activeKey === 'book' &&
+                <PaginationLayout
+                    total={totalCount}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    current={pageNum}
+                    pageSize={pageSize} />
+            }
 		</div>
 	)
 };

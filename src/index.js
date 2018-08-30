@@ -45,8 +45,8 @@ function hashChangeFire() {
 	// 	app.router(require('./router').default);
 	// 	app.start('#root');
 	// }
-	NProgress.start();
+	//NProgress.start();
 	app.router(require('./router').default);
 	app.start('#root');
-	NProgress.done();
+	//NProgress.done();
 }

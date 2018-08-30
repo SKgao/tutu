@@ -60,7 +60,7 @@ const BookUnit = ({
             }
         }, {
         	title: '创建时间',
-        	dataIndex: 'textbookId',
+        	dataIndex: 'createdAt',
         	sorter: true
         }, {
         	title: '操作',
