@@ -62,8 +62,8 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改过期时间'}
-					valueData={text || '0'}
-					defaultValue={text || '0'}
+					valueData={ (text == 0) ? '永久有效' : text }
+					defaultValue={ (text == 0) ? '永久有效' : text }
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',

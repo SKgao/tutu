@@ -6,7 +6,8 @@ import { message } from 'antd';
 
 const DEFAULT_TIMEOUT = 15000;
 
-axios.defaults.baseURL = '//api.admin.chengxuyuantoutiao.com/';
+//axios.defaults.baseURL = '//api.admin.chengxuyuantoutiao.com/';
+axios.defaults.baseURL = '//api.admin.tutukids.com'
 //axios.defaults.withCredentials = true;
 axios.defaults.timeout = DEFAULT_TIMEOUT;
 
@@ -40,7 +41,9 @@ axios.interceptors.response.use(res => {
 // }
 
 // admin端
-export const BASIC_URL = '//api.admin.chengxuyuantoutiao.com/'
+export const BASIC_URL = '//api.admin.chengxuyuantoutiao.com/' 
+
+//export const BASIC_URL = '//api.admin.tutukids.com'
 
 /**
  * jsonp方法

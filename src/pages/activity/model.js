@@ -8,6 +8,7 @@ export default {
 	state: {
 		tableData: [],   // 表格数据
 		selectList: [],  // 下拉框数据
+		levelList: [],   // 等级下拉
 		startTime: '',
 		endTime: '',
 		beginAt: '',
@@ -40,6 +41,18 @@ export default {
 				});
 			}
 		},
+
+		*getMemberLevel({ payload }, { call, put }) {
+            const res = yield call(api.getMemberLevel);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						levelList: (res.data) ? res.data.data : []
+					}
+				});
+			}
+        },
 
 		*addActivity({ payload }, { call, put, select }) {
 			const res = yield call(api.addActivity, payload);

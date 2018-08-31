@@ -7,6 +7,9 @@ export default {
 	// 活动列表
 	getActivity: data => axios.post('activity/list', data),
 
+	// 会员等级列表
+    getMemberLevel: data => axios.get('member/level/list', data),
+
 	// 新增活动
 	addActivity: data => axios.post('activity/add', data),
 

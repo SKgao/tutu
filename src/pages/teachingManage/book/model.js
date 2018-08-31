@@ -57,9 +57,28 @@ export default {
 			}
         },
 
-        *deleteBook({ payload }, { call }) {
+        *deleteBook({ payload }, { call, put }) {
             const res = yield call(api.deleteBook, payload);
-            res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getBook' })
+			}
+		},
+		
+		*deleteGrade({ payload }, { call, put }) {
+            const res = yield call(api.deleteBook, payload);
+            if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getGrade' })
+			}
+		},
+		
+		*deleteVersion({ payload }, { call, put }) {
+            const res = yield call(api.deleteVersion, payload);
+            if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getVersion' })
+			}
         },
         
         *getGrade({ payload }, { call, put }) {
@@ -92,12 +111,6 @@ export default {
 		*getVersion({ payload }, { call, put }) {
             const res = yield call(api.getVersion, payload);
 			if (res) {
-				yield put({
-            		type: 'save',
-            		payload: {
-            			versionList: []
-            		}
-            	})
 				yield put({
             		type: 'save',
             		payload: {

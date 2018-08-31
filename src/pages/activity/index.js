@@ -9,7 +9,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Popconfirm, Radio, Badge } from 'antd';
+import { Form, Input, Button, Modal, Icon, DatePicker, Select, Popconfirm, Radio, Badge, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -22,7 +22,7 @@ const Activity = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, selectList, modalShow, addStatus} = activity;
+    let { tableData, selectList, modalShow, addStatus, levelList, beginAt, endAt } = activity;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -228,7 +228,6 @@ const Activity = ({
 
     // 添加版本信息
 	const handleSubmit = (e) => {
-        const { beginAt, endAt } = activity;
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
@@ -237,12 +236,20 @@ const Activity = ({
                 values.activeExpireDays && (values.activeExpireDays = values.activeExpireDays - 0);
                 values.userLevel && (values.userLevel = values.userLevel - 0);
                 values.itemId && (values.itemId = values.itemId - 0);
-                values.beginAt = beginAt;
-                values.endAt = endAt;
-				dispatch({
-					type: 'activity/addActivity',
-					payload: filterObj(values)
-				})
+                let _begin = new Date(beginAt).getTime()
+                let _end = new Date(endAt).getTime()
+                if (_begin > _end) {
+                    message.warning('活动开始时间不能大于结束时间')
+                } else {
+                    let _exp = (_end - _begin) / (1000 * 3600 * 24)
+                    values.beginAt = beginAt
+                    values.endAt = endAt
+                    values.activeExpireDays = _exp | 0
+                    dispatch({
+                        type: 'activity/addActivity',
+                        payload: filterObj(values)
+                    })
+                }
 			}
 		});
     }
@@ -264,7 +271,7 @@ const Activity = ({
     		payload: {
     			[c]: b
     		}
-    	})
+        })
     }
 
     // 文件上传成功
@@ -364,16 +371,16 @@ const Activity = ({
                             )}
                         </FormItem>
 
-                        <FormItem
+                        {/* <FormItem
                             label="活动持续时间"
                             {...formItemLayout}
                             >
-                            {getFieldDecorator('activeExpireDays', {
+                            {getFieldDecorator('activeExpireDays', {                          
                                 rules: [{ required: true, message: '请输入活动持续时间!' }],
                             })(
-                                <Input placeholder="活动持续时间（以天为单位）"/>
+                                <Input placeholder="活动持续时间（以天为单位）" readOnly/>
                             )}
-                        </FormItem>
+                        </FormItem> */}
 
                         <FormItem
                             {...formItemLayout}
@@ -397,7 +404,18 @@ const Activity = ({
                                 {getFieldDecorator('activeMoney', {
                                     rules: [{ required: true, message: '输入会员等级!' }],
                                 })(
-                                    <Input placeholder="输入会员等级"/>                            
+                                    <Select
+                                        showSearch
+                                        onFocus={() => dispatch({type: 'activity/getMemberLevel'})}
+                                        placeholder="请选择会员等级"
+                                        onChange={v => changeSelect({ userLevel: v })}
+                                        >
+                                        {
+                                            levelList.map(item =>
+                                                <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
+                                            )
+                                        }
+                                    </Select>                           
                                 )}
                             </FormItem>
                         }
@@ -411,19 +429,6 @@ const Activity = ({
                                     rules: [{ required: true, message: '请输入活动价格!' }],
                                 })(
                                     <Input placeholder="请输入活动价格"/>                            
-                                )}
-                            </FormItem>
-                        }
-
-                        {   addStatus === 1 &&
-                            <FormItem
-                                {...formItemLayout}
-                                label="用户等级"
-                                >
-                                {getFieldDecorator('userLevel', {
-                                    rules: [{ required: false }],
-                                })(
-                                    <Input placeholder="请输入用户等级"/>                            
                                 )}
                             </FormItem>
                         }

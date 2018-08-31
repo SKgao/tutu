@@ -11,7 +11,10 @@ export default {
 	addGrade: data => axios.post('grade/add', data),
 
 	// 修改年级
-    updateGrade: data => axios.post('grade/update', data),
+	updateGrade: data => axios.post('grade/update', data),
+	
+	// 删除年级
+    deleteGrade: data => axios.get('grade/version/delete/' + data.id, data),
 
     // 教材列表
     getBook: data => axios.post('book/list', data),
@@ -29,5 +32,8 @@ export default {
 	getVersion: data => axios.get('book/version/list', data),
 
 	// 修改教材版本
-	updateVersion: data => axios.post('book/version/update', data)
+	updateVersion: data => axios.post('book/version/update', data),
+
+	// 删除教材版本
+	deleteVersion: data => axios.get('book/version/delete/' + data.id, data),
 }

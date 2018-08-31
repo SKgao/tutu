@@ -81,6 +81,13 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
+                        subjectList: [],
+                        totalCount:  0
+					}
+				})
+				yield put({
+					type: 'save',
+					payload: {
                         subjectList: (res.data.data) ? res.data.data.data : [],
                         totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}

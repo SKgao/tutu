@@ -26,6 +26,10 @@ const Order = ({
             dataIndex: 'tutuNumber',
             sorter: true
         }, {
+            title: '真实姓名',
+            dataIndex: 'realName',
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
             title: '商品名称',
             dataIndex: 'itemName',
             sorter: true
@@ -40,7 +44,6 @@ const Order = ({
         }, {
             title: '支付方式',
             dataIndex: 'payTypeName',
-            sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
             title: '支付状态',
@@ -49,26 +52,21 @@ const Order = ({
         }, {
             title: '支付时间',
             dataIndex: 'payTime',
-            sorter: true
         }, {
             title: '第三方交易号',
             dataIndex: 'outNo',
-            sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
             title: '取消原因',
             dataIndex: 'cancelReason',
-            sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
             title: '活动名称',
             dataIndex: 'activityName',
-            sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
             title: '创建时间',
-            dataIndex: 'createdAt',
-            sorter: true
+            dataIndex: 'createdAt'
         } 
     ]
 

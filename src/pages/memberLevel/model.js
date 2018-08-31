@@ -16,8 +16,7 @@ export default {
 
 	effects: {
 		*getMemberLevel({ payload }, { call, put, select }) {
-			const _state = yield select(state => state.member);
-            const res = yield call(api.getMemberLevel);
+			const res = yield call(api.getMemberLevel);
 			if (res) {
 				yield put({
 					type: 'save',

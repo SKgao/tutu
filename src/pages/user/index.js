@@ -4,6 +4,7 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
+import MyUpload from '@/components/UploadComponent';
 import VaildForm from './VaildForm';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
@@ -126,7 +127,17 @@ const UserSetting = ({
         	title: '创建时间',
         	dataIndex: 'createtime',
         	sorter: true
-        }, {
+        }, 
+        // {
+        // 	title: '上传头像',
+        // 	dataIndex: 'updateicon',
+        //     render: (text, record, index) => {
+        //         return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+        //             changeIcon(url, record)
+        //         }}></MyUpload>
+        //     }
+        // }, 
+        {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
@@ -140,6 +151,17 @@ const UserSetting = ({
             }
         }
     ]
+
+    // 修改素材
+    const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'userSetting/updateUser',
+    		payload: {
+                id: record.id,
+                avatar: url
+            }
+    	})
+    }
     
     /**
      * 删除用户

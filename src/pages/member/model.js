@@ -61,7 +61,7 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						memberLevelList: (res.data) ? res.data.data : []
+						memberLevelList: (res.data) ? [{userLevel: '', levelName: '全部'}, ...res.data.data] : []
 					}
 				});
 			}
