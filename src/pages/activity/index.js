@@ -22,7 +22,7 @@ const Activity = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, selectList, modalShow, addStatus, levelList, beginAt, endAt } = activity;
+    let { tableData, selectList, modalShow, addStatus, levelList, beginAt, endAt, pageSize, pageNum } = activity;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -274,6 +274,15 @@ const Activity = ({
         })
     }
 
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'activity/setParam',
+    		payload: param
+        })
+        dispatch({ type: 'activity/getActivity' })
+    }
+
     // 文件上传成功
     const uploadSuccess = (url) => setFieldsValue({'icon': url})
    
@@ -473,10 +482,24 @@ const Activity = ({
             </FormInlineLayout>
 
             <TableLayout
+                pagination={false}
                 dataSource={tableData}
                 allColumns={columns}
                 loading={ loading.effects['activity/getActivity'] }
                 />
+
+            <PaginationLayout
+                total={activity.totalCount}
+                onChange={(page, pageSize) => handleChange({
+                    pageNum: page,
+                    pageSize
+                })}
+                onShowSizeChange={(current, pageSize) => handleChange({
+                    pageNum: 1,
+                    pageSize
+                })}
+                current={pageNum}
+                pageSize={pageSize} />
 		</div>
 	)
 };

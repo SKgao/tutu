@@ -70,7 +70,6 @@ const UserSetting = ({
         }, {
         	title: '姓名',
             dataIndex: 'name',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改姓名'}
@@ -126,8 +125,7 @@ const UserSetting = ({
 					}/>
         }, {
         	title: '创建时间',
-        	dataIndex: 'createtime',
-        	sorter: true
+        	dataIndex: 'createtime'
         }, 
         {
         	title: '上传头像',

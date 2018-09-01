@@ -29,19 +29,16 @@ const Member = ({
             sorter: true
         }, {
             title: '用户名',
-            dataIndex: 'realName',
-            sorter: true
+            dataIndex: 'realName'
         }, {
             title: '用户头像',
             dataIndex: 'icon',
-            sorter: true,
             render: (text) => {
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
              }
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName',
-            sorter: true,
             // render: (text, record) =>
 			// 	<TablePopoverLayout
 			// 		title={'修改会员等级'}
@@ -75,7 +72,6 @@ const Member = ({
         }, {
             title: '会员生日',
             dataIndex: 'birthday',
-            sorter: true,
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
             title: '性别',
@@ -89,8 +85,7 @@ const Member = ({
             render: (text) => <span>{ text === 1 ? '是' :  '否' }</span>
         }, {
             title: '注册时间',
-            dataIndex: 'createdAt',
-            sorter: true
+            dataIndex: 'createdAt'
         }, {
             title: '最近闯关记录',
             dataIndex: 'record',

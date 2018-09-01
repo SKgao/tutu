@@ -72,7 +72,6 @@ const Authmenu = ({
         }, {
         	title: '菜单名称',
         	dataIndex: 'menuName',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改菜单名称'}
@@ -90,7 +89,6 @@ const Authmenu = ({
         }, {
         	title: '菜单路径',
         	dataIndex: 'path',
-        	sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改菜单路径'}
@@ -122,7 +120,6 @@ const Authmenu = ({
         }, {
         	title: 'url',
         	dataIndex: 'url',
-        	sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改url'}
@@ -156,12 +153,10 @@ const Authmenu = ({
 					}/>
         }, {
             title: '创建时间',
-            dataIndex: 'createdAt',
-            sorter: true
+            dataIndex: 'createdAt'
         }, {
         	title: '更新时间',
-        	dataIndex: 'updatedAt',
-        	sorter: true
+        	dataIndex: 'updatedAt'
         }, {
         	title: '操作',
             dataIndex: 'action',

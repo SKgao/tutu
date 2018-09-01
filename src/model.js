@@ -136,7 +136,7 @@ export default {
 			if (res) {
 				localStorage.removeItem('token');
 				localStorage.removeItem('account');
-				localStorage.removeItem('account');
+				localStorage.removeItem('avatar');
 				localStorage.removeItem('HAS_LOGIN');
 				axios.defaults.headers = { 'token': '' };
 				yield put(routerRedux.push('/login'));
