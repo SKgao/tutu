@@ -9,7 +9,8 @@ export default {
 		subjectList: [],     // 题目列表
 		descList: [],        // 题目详情
         bookList: [],        // 教材列表
-        customPassId: '',    // 关卡id
+		customPassId: '',    // 关卡id
+		customsPassName: '', // 题目名
         sourceIds: '',       // 素材id
         subjectTypeId: '',   // 题目类型id
         startTime: '',
@@ -77,6 +78,13 @@ export default {
 		*getSubject({ payload }, { call, put }) {
             const res = yield call(api.getSubject, payload)
 			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+                        subjectList: [],
+                        totalCount:  0
+					}
+				})
 				yield put({
 					type: 'save',
 					payload: {

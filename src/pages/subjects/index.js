@@ -11,7 +11,7 @@ import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message } from 'antd';
+import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message, Popconfirm, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -23,18 +23,29 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sourceIds, activeKey} = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
     const subjectCol = [
         {
-            title: '题型名称',
-            dataIndex: 'subjectTypeName',
-            sorter: true,
+            title: '教材名称',
+            dataIndex: 'textBookName'
+        }, {
+            title: '单元名称',
+            dataIndex: 'unitsName'
+        }, {
+            title: 'part描述',
+            dataIndex: 'partsTips'
+        }, {
+            title: 'part标题',
+            dataIndex: 'partsTitle'
+        }, {
+            title: '关卡名称',
+            dataIndex: 'customsPassName',
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改题型名称'}
+					title={'修改关卡名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v => 
@@ -43,14 +54,13 @@ const Subject = ({
 							payload: {
                                 customsPassId: record.customsPassId - 0,
                                 sort: record.sort - 0,
-								subjectTypeName: v
+								customsPassName: v
 							}
 						})
 					}/>
         }, {
             title: '题目内容',
             dataIndex: 'sourceIds',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改题目内容'}
@@ -90,7 +100,7 @@ const Subject = ({
         }, {
             title: '素材包',
             dataIndex: 'action',
-            render: (text) => <a onClick={openNotification}>查看素材包</a>
+            render: (text) => <span>点击表格查看素材包</span>
         }
     ]
 
@@ -105,6 +115,41 @@ const Subject = ({
             icon: <Icon type="smile-circle" style={{ color: '#108ee9' }} />
         });
       }
+    
+    const expandedRowRender = () => {
+        const sourceCol = [
+            { 
+                title: '题目', 
+                dataIndex: 'text',
+                key: '_text' 
+            }, { 
+                title: '图标', 
+                dataIndex: 'icon',
+                key: '_icon',
+                render: (text) => {
+                    return (!text) ? <span>无</span> :
+                        <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
+                            <img src={ text } style={{ width: 30, height: 40 }}/>
+                        </Popconfirm>
+                }
+            }, { 
+                title: '音频', 
+                dataIndex: 'audio',
+                key: '_audio',
+                render: (audio) => {
+                    return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
+                 }
+            },
+        ]
+
+        return (
+            <Table
+              columns={sourceCol}
+              dataSource={dataSource[0].sourceVOS}
+              pagination={false}
+            />
+          )
+    }
 
     // 添加题目
     const handleSubmitSubject = () => {
@@ -175,10 +220,17 @@ const Subject = ({
 
     // 搜搜题目
     const handleSearch = () => {
-        dispatch({
-    		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, pageNum, pageSize })
-    	})
+        if (customsPassId) {
+            dispatch({
+                type: 'subject/subjectDesc',
+                payload: filterObj({ customsPassId, sort })
+            })
+        } else {
+            dispatch({
+                type: 'subject/getSubject',
+                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
+            })
+        }
     }
    
     const handleChange = (param) => {
@@ -188,7 +240,7 @@ const Subject = ({
         })
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, ...param })
+    		payload: filterObj({ startTime, endTime, sourceIds, customsPassName, ...param })
     	})
     }
 
@@ -212,11 +264,12 @@ const Subject = ({
     }
 
     // 输入题目名
-    const handleInput = (e) => {
+    const handleInput = (e, m) => {
+        let val = e.target.value
         dispatch({
     		type: 'subject/setParam',
     		payload: {
-                sourceIds: e.target.value
+                [m]: (m === 'sort') ? val - 0 :  val
             }
         })
     }
@@ -254,14 +307,29 @@ const Subject = ({
                                     />
                             </FormItem>
 
-                            {/*题目*/}
-                            <FormItem label="题目">
-                                <Input placeholder="输入题目名" onChange={(e) => handleInput(e)}/>
+                            {/*关卡名称*/}
+                            <FormItem label="关卡名称">
+                                <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
                             </FormItem>
+
+                            {
+                                customsPassId  ? null : 
+                                <FormItem label="题目">
+                                    <Input placeholder="输入题目名" onChange={(e) => handleInput(e, 'sourceIds')}/>
+                                </FormItem>
+                            }
+
+                            {
+                                !customsPassId  ? null : 
+                                <FormItem  label="题目顺序">
+                                    <Input placeholder="输入题目顺序" onChange={(e) => handleInput(e, 'sort')}/>
+                                </FormItem>
+                            }
 
                             <FormItem>
                                 <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                             </FormItem>
+                            
 
                             {/* <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
@@ -354,7 +422,7 @@ const Subject = ({
                                 {getFieldDecorator('audioArray', {
                                     // rules: [{ message: '请上传音频素材!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory multiple showUploadList={false}>
                                         <Button>
                                             <Icon type="upload"/>上传音频
                                         </Button>
@@ -369,7 +437,7 @@ const Subject = ({
                                 {getFieldDecorator('imageArray', {
                                 // rules: [{ message: '请上传图片素材!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}>
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory multiple showUploadList={false}>
                                         <Button>
                                             <Icon type="upload"/>上传图片
                                         </Button>
@@ -390,6 +458,8 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
+                            expandedRowRender={customsPassId ? expandedRowRender : null}
+                            expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] }
                             />
                         {

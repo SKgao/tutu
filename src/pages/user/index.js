@@ -4,6 +4,7 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
+import MyUpload from '@/components/UploadComponent';
 import VaildForm from './VaildForm';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
@@ -23,26 +24,13 @@ const UserSetting = ({
         {
             title: '用户名',
             dataIndex: 'account',
-            sorter: true,
-            render: (text, record) =>
-				<TablePopoverLayout
-					title={'修改用户名'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
-					onOk={v => 
-						dispatch({
-							type: 'userSetting/updateUser',
-							payload: {
-								id: record.id,
-								account: v
-							}
-						})
-					}/>
+            sorter: true
         }, {
         	title: '用户头像',
             dataIndex: 'avatar',
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                let url = (text && text !== 'string') ? text : '//web.chengxuyuantoutiao.com/static/tutu_logo.png'
+                return (text && text !== 'string') ? <a href={ url } target='_blank'><img src={ url } style={{ width: 55, height: 45 }}/></a> : '无'
             }
         }, {
         	title: '手机号',
@@ -82,7 +70,6 @@ const UserSetting = ({
         }, {
         	title: '姓名',
             dataIndex: 'name',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改姓名'}
@@ -138,9 +125,18 @@ const UserSetting = ({
 					}/>
         }, {
         	title: '创建时间',
-        	dataIndex: 'createtime',
-        	sorter: true
-        }, {
+        	dataIndex: 'createtime'
+        }, 
+        {
+        	title: '上传头像',
+        	dataIndex: 'updateicon',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
+        }, 
+        {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
@@ -154,6 +150,17 @@ const UserSetting = ({
             }
         }
     ]
+
+    // 修改素材
+    const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'userSetting/updateUser',
+    		payload: {
+                id: record.id,
+                avatar: url
+            }
+    	})
+    }
     
     /**
      * 删除用户
@@ -309,6 +316,7 @@ const UserSetting = ({
             </Modal>
 
             <TableLayout
+                pagination={false}
                 loading={ loading.effects['userSetting/getUser'] }
                 dataSource={tableData}
                 allColumns={columns}

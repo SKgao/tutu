@@ -1,5 +1,6 @@
 import api from './service';
 import { message } from 'antd';
+import { filterObj } from '@/utils/tools';
 
 export default {
 	namespace: "teachingmanage",
@@ -15,29 +16,28 @@ export default {
 		modalShow: false,
 		activeKey: 'book',  // 默认tab-书籍管理
 		bookVersionName: '',   // 新增-教材版本名称
-        gradeName: '',         // 新增-年级名称
+		gradeName: '',         // 新增-年级名称
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
         setup({ dispatch, history }) {	
-			dispatch({ 
-				type: 'getBook',
-				payload: {
-					pageNum: 1,
-					pageSize: 10
-				}
-			});
+			dispatch({ type: 'getBook' });
 		},
 	},
 
 	effects: {
-		*getBook({ payload }, { call, put }) {
-			const res = yield call(api.getBook, payload);
+		*getBook({ payload }, { call, put, select }) {
+			const { startTime, endTime,  pageSize, pageNum, gradeId, bookVersionId } = yield select(state => state.teachingmanage);
+			const res = yield call(api.getBook, filterObj({ startTime, endTime, pageSize, pageNum, gradeId, bookVersionId }));
             if (res) {
             	yield put({
             		type: 'save',
             		payload: {
-            			bookList: (res.data.data) ? res.data.data.data : []
+						bookList: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
             		}
             	})
             }
@@ -47,13 +47,7 @@ export default {
             const res = yield call(api.addBook, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'getBook',
-					payload: {
-						pageNum: 1,
-						pageSize: 10
-					}
-				});
+				yield put({ type: 'getBook' });
 				yield put({
 					type: 'setParam',
 					payload: {
@@ -63,9 +57,29 @@ export default {
 			}
         },
 
-        *deleteBook({ payload }, { call }) {
+        *deleteBook({ payload }, { call, put }) {
             const res = yield call(api.deleteBook, payload);
-            res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getBook' })
+			}
+		},
+		
+		*deleteGrade({ payload }, { call, put }) {
+            const res = yield call(api.deleteGrade, payload);
+            if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getGrade' })
+			}
+		},
+		
+		*deleteVersion({ payload }, { call, put }) {
+			console.log(payload);
+            const res = yield call(api.deleteVersion, payload);
+            if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getVersion' })
+			}
         },
         
         *getGrade({ payload }, { call, put }) {
@@ -74,7 +88,7 @@ export default {
             	yield put({
             		type: 'save',
             		payload: {
-            			gradeList: (res.data.data) ? res.data.data : []
+            			gradeList: (res.data) ? res.data.data : []
             		}
             	})
             } else {
@@ -101,7 +115,7 @@ export default {
 				yield put({
             		type: 'save',
             		payload: {
-            			versionList: (res.data.data) ? res.data.data : []
+            			versionList: (res.data) ? res.data.data : []
             		}
             	})
 			}

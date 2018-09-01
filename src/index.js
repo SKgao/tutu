@@ -1,5 +1,7 @@
 import dva from 'dva';
 import { message } from 'antd';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 import './scss/reset.scss';
 import './../public/iconfont/iconfont.css';
 // import { createLogger } from 'redux-logger';
@@ -43,6 +45,8 @@ function hashChangeFire() {
 	// 	app.router(require('./router').default);
 	// 	app.start('#root');
 	// }
+	//NProgress.start();
 	app.router(require('./router').default);
 	app.start('#root');
+	//NProgress.done();
 }

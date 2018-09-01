@@ -46,7 +46,7 @@ const HeaderLayout = ({
 					<Avatar 
 					    icon="user"
 					    style={{ backgroundColor: '#ffbf00', verticalAlign: 'middle' }} 
-					    src='//web.chengxuyuantoutiao.com/static/tutu_logo.png'>
+					    src={ localStorage.getItem('avatar') || '//web.chengxuyuantoutiao.com/static/tutu_logo.png' }>
 					</Avatar>
 				</div>
 

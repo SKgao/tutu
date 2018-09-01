@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
+import PaginationLayout from '@/components/PaginationLayout';
 import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 
@@ -22,7 +23,7 @@ const AppverUpdate = ({
 	...props
 }) => {
 	let { dispatch, form } = props;
-	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId } = appver;
+	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId, pageNum, pageSize, totalCount } = appver;
 	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
 	let appColumns = [
@@ -175,7 +176,17 @@ const AppverUpdate = ({
     		payload: {
 				activeKey: key
 			}
-    	})
+		})
+		if (key === '0') {
+            dispatch({
+				type: 'appver/getAppList'
+			})
+		} else if (key === '1') {
+			dispatch({
+				type: 'appver/getVerList',
+				payload: filterObj({ appTypeId, startTime, endTime, pageNum, pageSize })
+			})
+		}
 	}
 
 	// 选择时间框
@@ -212,6 +223,18 @@ const AppverUpdate = ({
             message.warning('请输入App名称')
 		}
 	}
+
+	// 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'appver/setParam',
+    		payload: param
+        })
+        dispatch({
+    		type: 'appver/getVerList',
+    		payload: filterObj({ appTypeId, startTime, endTime, ...param })
+    	})
+    }
 
 	// 筛选app类型
 	const changeApptype = (val) => {
@@ -258,16 +281,15 @@ const AppverUpdate = ({
 
 	// 搜索版本信息
 	const handleSearch = () => {
-		let PP = {
-			pageNum: 1,
-			pageSize: 10,
-			appTypeId: appTypeId,
-			startTime: startTime,
-			endTime: endTime,
-		}
 		dispatch({
 			type: 'appver/getVerList',
-			payload: filterObj(PP)
+			payload: filterObj({
+				pageNum,
+				pageSize,
+				appTypeId,
+				startTime,
+				endTime,
+			})
 		})
 	}
 
@@ -322,11 +344,12 @@ const AppverUpdate = ({
 							<FormItem label="App类型">
 								<Select
 									showSearch
+									placeholder="请选择App类型"
 									onFocus={() => dispatch({type: 'appver/getAppList'})}
 									onChange={v => changeApptype({appname: v})}
 									>
 									{
-										appList.map(item =>
+										[{id: '', name: '全部'}, ...appList].map(item =>
 											<Option key={item.id} value={item.id}>{item.name}</Option>
 										)
 									}
@@ -433,7 +456,23 @@ const AppverUpdate = ({
 			    loading={ loading.effects['appver/getAppList'] }
 				dataSource={dataSource}
 				allColumns={allColumns}
+				pagination={false}
 			/>
+            {
+				activeKey === '1' &&
+				<PaginationLayout
+					total={totalCount}
+					onChange={(page, pageSize) => handleChange({
+						pageNum: page,
+						pageSize
+					})}
+					onShowSizeChange={(current, pageSize) => handleChange({
+						pageNum: 1,
+						pageSize
+					})}
+					current={pageNum}
+					pageSize={pageSize} />
+			}
 		</div>
 	)
 };

@@ -1,4 +1,5 @@
 import api from './service';
+import { filterObj } from '@/utils/tools';
 import api_teachingManage from '@/pages/teachingManage/book/service';
 import { message } from 'antd';
 
@@ -11,24 +12,24 @@ export default {
         startTime: '',
         endTime: '',
         textBookId: '',
-        bookList: []
+		bookList: [],
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ 
-                type: 'getUnit',
-                payload: {
-                    pageNum: 1,
-                    pageSize: 10
-                }
-            })
+			dispatch({  type: 'getUnit' })
 		}
 	},
 
 	effects: {
      	*getUnit({ payload }, { call, put, select }) {
-            const res = yield call(api.getUnit, payload);
+			const { pageNum, pageSize, startTime, endTime, textBookId } = yield select(state => state.bookUnit);
+            const res = yield call(api.getUnit, filterObj({ 
+				pageNum, pageSize, startTime, endTime, textBookId 
+			}));
 			if (res) {
 				yield put({
 					type: 'save',
@@ -42,7 +43,7 @@ export default {
         *getBook({ payload }, { call, put, select }) {
 			const res = yield call(api_teachingManage.getBook, {
                 pageNum: 1,
-                pageSize: 20
+                pageSize: 1000
             });
 			if (res) {
 				yield put({
@@ -66,13 +67,7 @@ export default {
 			const res = yield call(api.updateUnit, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-                    type: 'getUnit',
-                    payload: {
-                        pageNum: 1,
-                        pageSize: 20
-                    }
-                });
+				yield put({ type: 'getUnit' });
 			}
 		},
 

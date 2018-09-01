@@ -32,7 +32,7 @@ const RoleSetting = ({
                             <div>
                                 <Tree
                                     checkable
-                                    defaultCheckedKeys={defaultCheckedKeys}
+                                    defaultCheckedKeys={ menuIds.length ? menuIds.map(e => e + '') : defaultCheckedKeys }
                                     onCheck={checkTree}
                                 >
                                     {
@@ -58,14 +58,14 @@ const RoleSetting = ({
 	const renderTree = item => {
 		if (item.children && item.children.length) {
             return (
-				<TreeNode title={item.menuName} key={item.id + ''}>
+				<TreeNode title={item.name} key={item.id + ''}>
 					{
 						item.children.map(subitem => renderTree(subitem))
 					}
 				</TreeNode>
 			)
 		} else {
-			return <TreeNode title={item.menuName} key={item.id + ''}/>
+			return <TreeNode title={item.name} key={item.id + ''}/>
 		}
     }
     
@@ -103,11 +103,11 @@ const RoleSetting = ({
      * @param  {object} 列数据
      */
     const rolesetAuthority = (param) => {
-        if (menuIds.length > 0) {
+        if (menuIds.length > 0 || defaultCheckedKeys.length > 0) {
             dispatch({
             	type: 'roleSetting/setauthRole',
             	payload: {
-            		menuIds: menuIds,
+            		menuIds: (menuIds.length > 0) ? menuIds : defaultCheckedKeys,
             		roleId: param.id
             	}
             })

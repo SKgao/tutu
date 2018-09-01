@@ -12,7 +12,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message, Tooltip, Checkbox } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -24,8 +24,8 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray } = sourcematerial;
-    let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
+    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike } = sourcematerial;
+    let { getFieldDecorator, getFieldValue, resetFields } = form;
 
     // 鼠标放在图片上的事件
     const mouseEnter=(e)=>{
@@ -39,7 +39,6 @@ const sourceMaterial = ({
         }, {
           title: '素材图标',
           dataIndex: 'icon',
-          sorter: true,
           render: (text) => {
              return (text) ? <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
                     <img src={ text } style={{ width: 30, height: 40 }}/>
@@ -48,10 +47,31 @@ const sourceMaterial = ({
         }, {
           title: '素材音频',
           dataIndex: 'audio',
-          sorter: true,
           render: (audio) => {
              return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
           }
+        }, {
+            title: '音标',
+            dataIndex: 'phonetic'
+        }, {
+            title: '单次释义',
+            dataIndex: 'translation',
+            render: (text) => <span>{ text.replace(/\[|\]|\"/g, '') }</span>
+        }, {
+            title: '多次释义',
+            dataIndex: 'explainsArray',
+            render: (text) => {
+                let str = text.replace(/\[|\]|\"/g, '')
+                if (!str) {
+                    return <span>无</span>
+                } else if (str.length < 20) {
+                    return <span>{ str }</span>
+                } else {
+                    return <Tooltip title={str}>
+                        <span>{ str.substr(0, 20) + '...' }</span>
+                    </Tooltip>
+                }
+            }
         }, {
           title: '操作',
             dataIndex: 'action',
@@ -74,7 +94,7 @@ const sourceMaterial = ({
         dispatch({
           type: 'sourcematerial/deleteSource',
           payload: {
-                id:param.id
+                id: param.id
             }
         })
     }
@@ -83,7 +103,7 @@ const sourceMaterial = ({
     const handleSearch = () => {
       dispatch({
         type: 'sourcematerial/getSource',
-        payload: filterObj({ startTime, endTime, text, pageNum, pageSize })
+        payload: filterObj({ startTime, endTime, text, pageNum, pageSize, openLike })
       })
     }
     // 添加素材
@@ -141,7 +161,8 @@ const sourceMaterial = ({
             payload: {
                 [m]: false,
                 audioArray: [],
-                imageArray: []
+                imageArray: [],
+                sentensArray: []
             }
         })
     }
@@ -165,7 +186,7 @@ const sourceMaterial = ({
         })
         dispatch({
     		type: 'sourcematerial/getSource',
-    		payload: filterObj({ startTime, endTime, text, ...param })
+    		payload: filterObj({ startTime, endTime, openLike, text, ...param })
     	})
     }
 
@@ -179,15 +200,7 @@ const sourceMaterial = ({
             }
         })
     }
-    // 文件上传成功
-    const uploadSuccess = (url) => {
-        dispatch({
-          type: 'sourcematerial/setParam',
-          payload: {
-            icon: url
-          }
-        })
-    }
+
     // 搜索素材内容
     const changeText = (event) => {
         dispatch({
@@ -214,7 +227,11 @@ const sourceMaterial = ({
     const handleSubmitSource = () => {
         dispatch({
             type: 'sourcematerial/addSubjectSource',
-            payload: { audioArray, imageArray }
+            payload: { 
+                audioArray: audioArray.filter(e => e !== '.DS_Store'),
+                imageArray: imageArray.filter(e => e !== '.DS_Store'),
+                sentensArray: sentensArray.filter(e => e !== '.DS_Store')
+            }
         })
     }
 
@@ -223,7 +240,7 @@ const sourceMaterial = ({
         if (key === '0') {
             dispatch({
                 type: 'sourcematerial/getSource',
-                payload: { pageNum, pageSize, startTime, endTime }
+                payload: { pageNum, pageSize, startTime, endTime, openLike }
             })
         }
     	dispatch({
@@ -232,7 +249,38 @@ const sourceMaterial = ({
 				activeKey: key
 			}
     	})
-	}
+    }
+    
+    // table选中
+    const tableRowSelectd = (selectedRowKeys, selectedRows) => {
+        let sourceIds = selectedRows.map(e => e.id)
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: {
+                selectedRowKeys,
+				sourceIds
+			}
+    	})
+    }
+     
+    // 批量删除素材
+    const handleBatchDelete = () => {
+        dispatch({
+    		type: 'sourcematerial/batchDeleteSource',
+    		payload: sourcematerial.sourceIds
+    	})
+    }
+    
+    // 是否开启模糊搜索
+    const handleOpenlike = (e) => {
+        let isopen = e.target.checked
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: {
+                openLike: e.target.checked ? '' : 1
+            }
+    	})
+    }
 
   return (
     <div>
@@ -263,6 +311,7 @@ const sourceMaterial = ({
                     </FormItem>
 
                     <FormItem>
+                        <Checkbox onChange={handleOpenlike} checked={openLike ? false : true}>模糊搜索</Checkbox>
                         <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                     </FormItem>
 
@@ -272,6 +321,12 @@ const sourceMaterial = ({
 
                     <FormItem>
                         <Button type="primary" onClick={() => handleSubmit('modal3Show', true)}>导入素材</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <Popconfirm title="是否删除选中素材?" onConfirm={handleBatchDelete}>
+                            <Button type="danger" disabled={!sourcematerial.sourceIds.length}>批量删除</Button>
+                        </Popconfirm>
                     </FormItem>
 
                 </Form>
@@ -326,7 +381,7 @@ const sourceMaterial = ({
                             {getFieldDecorator('audioArray', {
                                 // rules: [{ message: '请上传音频素材!' }],
                             })(
-                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory showUploadList={false}>
+                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory multiple showUploadList={false}>
                                     <Button>
                                         <Icon type="upload"/>上传音频
                                     </Button>
@@ -342,9 +397,25 @@ const sourceMaterial = ({
                             {getFieldDecorator('imageArray', {
                             // rules: [{ message: '请上传图片素材!' }],
                             })(
-                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory showUploadList={false}>
+                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory multiple showUploadList={false}>
                                     <Button>
                                         <Icon type="upload"/>上传图片
+                                    </Button>
+                                </Upload>
+                            )}
+                        </FormItem>
+
+                        <FormItem
+                            label="句子素材目录"
+                            help={sentensArray.length ? `已选择${sentensArray.length}个句子文件` : '请选择句子文件，不能超过500个'}
+                            {...formItemLayout}
+                            >
+                            {getFieldDecorator('sentensArray', {
+                            // rules: [{ message: '请上传图片素材!' }],
+                            })(
+                                <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'sentensArray')} directory multiple showUploadList={false}>
+                                    <Button>
+                                        <Icon type="upload"/>上传句子文件
                                     </Button>
                                 </Upload>
                             )}
@@ -358,6 +429,13 @@ const sourceMaterial = ({
                     </Form>
                 </Modal>
             <TableLayout
+                //expandedRowRender={ record => <span>{ record.explainsArray }</span> }
+                rowSelection={{
+                    fixed: true,
+                    type: 'checkbox',
+                    onChange: tableRowSelectd,
+                    selectedRowKeys: sourcematerial.selectedRowKeys
+                }}
                 pagination={false}
                 dataSource={materialList}
                 allColumns={columns}

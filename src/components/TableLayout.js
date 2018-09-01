@@ -35,7 +35,11 @@ class TableLayout extends Component {
 			)
 		} else {
 			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1) || (showColumns && showColumns.indexOf(item.dataIndex) === -1);
-			return hideColumn ? null : <Column {...item} key={item.dataIndex}/>
+			return hideColumn ? null : <Column
+			   key={item.dataIndex} 
+			   sorter={item.sorter ? (a, b) => a[item.dataIndex] - b[item.dataIndex] : false}
+			   {...item} 
+			/>
 		}
 	}
 	
@@ -74,36 +78,19 @@ class TableLayout extends Component {
 		})
 	}
 
-	componentWillReceiveProps(nextProps) {
-		// console.log(nextProps.filterColumns)
-	}
-
 	// 筛选不展示的列
 	checkTree = (checkedKeys, e) => {
-		let { scrollX } = this.state
 		let { filterColumns, treeOnCheck } = this.props
 		const nodeChild = e.node.props.children
 		const fieldArr = (nodeChild) ? nodeChild.map(item => item.key) : [e.node.props.eventKey]
 		const a = new Set(fieldArr)
 		const b = new Set(filterColumns)
 		const res = e.checked ? Array.from(new Set([...b].filter(x => !a.has(x)))) : Array.from(new Set([...a, ...b]))
-		scrollX += (this.calculateWidth(filterColumns) - this.calculateWidth(res))
-		this.setState({ scrollX })
 		return treeOnCheck({ res })
 	}
 
-	// 计算scrollX
-	calculateWidth = (arr = []) => {
-		let { colWidth } = this.state
-		let sum = 0
-        for (let i = 0; i < arr.length; i++) {
-            sum += colWidth[arr[i]]
-		}
-		return sum
-	}
-
 	render() {
-		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading } = this.props
+		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading, rowSelection, expandedRowRender, expandRowByClick, scrollX } = this.props
 		return (
 			<div className="table-wrapper" style={{ padding: 10 }}>
 				{
@@ -147,15 +134,19 @@ class TableLayout extends Component {
 				<Table
 				    pagination={pagination}
 					dataSource={dataSource}
+					rowSelection={rowSelection}
+					expandedRowRender={expandedRowRender}
+					expandRowByClick={expandRowByClick}
 					rowKey={(record, index) => index}
 					loading={{
 						spinning: loading,
 						delay: 100
 					}}
 					scroll={{
-						x: this.state.scrollX || false, 
+						x: scrollX || false, 
 						y: scrollY || false
-					}}>
+					}}
+					>
 					{
 						allColumns.map(item => this.renderColumn(item))
 					}
@@ -175,13 +166,19 @@ TableLayout.propTypes = {
 	tableInfo: PropTypes.string, // 表格说明
 	treeOnCheck: PropTypes.func, // 过滤列回调
 	getContentWidth: PropTypes.func,
-	scrollY: PropTypes.number
+	scrollY: PropTypes.number,
+	scrollY: PropTypes.bool,
+	loading: PropTypes.bool,
+	rowSelection: PropTypes.object,
+	expandedRowRender: PropTypes.func,
+	expandRowByClick: PropTypes.bool
 };
 
 TableLayout.defaultProps = {
 	showToolbar: false,
 	pagination: true,
 	loading: false,
+	expandRowByClick: false,
 	filterColumns: []
 }
 

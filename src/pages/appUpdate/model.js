@@ -12,7 +12,10 @@ export default {
 		startTime: '',
 		endTime: '',
 		appTypeId: '',
-		modalShow: false
+		modalShow: false,
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
@@ -35,7 +38,8 @@ export default {
             	yield put({
             		type: 'save',
             		payload: {
-            			appList: (res.data) ? res.data.data : []
+						appList: (res.data) ? res.data.data : [],
+						totalCount: 0
             		}
             	})
             }
@@ -47,7 +51,8 @@ export default {
             	yield put({
             		type: 'save',
             		payload: {
-            			verList: (res.data.data) ? res.data.data.data : []
+						verList: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
             		}
             	})
             }
@@ -70,8 +75,9 @@ export default {
 			}
 		},
 
-		*disableType({ payload }, { call, put }) {
+		*disableType({ payload }, { call, put, select }) {
 			const { type, id } = payload;
+			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.appver);
 			const _API = (type === 'app') ? 'disableApptype' : 'disableVersion';
 			const res = yield call(api[_API], id);
 			if (res) {
@@ -81,17 +87,15 @@ export default {
 				} else {
 					yield put({
 						type: 'getVerList',
-						payload: {
-							pageNum: 1,
-							pageSize: 10
-						}
+						payload: { startTime, endTime, pageNum, pageSize }
 					})
 				}
 			}
 		},
 
-		*enableType({ payload }, { call, put }) {
+		*enableType({ payload }, { call, put, select }) {
 			const { type, id } = payload;
+			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.appver);
 			const _API = (payload.type === 'app') ? 'enableApptype' : 'enableVersion';
 			const res = yield call(api[_API], id);
             if (res) {
@@ -101,10 +105,7 @@ export default {
 				} else {
 					yield put({
 						type: 'getVerList',
-						payload: {
-							pageNum: 1,
-							pageSize: 10
-						}
+						payload: { startTime, endTime, pageNum, pageSize }
 					})
 				}
 			}
@@ -118,16 +119,14 @@ export default {
 			}
 		},
 
-		*addVersion({ payload }, { call, put }) {
-            const res = yield call(api.addVersion, payload);
+		*addVersion({ payload }, { call, put, select }) {
+			const res = yield call(api.addVersion, payload);
+			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.appver);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ 
 					type: 'getAppList',
-					payload: {
-						pageNum: 1,
-						pageSize: 10
-					}
+					payload: { startTime, endTime, pageNum, pageSize }
 				})
 				yield put({ 
 					type: 'setParam',
