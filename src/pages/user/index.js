@@ -29,7 +29,8 @@ const UserSetting = ({
         	title: '用户头像',
             dataIndex: 'avatar',
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                let url = (text && text !== 'string') ? text : '//web.chengxuyuantoutiao.com/static/tutu_logo.png'
+                return (text && text !== 'string') ? <a href={ url } target='_blank'><img src={ url } style={{ width: 55, height: 45 }}/></a> : '无'
             }
         }, {
         	title: '手机号',
@@ -128,15 +129,15 @@ const UserSetting = ({
         	dataIndex: 'createtime',
         	sorter: true
         }, 
-        // {
-        // 	title: '上传头像',
-        // 	dataIndex: 'updateicon',
-        //     render: (text, record, index) => {
-        //         return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
-        //             changeIcon(url, record)
-        //         }}></MyUpload>
-        //     }
-        // }, 
+        {
+        	title: '上传头像',
+        	dataIndex: 'updateicon',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
+        }, 
         {
         	title: '操作',
             dataIndex: 'action',

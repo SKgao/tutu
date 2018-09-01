@@ -21,7 +21,7 @@ const BookUnit = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, endTime, startTime, textBookId, bookList} = bookUnit;
+    let { tableData, modalShow, textBookId, bookList, pageNum, pageSize, totalCount} = bookUnit;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -46,7 +46,6 @@ const BookUnit = ({
         }, {
         	title: '封面图',
         	dataIndex: 'icon',
-            sorter: true,
             render: (text, record, index) => {
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
@@ -60,8 +59,7 @@ const BookUnit = ({
             }
         }, {
         	title: '创建时间',
-        	dataIndex: 'createdAt',
-        	sorter: true
+        	dataIndex: 'createdAt'
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -110,17 +108,7 @@ const BookUnit = ({
 
     // 搜索
     const handleSearch = () => {
-        let PP = {
-        	pageNum: 1,
-        	pageSize: 10,
-        	startTime: startTime,
-        	endTime: endTime,
-            textBookId: textBookId
-        }
-     	dispatch({
-    		type: 'bookUnit/getUnit',
-    		payload: filterObj(PP)
-    	})
+     	dispatch({ type: 'bookUnit/getUnit' })
     }
     
     // 展示modal
@@ -163,6 +151,15 @@ const BookUnit = ({
     	})
     }
 
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'bookUnit/setParam',
+    		payload: param
+        })
+        dispatch({ type: 'bookUnit/getUnit' })
+    }
+
     // 添加单元
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -197,15 +194,16 @@ const BookUnit = ({
                             />
                     </FormItem>
                     
-                    {/*书籍*/}
-                    <FormItem label="书籍">
+                    {/*教材*/}
+                    <FormItem label="教材">
                         <Select
                             showSearch
+                            placeholder="请选择教材"
                             onFocus={() => dispatch({type: 'bookUnit/getBook'})}
                             onChange={v => changeSelect({textBookId: v})}
                             >
                             {
-                                bookList.map(item =>
+                                [{id: '', name: '全部'}, ...bookList].map(item =>
                                     <Option key={item.id} value={item.id}>{item.name}</Option>
                                 )
                             }
@@ -292,13 +290,22 @@ const BookUnit = ({
             </Modal>
 
             <TableLayout
+                pagination={false}
                 dataSource={tableData}
                 allColumns={columns}
                 />
             <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+                total={totalCount}
+                onChange={(page, pageSize) => handleChange({
+                    pageNum: page,
+                    pageSize
+                })}
+                onShowSizeChange={(current, pageSize) => handleChange({
+                    pageNum: 1,
+                    pageSize
+                })}
+                current={pageNum}
+                pageSize={pageSize} />
 		</div>
 	)
 };

@@ -86,6 +86,16 @@ export default {
 			res && message.success(res.data.message);
 		},
 
+		*startMember({ payload }, { call }) {
+			const res = yield call(api.startMember, payload);
+			res && message.success(res.data.message);
+		},
+
+		*forbiddenMember({ payload }, { call }) {
+			const res = yield call(api.forbiddenMember, payload);
+			res && message.success(res.data.message);
+		},
+
 		*setParam({ payload }, { put }) {
 			for (let key in payload) {
 				yield put({

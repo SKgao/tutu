@@ -7,7 +7,7 @@ export default {
 	// 题目-素材导入
 	addSource: data => axios.post('subject/source/import', data),
 
-	// 题目-详情
+	// 题目-详情 &sort=${data.sort}
 	subjectDesc: data => axios.get(`subject/subject/desc?customsPassId=${data.customsPassId}&sort=${data.sort}`, data),
 
 	// 题目导入

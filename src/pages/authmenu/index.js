@@ -240,7 +240,7 @@ const Authmenu = ({
 			    <Form layout="inline" style={{ marginLeft: 15 }}>				
 					{/*菜单名*/}
                     <FormItem label="菜单名">
-                        <Input placeholder="输入菜单名" onChange={(e) => handleInput(e)}/>
+                        <Input placeholder="输入菜单名" value={menuName} onChange={(e) => handleInput(e)}/>
                     </FormItem>
 
                     <FormItem>

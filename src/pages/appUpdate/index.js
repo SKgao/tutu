@@ -344,11 +344,12 @@ const AppverUpdate = ({
 							<FormItem label="App类型">
 								<Select
 									showSearch
+									placeholder="请选择App类型"
 									onFocus={() => dispatch({type: 'appver/getAppList'})}
 									onChange={v => changeApptype({appname: v})}
 									>
 									{
-										appList.map(item =>
+										[{id: '', name: '全部'}, ...appList].map(item =>
 											<Option key={item.id} value={item.id}>{item.name}</Option>
 										)
 									}

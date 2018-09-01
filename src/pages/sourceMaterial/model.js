@@ -25,6 +25,7 @@ export default {
     totalCount: 0,
     sourceIds: [], // 批量删除素材
     selectedRowKeys: [], // 默认选中项
+    openLike: ''       // 是否开启模糊搜索
 	},
 
 	subscriptions: {

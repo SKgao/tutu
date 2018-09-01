@@ -298,6 +298,7 @@ const Activity = ({
                     <FormItem label="活动筛选">
                         <Select
                             showSearch
+                            placeholder="请选择活动"
                             onFocus={() => dispatch({type: 'activity/activeSelect'})}
                             onChange={v => changeSelect({id: v})}
                             >

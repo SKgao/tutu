@@ -132,12 +132,12 @@ const Order = ({
 
                     {/*图图号*/}
                     <FormItem label="图图号">
-                        <Input placeholder="输入图图号" onChange={(e) => handleInput(e, 'tutuNumber')}/>
+                        <Input placeholder="输入图图号" value={tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
                     </FormItem>
 
                     {/*订单号*/}
                     <FormItem label="订单号">
-                        <Input placeholder="输入订单号" onChange={(e) => handleInput(e, 'orderNo')}/>
+                        <Input placeholder="输入订单号" value={orderNo} onChange={(e) => handleInput(e, 'orderNo')}/>
                     </FormItem>
 
                     {/*支付类型*/}
@@ -172,6 +172,7 @@ const Order = ({
                     <FormItem label="活动筛选">
                         <Select
                             showSearch
+                            placeholder="请选择活动"
                             onFocus={() => dispatch({type: 'order/activeSelect'})}
                             onChange={v => changeSelect({activityId: v})}
                             >

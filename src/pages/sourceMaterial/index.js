@@ -12,7 +12,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message, Table, Tooltip  } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message, Tooltip, Checkbox } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -24,8 +24,8 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray } = sourcematerial;
-    let { getFieldDecorator, getFieldValue, resetFields,getFieldProps } = form;
+    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike } = sourcematerial;
+    let { getFieldDecorator, getFieldValue, resetFields } = form;
 
     // 鼠标放在图片上的事件
     const mouseEnter=(e)=>{
@@ -94,7 +94,7 @@ const sourceMaterial = ({
         dispatch({
           type: 'sourcematerial/deleteSource',
           payload: {
-                id:param.id
+                id: param.id
             }
         })
     }
@@ -103,7 +103,7 @@ const sourceMaterial = ({
     const handleSearch = () => {
       dispatch({
         type: 'sourcematerial/getSource',
-        payload: filterObj({ startTime, endTime, text, pageNum, pageSize })
+        payload: filterObj({ startTime, endTime, text, pageNum, pageSize, openLike })
       })
     }
     // 添加素材
@@ -186,7 +186,7 @@ const sourceMaterial = ({
         })
         dispatch({
     		type: 'sourcematerial/getSource',
-    		payload: filterObj({ startTime, endTime, text, ...param })
+    		payload: filterObj({ startTime, endTime, openLike, text, ...param })
     	})
     }
 
@@ -240,7 +240,7 @@ const sourceMaterial = ({
         if (key === '0') {
             dispatch({
                 type: 'sourcematerial/getSource',
-                payload: { pageNum, pageSize, startTime, endTime }
+                payload: { pageNum, pageSize, startTime, endTime, openLike }
             })
         }
     	dispatch({
@@ -268,6 +268,17 @@ const sourceMaterial = ({
         dispatch({
     		type: 'sourcematerial/batchDeleteSource',
     		payload: sourcematerial.sourceIds
+    	})
+    }
+    
+    // 是否开启模糊搜索
+    const handleOpenlike = (e) => {
+        let isopen = e.target.checked
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: {
+                openLike: e.target.checked ? '' : 1
+            }
     	})
     }
 
@@ -300,6 +311,7 @@ const sourceMaterial = ({
                     </FormItem>
 
                     <FormItem>
+                        <Checkbox onChange={handleOpenlike} checked={openLike ? false : true}>模糊搜索</Checkbox>
                         <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                     </FormItem>
 

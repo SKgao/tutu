@@ -30,7 +30,6 @@ const UnitPart = ({
         {
             title: 'part名称',
             dataIndex: 'title',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改part名称'}
@@ -48,7 +47,6 @@ const UnitPart = ({
         }, {
             title: '图片',
             dataIndex: 'icon',
-            sorter: true,
             render: (text) => {
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
              }
@@ -63,7 +61,6 @@ const UnitPart = ({
         },{
             title: 'part描述',
             dataIndex: 'tips',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改part描述'}

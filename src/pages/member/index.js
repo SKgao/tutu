@@ -19,7 +19,7 @@ const Member = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, startTime, endTime, userLevel, activeKey} = member;
+    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey} = member;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -114,27 +114,17 @@ const Member = ({
                         let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
                         return <span>{ arr.filter(e => e).join(' > ') }</span>
                     }
-                }, 
-                // {
-                //     title: '单元名',
-                //     dataIndex: 'unitName',
-                //     sorter: true
-                // }, {
-                //     title: 'partTips',
-                //     dataIndex: 'partTips',
-                //     sorter: true,
-                //     render: (text) => <span>{ text ? text :  '无' }</span>
-                // }, {
-                //     title: 'part名称',
-                //     dataIndex: 'partName',
-                //     sorter: true
-                // }, {
-                //     title: '关卡名',
-                //     dataIndex: 'customPassName',
-                //     sorter: true,
-                //     render: (text) => <span>{ text ? text :  '无' }</span>
-                // }
+                }
             ]
+        }, {
+        	title: '操作',
+            dataIndex: 'action',
+            render: (txt, record, index) => {
+                return <span>
+                    <Button type="primary" size="small" onClick={() => handleUsing(record)}>启用</Button>
+                    <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
+                </span>
+            }
         }
     ]
 
@@ -177,6 +167,26 @@ const Member = ({
         } else if (activeKey === '1') {
             dispatch({ type: 'member/getFeedList' })
         }
+    }
+
+    // 会员-启用
+    const handleUsing = (param) => {
+        dispatch({
+    		type: 'member/startMember',
+    		payload: {
+                id: param.userId
+            }
+        })
+    }
+
+    // 会员-禁用
+    const handleForbidden = (param) => {
+        dispatch({
+    		type: 'member/forbiddenMember',
+    		payload: {
+                id: param.userId
+            }
+        })
     }
 
     // 选择时间框
@@ -254,12 +264,12 @@ const Member = ({
                     
                         {/*图图号*/}
                         <FormItem label="图图号">
-                            <Input placeholder="输入图图号" onChange={(e) => handleInput(e, 'tutuNumber')}/>
+                            <Input placeholder="输入图图号" value={member.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
                         </FormItem>
 
                         {/*手机号*/}
                         <FormItem label="手机号">
-                            <Input placeholder="输入手机号" onChange={(e) => handleInput(e, 'mobile')}/>
+                            <Input placeholder="输入手机号" value={member.mobile} onChange={(e) => handleInput(e, 'mobile')}/>
                         </FormItem>
 
                         {/*会员等级*/}

@@ -8,7 +8,7 @@ export default {
     getMemberLevel: data => axios.get('member/level/list', data),
     
     // 删除会员等级
-    deleteMemberLevel: data => axios.get('member/level/delete/' + data.id, data),
+    deleteMemberLevel: data => axios.get('member/level/delete/' + data.userLevel, data),
     
     // 修改会员等级
     updateMemberLevel: data => axios.post('member/level/update', data),

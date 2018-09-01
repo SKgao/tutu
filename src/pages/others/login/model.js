@@ -31,6 +31,7 @@ export default {
 			if (res) {
 				localStorage.setItem('token', res.data.data.token);
 				localStorage.setItem('account', res.data.data.account);
+				localStorage.setItem('avatar', res.data.data.avatar);
 				localStorage.setItem('HAS_LOGIN', true);
 				// yield put({type: 'save', payload});
 				axios.defaults.headers = { 'token': res.data.data.token }
@@ -41,7 +42,8 @@ export default {
 		// 进页面先清除localStorage
 		*clearStorage({}, {}) {
             localStorage.removeItem('token');
-            localStorage.removeItem('account');
+			localStorage.removeItem('account');
+			localStorage.removeItem('avatar');
 			localStorage.removeItem('HAS_LOGIN', false);
 			axios.defaults.headers = { 'token': '' }
 		}

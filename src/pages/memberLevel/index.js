@@ -49,7 +49,7 @@ const MemberLevel = ({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								explainInfo: v
+								explainInfo: Number(v)
 							}
 						})
 					}/>
@@ -69,7 +69,7 @@ const MemberLevel = ({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								exprieDays: v
+								exprieDays: Number(v)
 							}
 						})
 					}/>
@@ -80,14 +80,14 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改原始价格'}
-					valueData={text || '0'}
-					defaultValue={text || '0'}
+					valueData={ (Number(text) / 100).toFixed(2) || '0'}
+					defaultValue={ (Number(text) / 100).toFixed(2) || '0'}
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								orgMoney: v
+								orgMoney: Number(v)
 							}
 						})
 					}/>
@@ -98,14 +98,14 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改需充值金额'}
-					valueData={text || '0'}
-					defaultValue={text || '0'}
+					valueData={ (Number(text) / 100).toFixed(2) || '0'}
+					defaultValue={ (Number(text) / 100).toFixed(2) || '0'}
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
-								userLevel: record.userLevel,
-								needMoney: v
+								userLevel: record.userLevel - 0,
+								needMoney: Number(v)
 							}
 						})
 					}/>

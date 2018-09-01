@@ -142,24 +142,28 @@ const TeachingManage = ({
     }
     
     /**
-     * 删除教材
+     * 删除年级
      * @param  {object} 列数据
      */
     const handleDeleteGrade = (param) => {
         dispatch({
     		type: 'teachingmanage/deleteGrade',
-    		payload: param.id
+    		payload: {
+                id: param.id
+            }
     	})
     }
 
     /**
-     * 删除年级
+     * 删除教材版本
      * @param  {object} 列数据
      */
     const handleDeleteVersion = (param) => {
         dispatch({
     		type: 'teachingmanage/deleteVersion',
-    		payload: param.id
+    		payload: {
+                id: param.id
+            }
     	})
     }
 

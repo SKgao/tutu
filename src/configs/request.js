@@ -6,8 +6,8 @@ import { message } from 'antd';
 
 const DEFAULT_TIMEOUT = 15000;
 
-//axios.defaults.baseURL = '//api.admin.chengxuyuantoutiao.com/';
-axios.defaults.baseURL = '//api.admin.tutukids.com'
+axios.defaults.baseURL = '//api.admin.chengxuyuantoutiao.com/';
+//axios.defaults.baseURL = '//api.admin.tutukids.com'
 //axios.defaults.withCredentials = true;
 axios.defaults.timeout = DEFAULT_TIMEOUT;
 

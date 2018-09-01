@@ -26,7 +26,6 @@ const PartPass = ({
         {
             title: '关卡标题',
             dataIndex: 'title',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改关卡标题'}
@@ -44,7 +43,6 @@ const PartPass = ({
         }, {
         	title: '图片',
         	dataIndex: 'icon',
-            sorter: true,
             render: (text, record, index) => {
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
@@ -84,8 +82,7 @@ const PartPass = ({
             sorter: true
         }, {
         	title: '创建时间',
-        	dataIndex: 'createdAt',
-        	sorter: true
+        	dataIndex: 'createdAt'
         }, {
         	title: '操作',
             dataIndex: 'action',
