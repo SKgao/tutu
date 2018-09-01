@@ -40,7 +40,8 @@ const Order = ({
         }, {
             title: '订单金额',
             dataIndex: 'orderAmount',
-            sorter: true
+            sorter: true,
+            render: (text) => (Number(text) / 100).toFixed(2)
         }, {
             title: '支付方式',
             dataIndex: 'payTypeName',

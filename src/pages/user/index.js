@@ -151,7 +151,7 @@ const UserSetting = ({
         }
     ]
 
-    // 修改素材
+    // 修改用户头像
     const changeIcon = (url, record) => {
         dispatch({
     		type: 'userSetting/updateUser',

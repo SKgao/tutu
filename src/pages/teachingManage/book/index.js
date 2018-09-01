@@ -33,20 +33,80 @@ const TeachingManage = ({
         bookColumns: [
             {
                 title: '教材名',
-                dataIndex: 'name'
+                dataIndex: 'name',
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改教材名'}
+                        valueData={text || '无'}
+                        defaultValue={text || '无'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateBook',
+                                payload: {
+                                    id: record.id,
+                                    text: v
+                                }
+                            })
+                        }/>
             }, {
                 title: '创建时间',
                 dataIndex: 'createdAt'
             }, {
                 title: '年级',
                 dataIndex: 'gradeId',
-                sorter: true
+                sorter: true,
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改年级'}
+                        valueData={gradeList}
+                        focusSelect={() => dispatch({type: 'teachingmanage/getGrade'})}
+                        optionKey={'id'}
+                        optionItem={'gradeName'}
+                        defaultValue={text || '无'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateBook',
+                                payload: {
+                                    id: record.id,
+                                    gradeId: v - 0
+                                }
+                            })
+                        }/>
+            }, {
+                title: '教材版本',
+                dataIndex: 'bookVersionId',
+                sorter: true,
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改教材版本'}
+                        valueData={versionList}
+                        focusSelect={() => dispatch({type: 'teachingmanage/getVersion'})}
+                        optionKey={'id'}
+                        optionItem={'name'}
+                        defaultValue={text || '无'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateBook',
+                                payload: {
+                                    id: record.id,
+                                    bookVersionId: v - 0
+                                }
+                            })
+                    }/>
             }, {
                 title: '教材封面图',
                 dataIndex: 'icon',
                 sorter: true,
                 render: (text) => {
                    return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+                }
+            }, {
+                title: '上传封面图',
+                dataIndex: 'updateicon',
+                render: (text, record, index) => {
+                    return <MyUpload uploadTxt={'上传封面图'} uploadSuccess={(url) => {
+                        changeIcon(url, record)
+                    }}></MyUpload>
                 }
             }, {
                 title: '操作',
@@ -133,6 +193,18 @@ const TeachingManage = ({
             }
         ]
     }
+    
+    // 修改素材
+    const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'teachingManage/updateBook',
+    		payload: {
+                id: record.id,
+                icon: url
+            }
+    	})
+    }
+    
 
     // 调转到单元页面
     const linktoUnit = (record) => {
@@ -168,7 +240,7 @@ const TeachingManage = ({
     }
 
     /**
-     * 删除教材版本
+     * 删除教材
      * @param  {object} 列数据
      */
     const handleDelete = (param) => {

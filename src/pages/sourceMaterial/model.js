@@ -12,10 +12,14 @@ export default {
 		modalShow: false,
     modal2Show:false,
     modal3Show: false,
+    id: '',  // 修改素材id
 		icon: '',//素材图标
     audio:'',//素材音频
     iconUrl:'',//素材地址
     audioUrl:'',//音频地址
+    phonetic: '', // 音标
+    translation: '', // 释义
+    explainsArray: '', // 多次释义
     audioArray: [],      // 音频文件
     imageArray: [],      // 图片文件
     sentensArray: [],    // 句子文件

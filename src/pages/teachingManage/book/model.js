@@ -64,6 +64,14 @@ export default {
 				yield put({ type: 'getBook' })
 			}
 		},
+
+		*updateBook({ payload }, { call, put }) {
+            const res = yield call(api.updateBook, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getBook' })
+			}
+		},
 		
 		*deleteGrade({ payload }, { call, put }) {
             const res = yield call(api.deleteGrade, payload);

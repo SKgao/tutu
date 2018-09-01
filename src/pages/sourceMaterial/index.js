@@ -134,25 +134,7 @@ const sourceMaterial = ({
           }
       })
     }
-    // 确定修改素材
-    const submitEditForm = (e) => {
-        if (e!="false") {
-            let PP = {
-                // audio: getFieldValue('audio'),
-                // icon: getFieldValue('icon'),
-                // text: getFieldValue('text')
-                audio: e.audio,
-                icon: e.icon,
-                text: e.text
-            }
-            dispatch({
-                type: 'sourcematerial/addSource',
-                payload: filterObj(PP)
-            })
-        }else{
-            handleSubmit('modal2Show',false)
-        }
-    }
+
     // 表单取消
     const handleReset  = (m) => {
         resetFields();
@@ -167,18 +149,23 @@ const sourceMaterial = ({
         })
     }
     // 编辑素材 显示modal
-    const handleEdit=(e)=>{
+    const handleEdit= (e) =>{
         dispatch({
             type: 'sourcematerial/setParam',
             payload: {
                 modal2Show: true,
-                icon:e.icon,
-                audio:e.audio,
-                text:e.text
+                id: e.id,
+                icon: e.icon,
+                audio: e.audio,
+                text: e.text,
+                phonetic: e.phonetic,
+                translation: e.translation,
+                explainsArray: e.explainsArray
             }
         })
     }
-
+    
+    // 操作分页
     const handleChange = (param) => {
         dispatch({
     		type: 'sourcematerial/setParam',
@@ -228,9 +215,9 @@ const sourceMaterial = ({
         dispatch({
             type: 'sourcematerial/addSubjectSource',
             payload: { 
-                audioArray: audioArray.filter(e => e !== '.DS_Store'),
-                imageArray: imageArray.filter(e => e !== '.DS_Store'),
-                sentensArray: sentensArray.filter(e => e !== '.DS_Store')
+                audioArray: audioArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.png'),
+                imageArray: imageArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.mp3'),
+                sentensArray: sentensArray.filter(e => e.slice(0, 1) !== '.')
             }
         })
     }
@@ -359,8 +346,7 @@ const sourceMaterial = ({
                     sourcematerial={sourcematerial}
                     maskClosable={false}
                 >
-                    {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
-                    <EditForm></EditForm>
+                <EditForm></EditForm>
                 </Modal>
 
                 <Modal

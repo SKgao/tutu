@@ -101,9 +101,18 @@ const PartPass = ({
     // 调转到关卡页面
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/subjects',
-            search: `customsPassId=${record.id}&sort=${record.sort}`
+            pathname: '/subjects'           
         }));
+
+        dispatch({
+            type: 'app/setPath',
+            payload: {
+                firPath: ['114'],
+                secPath: ['/subjects']
+            }
+        })
+        localStorage.setItem('firPath', ['114'])
+        localStorage.setItem('secPath', ['/subjects'])
     }
     
     /**

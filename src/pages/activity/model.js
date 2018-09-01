@@ -23,7 +23,6 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			console.log('aaaa')
 			dispatch({ type: 'getActivity' });
 		},
 	},

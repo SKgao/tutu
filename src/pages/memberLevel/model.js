@@ -5,7 +5,8 @@ export default {
 	namespace: 'memberLevel',
 
 	state: {
-        levelList: []
+		levelList: [],
+		modalShow: false
 	},
 
 	subscriptions: {
@@ -33,6 +34,22 @@ export default {
                 res && message.success(res.data.message);
 				yield put({
 					type: 'getMemberLevel'
+				});
+			}
+		},
+
+		*addMemberLevel({ payload }, { call, put }) {
+			const res = yield call(api.addMemberLevel, payload);
+			if (res) {
+                res && message.success(res.data.message);
+				yield put({
+					type: 'getMemberLevel'
+				});
+				yield put({
+					type: 'setParam',
+					payload: {
+						modalShow: false
+					}
 				});
 			}
 		},

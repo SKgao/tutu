@@ -80,6 +80,12 @@ const Subject = ({
             title: '题目顺序',
             dataIndex: 'sort',
             sorter: true
+        }, {
+            title: '操作',
+            dataIndex: 'action',
+            render: (text, record) => {
+                return <Button size="small" onClick={() => linktoDet(record)}>题目详情</Button>
+            }
         }
     ]
     
@@ -106,15 +112,6 @@ const Subject = ({
 
     const columns = (customsPassId) ? descCol : subjectCol
     const dataSource = (customsPassId) ? subject.descList : subject.subjectList
-
-    const openNotification = () => {
-        notification.open({
-            duration: 1,
-            message: '暂不支持查看素材包~',
-            description: '请等待后续开发。',
-            icon: <Icon type="smile-circle" style={{ color: '#108ee9' }} />
-        });
-      }
     
     const expandedRowRender = () => {
         const sourceCol = [
@@ -149,6 +146,14 @@ const Subject = ({
               pagination={false}
             />
           )
+    }
+
+    // 调转到题目详情
+    const linktoDet = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/subjects',
+            search: `customsPassId=${record.customsPassId}&sort=${record.sort}`
+        }));
     }
 
     // 添加题目
@@ -307,10 +312,12 @@ const Subject = ({
                                     />
                             </FormItem>
 
-                            {/*关卡名称*/}
-                            <FormItem label="关卡名称">
-                                <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
-                            </FormItem>
+                            {
+                                customsPassId  ? null : 
+                                <FormItem label="关卡名称">
+                                    <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
+                                </FormItem>
+                            }
 
                             {
                                 customsPassId  ? null : 
@@ -334,10 +341,13 @@ const Subject = ({
                             {/* <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
                             </FormItem> */}
-
-                            <FormItem>
-                                <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
-                            </FormItem>
+                            
+                            {
+                                customsPassId  ? null : 
+                                <FormItem>
+                                    <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
+                                </FormItem>
+                            }
                             
                             {
                                 !customsPassId  ? null : 
@@ -460,7 +470,7 @@ const Subject = ({
                             allColumns={columns}
                             expandedRowRender={customsPassId ? expandedRowRender : null}
                             expandRowByClick={true}
-                            loading={ loading.effects['subject/getSubject'] }
+                            loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }
                             />
                         {
                             customsPassId ? null :

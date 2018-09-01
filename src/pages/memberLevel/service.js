@@ -12,4 +12,7 @@ export default {
     
     // 修改会员等级
     updateMemberLevel: data => axios.post('member/level/update', data),
+
+    // 新增会员等级
+    addMemberLevel: data => axios.post('member/level/add', data),
 }

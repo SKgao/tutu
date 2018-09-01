@@ -29,8 +29,8 @@ export default {
 		breadCrumd: {},      // 面包屑
 		historyList: [],     // 历史导航
 		redirectUrl: '/',    // 登录后跳转页面
-		firPath: [],
-		secPath: []
+		firPath: [localStorage.getItem('firPath')] || ['117'],
+		secPath: [localStorage.getItem('secPath')] || ['/userSetting']
 	},
 
 	subscriptions: {
@@ -138,6 +138,8 @@ export default {
 				localStorage.removeItem('account');
 				localStorage.removeItem('avatar');
 				localStorage.removeItem('HAS_LOGIN');
+				localStorage.removeItem('firPath');
+			    localStorage.removeItem('secPath');
 				axios.defaults.headers = { 'token': '' };
 				yield put(routerRedux.push('/login'));
 			}

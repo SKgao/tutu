@@ -5,13 +5,11 @@ import { axios } from '@/configs/request';
 
 /**
  * 上传文件组件
+ * @param 传入回调接收返回url
  */
 class MyUpload extends Component {
     constructor(props) {
-        super(props);
-        this.state = {
-			file: ''
-		}
+        super(props);     
     }
 
     // handleUpload = (file) => {
@@ -35,11 +33,12 @@ class MyUpload extends Component {
     // }
 
     beforeUpload = (file, fileList) => {
-        this.setState({ file })
+        return new Promise((resolve, reject) => {
+            this.customRequest(file)
+        })
     }
 
-    customRequest = () => {
-        let { file } = this.state
+    customRequest = (file) => {
         if (file) {
             let uploadSuccess = this.props.uploadSuccess
             let formData = new FormData()
@@ -67,7 +66,7 @@ class MyUpload extends Component {
             <Upload 
                 beforeUpload={this.beforeUpload}  
                 //onChange={this.handleUpload}
-                customRequest={this.customRequest}
+                //customRequest={this.customRequest}
                 directory={directory}>
                 <Button>
                     <Icon type="upload"/>
