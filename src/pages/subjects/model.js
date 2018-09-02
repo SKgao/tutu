@@ -1,5 +1,6 @@
 import api from './service';
 import api_teachingManage from '@/pages/teachingManage/book/service';
+import { filterObj } from '@/utils/tools';
 import { message } from 'antd';
 
 export default {
@@ -10,8 +11,7 @@ export default {
 		descList: [],        // 题目详情
         bookList: [],        // 教材列表
 		customPassId: '',    // 关卡id
-		customsPassName: '', // 题目名
-        sourceIds: '',       // 素材id
+		customsPassName: '', // 关卡名
         subjectTypeId: '',   // 题目类型id
         startTime: '',
 		endTime: '',
@@ -21,6 +21,7 @@ export default {
 		textbookId: 1,       // 教材id
 		customsPassId: 0,    // 关卡id
 		sort: 0,             // 题目顺序
+		detpage: false,      // 是否为题目详情页
 		
 		audioArray: [],      // 音频文件
 		imageArray: [],      // 图片文件
@@ -38,20 +39,33 @@ export default {
 					let search = location.search.slice(1)
 					if (search) {
 						let arr = (search) ? search.split('&') : []
-						let customsPassId = arr[0].split('=')[1] - 0
-						let sort = arr[1].split('=')[1] - 0
+						let paramObj = { activeKey: '0', sort: '' }
+						for (let i = 0; i < arr.length; i++) {
+							let temp = arr[i].split('=')
+							if (temp[0] && temp[1] && temp[1] !== 'undefined') {
+								if (temp[0] === 'customsPassName') {
+									paramObj[temp[0]] = decodeURI(temp[1])
+								} else {
+									paramObj[temp[0]] = temp[1]
+								}
+							}
+						}
 						dispatch({ 
 							type: 'setParam',
-							payload: { 
-								activeKey: '0',
-								customsPassId,
-								sort
-							}
+							payload: paramObj
 						})
-						dispatch({ 
-							type: 'subjectDesc',
-							payload: { customsPassId, sort }
-						})
+						if (paramObj.detpage) {
+							dispatch({ 
+								type: 'subjectDesc',
+								payload: { 
+									customsPassId: paramObj.customsPassId,
+									sort: paramObj.sort
+								}
+							})
+						} else {
+							dispatch({ type: 'getSubject' })
+						}
+						// dispatch({ type: 'getSubject' })
 					} else {
 						dispatch({ 
 							type: 'setParam',
@@ -61,13 +75,7 @@ export default {
 								sort: 0
 							}
 						})
-						dispatch({ 
-							type: 'getSubject',
-							payload: {
-								pageSize: 10,
-								pageNum: 1
-							}
-						})
+						dispatch({ type: 'getSubject' })
 					}
 				}
 			});
@@ -75,8 +83,10 @@ export default {
 	},
 
 	effects: {
-		*getSubject({ payload }, { call, put }) {
-            const res = yield call(api.getSubject, payload)
+		*getSubject({ payload }, { call, put, select }) {
+			const { pageNum, pageSize, sourceIds, customsPassName } = yield select(state => state.subject);
+			const _pay = payload ? payload : { pageNum, pageSize, sourceIds, customsPassName }
+            const res = yield call(api.getSubject, filterObj(_pay))
 			if (res) {
 				yield put({
 					type: 'save',

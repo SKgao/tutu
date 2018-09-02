@@ -21,7 +21,10 @@ const editForm = ({
             id: id,
             icon: icon || '',
             audio: audio || '',
-            text: text || ''
+            text: text || '',
+            phonetic: phonetic || '',
+            translation: translation || '',
+            explainsArray: explainsArray || ''
         }
         validateFieldsAndScroll((err, values) => {
             validateFieldsAndScroll((err, values) => {
@@ -151,7 +154,7 @@ const editForm = ({
                     {getFieldDecorator('translation', {
                         initialValue: translation || '',
                     })(
-                        <Input placeholder="请输入音标"/>
+                        <Input placeholder="请输入释义"/>
                     )}
                 </FormItem>
 

@@ -23,7 +23,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName} = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
@@ -110,8 +110,8 @@ const Subject = ({
         }
     ]
 
-    const columns = (customsPassId) ? descCol : subjectCol
-    const dataSource = (customsPassId) ? subject.descList : subject.subjectList
+    const columns = (detpage) ? descCol : subjectCol
+    const dataSource = (detpage) ? subject.descList : subject.subjectList
     
     const expandedRowRender = () => {
         const sourceCol = [
@@ -152,7 +152,7 @@ const Subject = ({
     const linktoDet = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.customsPassId}&sort=${record.sort}`
+            search: `customsPassId=${record.customsPassId}&sort=${record.sort}&detpage=1`
         }));
     }
 
@@ -221,11 +221,20 @@ const Subject = ({
     }
 
     // 返回
-    const goBack = () => dispatch(routerRedux.goBack(-1))
+    const goBack = () => {
+        dispatch(routerRedux.goBack(-1))
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+                sort: '',
+                detpage: ''
+            }
+        })
+    }
 
     // 搜搜题目
     const handleSearch = () => {
-        if (customsPassId) {
+        if (detpage) {
             dispatch({
                 type: 'subject/subjectDesc',
                 payload: filterObj({ customsPassId, sort })
@@ -233,7 +242,7 @@ const Subject = ({
         } else {
             dispatch({
                 type: 'subject/getSubject',
-                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
+                payload: filterObj({ startTime, endTime, customsPassId, sort, sourceIds, customsPassName, pageNum, pageSize })
             })
         }
     }
@@ -313,21 +322,21 @@ const Subject = ({
                             </FormItem>
 
                             {
-                                customsPassId  ? null : 
+                                detpage  ? null : 
                                 <FormItem label="关卡名称">
                                     <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
                                 </FormItem>
                             }
 
                             {
-                                customsPassId  ? null : 
+                                detpage  ? null : 
                                 <FormItem label="题目">
                                     <Input placeholder="输入题目名" onChange={(e) => handleInput(e, 'sourceIds')}/>
                                 </FormItem>
                             }
 
                             {
-                                !customsPassId  ? null : 
+                                !detpage  ? null : 
                                 <FormItem  label="题目顺序">
                                     <Input placeholder="输入题目顺序" onChange={(e) => handleInput(e, 'sort')}/>
                                 </FormItem>
@@ -343,14 +352,14 @@ const Subject = ({
                             </FormItem> */}
                             
                             {
-                                customsPassId  ? null : 
+                                detpage  ? null : 
                                 <FormItem>
                                     <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
                                 </FormItem>
                             }
                             
                             {
-                                !customsPassId  ? null : 
+                                !detpage  ? null : 
                                 <FormItem>
                                     <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                                 </FormItem>
@@ -468,12 +477,12 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
-                            expandedRowRender={customsPassId ? expandedRowRender : null}
+                            expandedRowRender={detpage ? expandedRowRender : null}
                             expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }
                             />
                         {
-                            customsPassId ? null :
+                            detpage ? null :
                             <PaginationLayout
                                 total={subject.totalCount}
                                 onChange={(page, pageSize) => handleChange({
@@ -491,7 +500,7 @@ const Subject = ({
                 </TabPane>
                 
                 {
-                    (customsPassId || activeKey === '0') ? null :
+                    (detpage || activeKey === '0') ? null :
                     <TabPane tab="上传进度" key="1">
                         <UploadProgress
                            cardTitle={'题目上传进度'}

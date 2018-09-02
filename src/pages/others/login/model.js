@@ -44,8 +44,8 @@ export default {
             localStorage.removeItem('token');
 			localStorage.removeItem('account');
 			localStorage.removeItem('avatar');
-			localStorage.setItem('firPath');
-			localStorage.setItem('secPath');
+			localStorage.removeItem('firPath');
+			localStorage.removeItem('secPath');
 			localStorage.removeItem('HAS_LOGIN', false);
 			axios.defaults.headers = { 'token': '' }
 		}

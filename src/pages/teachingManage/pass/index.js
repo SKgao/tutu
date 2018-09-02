@@ -101,7 +101,8 @@ const PartPass = ({
     // 调转到关卡页面
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/subjects'           
+            pathname: '/subjects',
+            search: `customsPassName=${record.title}`       
         }));
 
         dispatch({

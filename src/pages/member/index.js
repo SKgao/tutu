@@ -28,7 +28,7 @@ const Member = ({
             dataIndex: 'tutuNumber',
             sorter: true
         }, {
-            title: '用户名',
+            title: '用户昵称',
             dataIndex: 'realName'
         }, {
             title: '用户头像',

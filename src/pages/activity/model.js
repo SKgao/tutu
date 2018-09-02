@@ -35,6 +35,13 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
+						tableData: [],
+						totalCount: 0
+					}
+				});
+				yield put({
+					type: 'save',
+					payload: {
 						tableData: (res.data.data) ? res.data.data.data : [],
 						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
@@ -71,6 +78,14 @@ export default {
 
 		*updateActivity({ payload }, { call, put }) {
 			const res = yield call(api.updateActivity, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({	type: 'getActivity' });
+			}
+		},
+
+		*changeStatus({ payload }, { call, put }) {
+			const res = yield call(api.changeStatus, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({	type: 'getActivity' });

@@ -34,14 +34,29 @@ export default {
 
 	subscriptions: {
     setup({ dispatch, history }) {
-    	dispatch({
-    		type: 'getSource',
-    		payload: {
-    			pageNum: 1,
-    			pageSize: 10
-    		}
-    	});
-    },
+      return history.listen(location => {
+				if (location.pathname === '/sourceMaterial') {
+          dispatch({
+            type: 'setParam',
+            payload: {
+              pageNum: 1,
+              pageSize: 10,
+              text: '',
+              openLike: ''
+            }
+          });
+          dispatch({
+            type: 'getSource',
+            payload: {
+              pageNum: 1,
+              pageSize: 10,
+              text: '',
+              openLike: ''
+            }
+          });
+        }
+      })
+    }
 	},
 
 	effects: {

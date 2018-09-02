@@ -162,6 +162,12 @@ const Activity = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
+                    {
+                        record.status === 2 && <Button type="primary" size="small" onClick={() => changeStatus(record, 1)}>打开</Button>
+					}
+					{
+                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => changeStatus(record, 2)}>关闭</Button>
+					}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
@@ -176,6 +182,17 @@ const Activity = ({
     		type: 'activity/deleteActivity',
     		payload: {
                 id: record.id
+            }
+    	})
+    }
+
+    // 改变状态
+    const changeStatus = (record, status) => {
+        dispatch({
+    		type: 'activity/changeStatus',
+    		payload: {
+                id: record.id - 0,
+                status: status - 0
             }
     	})
     }
@@ -483,6 +500,7 @@ const Activity = ({
 
             <TableLayout
                 pagination={false}
+                scrollX={true}
                 dataSource={tableData}
                 allColumns={columns}
                 loading={ loading.effects['activity/getActivity'] }
