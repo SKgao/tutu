@@ -23,7 +23,21 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ type: 'getActivity' });
+			return history.listen(location => {
+				if (location.pathname === '/activity') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							pageNum: 1,
+							pageSize: 10,
+							startTime: '',
+							endTime: '',
+							id: ''
+						}
+					});
+					dispatch({ type: 'getActivity' });
+				}
+			})
 		},
 	},
 

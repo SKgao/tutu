@@ -44,7 +44,7 @@ const TeachingManage = ({
                                 type: 'teachingmanage/updateBook',
                                 payload: {
                                     id: record.id,
-                                    text: v
+                                    name: v
                                 }
                             })
                         }/>

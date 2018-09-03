@@ -82,7 +82,6 @@ export default {
 		},
 		
 		*deleteVersion({ payload }, { call, put }) {
-			console.log(payload);
             const res = yield call(api.deleteVersion, payload);
             if (res) {
 				message.success(res.data.message);

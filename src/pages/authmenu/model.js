@@ -1,5 +1,6 @@
 import api from './service';
 import { message } from 'antd';
+import { filterObj } from '@/utils/tools';
 
 export default {
 	namespace: 'authmenu',
@@ -15,19 +16,26 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {	
-			dispatch({ 
-				type: 'getMenu',
-				payload: {
-					pageNum: 1,
-					pageSize: 10
+            return history.listen(location => {
+				if (location.pathname === '/authMenu') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							pageNum: 1,
+							pageSize: 10,
+							menuName: ''
+						}
+					});
+					dispatch({ type: 'getMenu' });
 				}
-			});
+			})
 		},
 	},
 
 	effects: {
-		*getMenu({ payload }, { call, put }) {
-			const res = yield call(api.getMenu, payload);
+		*getMenu({ payload }, { call, put, select }) {
+			const { menuName, pageNum, pageSize} = yield select(state => state.authmenu);
+			const res = yield call(api.getMenu, filterObj({ menuName, pageNum, pageSize}));
 			if (res) {
 				yield put({
 					type: 'save',
@@ -47,13 +55,9 @@ export default {
 		
 		*addMenu({ payload }, { call, put, select }) {
 			const res = yield call(api.addMenu, payload);
-			const { menuName, pageNum, pageSize } = yield select(state => state.authmenu);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'getMenu',
-					payload: { menuName, pageNum, pageSize }
-				});
+				yield put({ type: 'getMenu' });
 				yield put({
 					type: 'setParam',
 					payload: {
@@ -69,12 +73,7 @@ export default {
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'app/fetch' });
-				yield put({
-					type: 'save',
-					payload: {
-						tableData: tableData.filter(e => e.id !== payload)
-					}
-				});
+				yield put({ type: 'getMenu' });
 			}
 		},
 

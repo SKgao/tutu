@@ -11,7 +11,11 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {	
-			dispatch({ type: 'getMemberLevel' });
+			return history.listen(location => {
+				if (location.pathname === '/memberLevel') {
+					dispatch({ type: 'getMemberLevel' });
+				}
+			})
 		},
 	},
 

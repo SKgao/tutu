@@ -215,8 +215,8 @@ const sourceMaterial = ({
         dispatch({
             type: 'sourcematerial/addSubjectSource',
             payload: { 
-                audioArray: audioArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.png'),
-                imageArray: imageArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.mp3'),
+                audioArray: audioArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.mp3'),
+                imageArray: imageArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.png'),
                 sentensArray: sentensArray.filter(e => e.slice(0, 1) !== '.')
             }
         })
