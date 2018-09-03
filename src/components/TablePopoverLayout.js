@@ -76,7 +76,7 @@ class TablePopoverLayout extends Component {
 						{
 							(typeof(valueData) === 'string' || typeof(valueData) === 'number' || valueData.props) && 
 							<Input 
-								value={value}
+								value={valueData.props ? valueData.props.title : value}
 								onChange={e => this.handleChange(e.target.value)}
 								{...inputProps}/>
 						}

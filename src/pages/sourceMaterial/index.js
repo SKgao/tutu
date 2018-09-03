@@ -161,11 +161,11 @@ const sourceMaterial = ({
     const renderExplainsArray = (text) => {
         let str = text
         if (!str) {
-            return '[]'
+            return <span title={ '[]' }> { '[]' } </span>
         } else if (str.length < 20) {
-            return str
+            return <span title={ str }> { str } </span>
         } else {
-            return str.substr(0, 20) + '...'
+            return <span title={ str }> { str.substr(0, 20) + '...' } </span>
         }
     }
 
