@@ -103,7 +103,11 @@ const sourceMaterial = ({
         }, {
             title: '多次释义',
             dataIndex: 'explainsArray',
-            render: (text, record, index) => renderExplainsArray(text)
+            render: (text, record, index) => <span title={text} style={{ cursor: 'pointer' }} onClick={ () => {
+                handleUpdateArr(record)
+                handleSubmit('modal4Show', true)
+           }
+         }>{ renderExplainsArray(text) }</span>
         }, {
         	title: '修改音频',
         	dataIndex: 'updateAudio',
@@ -125,11 +129,7 @@ const sourceMaterial = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
-                    <Button size="small" style={{ marginLeft: 10 }} onClick={ () => {
-                            handleUpdateArr(record)
-                            handleSubmit('modal4Show', true)
-                       }
-                     }>修改多次释义</Button>
+                    {/* <Button size="small" style={{ marginLeft: 10 }} >修改多次释义</Button> */}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
@@ -160,6 +160,16 @@ const sourceMaterial = ({
         })
     }
 
+    // 修改释义
+    const changeArray = (event) => {
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                explainsArray: event.target.value
+            }
+        })
+    }
+
     // 修改用户头像
     const changeSource = (url, record, rowname) => {
         dispatch({
@@ -175,11 +185,11 @@ const sourceMaterial = ({
     const renderExplainsArray = (text) => {
         let str = text
         if (!str) {
-            return <span title={ '[]' }> { '[]' } </span>
+            return '[]'
         } else if (str.length < 20) {
-            return <span title={ str }> { str } </span>
+            return str
         } else {
-            return <span title={ str }> { str.substr(0, 20) + '...' } </span>
+            return str.substr(0, 20) + '...'
         }
     }
 
@@ -279,8 +289,8 @@ const sourceMaterial = ({
         dispatch({
           type: 'sourcematerial/setParam',
           payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
@@ -438,7 +448,7 @@ const sourceMaterial = ({
                 <Form>
                     <FormItem
                         {...formItemLayout}>
-                        <TextArea rows={4} value={explainsArray} placeholder="修改释义"></TextArea>
+                        <TextArea rows={4} value={explainsArray} placeholder="修改释义" onChange={ changeArray }></TextArea>
                     </FormItem>
 
                     <FormItem
@@ -448,7 +458,7 @@ const sourceMaterial = ({
                                 handleSubmit('modal4Show', false)
                                 handleExplainsArray()
                             }                
-                        } style={{ marginLeft: 75 }}>提交</Button>
+                        } style={{ marginLeft: 5 }}>提交</Button>
                     </FormItem>
                 </Form>
             </Modal>
