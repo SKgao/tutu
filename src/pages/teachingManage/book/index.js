@@ -10,6 +10,7 @@ import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
+import { axios } from '@/configs/request';
 
 import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, message } from 'antd';
 const FormItem = Form.Item;
@@ -101,12 +102,14 @@ const TeachingManage = ({
                    return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
                 }
             }, {
+                title: '年级顺序',
+                dataIndex: 'status',
+                sorter: true
+            }, {
                 title: '上传封面图',
                 dataIndex: 'updateicon',
-                render: (text, record, index) => {
-                    return <MyUpload uploadTxt={'上传封面图'} uploadSuccess={(url) => {
-                        changeIcon(url, record)
-                    }}></MyUpload>
+                render: (txt, record, index) => {
+                    return <MyUpload uploadTxt={'上传封面图'} uploadSuccess={(url) => changeImages(url, record)}></MyUpload>
                 }
             }, {
                 title: '操作',
@@ -145,6 +148,24 @@ const TeachingManage = ({
                 title: '年级id',
                 dataIndex: 'id',
                 sorter: true
+            }, {
+                title: '年级顺序',
+                dataIndex: 'status',
+                sorter: true,
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改年级顺序'}
+                        valueData={text || '0'}
+                        defaultValue={text || '0'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateGrade',
+                                payload: {
+                                    id: record.id,
+                                    status: v - 0
+                                }
+                            })
+                    }/>
             }, {
                 title: '操作',
                 dataIndex: 'action',
@@ -195,14 +216,26 @@ const TeachingManage = ({
     }
     
     // 修改素材
-    const changeIcon = (url, record) => {
-        dispatch({
-    		type: 'teachingManage/updateBook',
-    		payload: {
+    const changeImages = (url, record) => {
+        // dispatch({
+    	// 	type: 'teachingManage/updateBook',
+    	// 	payload: {
+        //         id: record.id,
+        //         icon: url
+        //     }
+        // })
+        axios.post('book/update', {
                 id: record.id,
                 icon: url
-            }
-    	})
+            })
+            .then((res) => {
+                if (res.data.code === 0) {
+                    message.success(res.data.message);
+                    dispatch({ type: 'getBook' })
+                } else {
+                    message.error(res.data.message)
+                }
+            })
     }
     
 

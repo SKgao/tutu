@@ -87,14 +87,14 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改原始价格'}
-					valueData={ (Number(text) / 100).toFixed(2) || '0'}
-					defaultValue={ (Number(text) / 100).toFixed(2) || '0'}
+					valueData={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
+					defaultValue={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								orgMoney: Number(v) * 100
+								orgMoney: Number(v.replace(/元/g, '')) * 100
 							}
 						})
 					}/>
@@ -105,14 +105,14 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改需充值金额'}
-					valueData={ (Number(text) / 100).toFixed(2) || '0'}
-					defaultValue={ (Number(text) / 100).toFixed(2) || '0'}
+					valueData={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
+					defaultValue={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								needMoney: Number(v) * 100
+								needMoney: Number(v.replace(/元/g, '')) * 100
 							}
 						})
 					}/>

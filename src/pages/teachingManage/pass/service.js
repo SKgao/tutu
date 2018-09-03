@@ -17,5 +17,5 @@ export default {
     deletePass: data => axios.get('pass/delete/' + data, data),
     
     // 修改关卡
-	updatePass: data => axios.get('pass/update', data)
+	updatePass: data => axios.post('pass/update', data)
 }

@@ -19,7 +19,7 @@ export default {
         modalShow: false,    // 添加题目
         modal2Show: false,   // 添加素材
 		textbookId: 1,       // 教材id
-		customsPassId: 0,    // 关卡id
+		customsPassId: 505,    // 关卡id
 		sort: 0,             // 题目顺序
 		detpage: false,      // 是否为题目详情页
 		
@@ -39,14 +39,14 @@ export default {
 					let search = location.search.slice(1)
 					if (search) {
 						let arr = (search) ? search.split('&') : []
-						let paramObj = { activeKey: '0', sort: '' }
+						let paramObj = { activeKey: '0', sort: '', }
 						for (let i = 0; i < arr.length; i++) {
 							let temp = arr[i].split('=')
 							if (temp[0] && temp[1] && temp[1] !== 'undefined') {
 								if (temp[0] === 'customsPassName') {
 									paramObj[temp[0]] = decodeURI(temp[1])
 								} else {
-									paramObj[temp[0]] = temp[1]
+									paramObj[temp[0]] = temp[1] - 0
 								}
 							}
 						}
@@ -63,16 +63,22 @@ export default {
 								}
 							})
 						} else {
-							dispatch({ type: 'getSubject' })
+							dispatch({ 
+								type: 'getSubject',
+								payload: { 
+									customsPassId: paramObj.customsPassId,
+									pageSize: 10,
+                                    pageNum: 1
+								}
+							})
 						}
-						// dispatch({ type: 'getSubject' })
 					} else {
 						dispatch({ 
 							type: 'setParam',
 							payload: { 
 								activeKey: '0',
-								customsPassId: 0,
-								sort: 0
+								customsPassId: '',
+								sort: ''
 							}
 						})
 						dispatch({ type: 'getSubject' })
@@ -86,7 +92,7 @@ export default {
 		*getSubject({ payload }, { call, put, select }) {
 			const { pageNum, pageSize, sourceIds, customsPassName } = yield select(state => state.subject);
 			const _pay = payload ? payload : { pageNum, pageSize, sourceIds, customsPassName }
-            const res = yield call(api.getSubject, filterObj(_pay))
+			const res = yield call(api.getSubject, filterObj(_pay))
 			if (res) {
 				yield put({
 					type: 'save',

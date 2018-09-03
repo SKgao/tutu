@@ -102,7 +102,7 @@ const PartPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassName=${record.title}`       
+            search: `customsPassId=${record.id}`       
         }));
 
         dispatch({

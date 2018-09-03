@@ -242,7 +242,7 @@ const Subject = ({
         } else {
             dispatch({
                 type: 'subject/getSubject',
-                payload: filterObj({ startTime, endTime, customsPassId, sort, sourceIds, customsPassName, pageNum, pageSize })
+                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
             })
         }
     }

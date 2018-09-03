@@ -36,7 +36,7 @@ const BookUnit = ({
 					defaultValue={text || '无'}
 					onOk={v => 
 						dispatch({
-							type: 'userSetting/updateUser',
+							type: 'bookUnit/updateUnit',
 							payload: {
 								id: record.id,
 								text: v

@@ -66,7 +66,8 @@ export default {
 		},
 
 		*updateBook({ payload }, { call, put }) {
-            const res = yield call(api.updateBook, payload);
+			const res = yield call(api.updateBook, payload);
+			console.log('updateBook', payload)
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getBook' })
@@ -90,7 +91,7 @@ export default {
         },
         
         *getGrade({ payload }, { call, put }) {
-            const res = yield call(api.getGrade, payload);
+			const res = yield call(api.getGrade, payload);
             if (res.data.code == 0) {
             	yield put({
             		type: 'save',
