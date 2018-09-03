@@ -1,6 +1,6 @@
 import api from './service';
 import { message } from 'antd';
-
+import { filterObj } from '@/utils/tools';
 export default {
 	namespace: "sourcematerial",
 
@@ -12,6 +12,7 @@ export default {
 		modalShow: false,
     modal2Show:false,
     modal3Show: false,
+    modal4Show: false,
     id: '',  // 修改素材id
 		icon: '',//素材图标
     audio:'',//素材音频
@@ -39,6 +40,8 @@ export default {
           dispatch({
             type: 'setParam',
             payload: {
+              startTime: '',
+              endTime: '',
               pageNum: 1,
               pageSize: 10,
               text: '',
@@ -48,6 +51,8 @@ export default {
           dispatch({
             type: 'getSource',
             payload: {
+              startTime: '',
+              endTime: '',
               pageNum: 1,
               pageSize: 10,
               text: '',
@@ -61,8 +66,17 @@ export default {
 
 	effects: {
 		*getSource({ payload }, { call, put }) {
-      const res = yield call(api.getSource, payload);
+      const res = yield call(api.getSource, filterObj(payload));
       if (res) {
+        yield put({
+        	type: 'save',
+        	payload: {
+            materialList: [],
+            totalCount: 0,
+						modalShow: false,
+						modal2Show: false
+        	}
+        })
         yield put({
         	type: 'save',
         	payload: {
@@ -76,13 +90,13 @@ export default {
     },
 
     *addSource({ payload }, { call, put, select }) {
-      const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
+      const { pageNum, pageSize, startTime, endTime, openLike } = yield select(state => state.sourcematerial);
       const res = yield call(api.addSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
           type: 'getSource',
-          payload: { pageNum, pageSize, startTime, endTime }
+          payload: { pageNum, pageSize, startTime, endTime, openLike }
         });
       }
     },
@@ -105,19 +119,19 @@ export default {
     },
 
     *deleteSource({ payload }, { call, put, select }) {
-      const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
+      const { pageNum, pageSize, startTime, endTime, text, openLike } = yield select(state => state.sourcematerial);
         const res = yield call(api.deleteSource, payload);
         if (res) {
           message.success(res.data.message);
           yield put({
             type: 'getSource',
-            payload: { pageNum, pageSize, startTime, endTime }
+            payload: { pageNum, pageSize, startTime, endTime, text, openLike }
           })
         }
     },
 
     *batchDeleteSource({ payload }, { call, put, select }) {
-        const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
+        const { pageNum, pageSize, startTime, endTime, openLike } = yield select(state => state.sourcematerial);
         const res = yield call(api.batchDeleteSource, payload);
         if (res) {
           message.success(res.data.message);
@@ -131,19 +145,27 @@ export default {
 
           yield put({
             type: 'getSource',
-            payload: { pageNum, pageSize, startTime, endTime }
+            payload: { pageNum, pageSize, startTime, endTime, openLike }
           })
         }
     },
 
     *editSource({ payload }, { call, put, select }) {
-      const { pageNum, pageSize, startTime, endTime } = yield select(state => state.sourcematerial);
+      const { pageNum, pageSize, startTime, endTime, text, openLike } = yield select(state => state.sourcematerial);
       const res = yield call(api.editSource, payload);
       if (res) {
         message.success(res.data.message);
         yield put({
+          type: 'setParam',
+          payload: {
+            arrId: '',
+            explainsArray: '',
+            modal4Show: false
+          }
+        });
+        yield put({
           type: 'getSource',
-          payload: { pageNum, pageSize, startTime, endTime }
+          payload: { pageNum, pageSize, startTime, endTime, text, openLike }
         });
       }
     },

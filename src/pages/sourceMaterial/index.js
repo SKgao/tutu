@@ -17,6 +17,7 @@ import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Uploa
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
 
 const sourceMaterial = ({
@@ -25,7 +26,7 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike } = sourcematerial;
+    let { materialList, modalShow, modal2Show, modal3Show, modal4Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike, explainsArray } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields } = form;
 
     // 鼠标放在图片上的事件
@@ -102,20 +103,7 @@ const sourceMaterial = ({
         }, {
             title: '多次释义',
             dataIndex: 'explainsArray',
-            render: (text, record) =>
-				<TablePopoverLayout
-					title={'修改多次释义(在[]中输入 用 , 分隔)'}
-					valueData={renderExplainsArray(text) || '无'}
-					defaultValue={renderExplainsArray(text) || '无'}
-					onOk={v => 
-						dispatch({
-							type: 'sourcematerial/editSource',
-							payload: {
-								id: record.id - 0,
-								explainsArray: v
-							}
-						})
-					}/>
+            render: (text, record, index) => renderExplainsArray(text)
         }, {
         	title: '修改音频',
         	dataIndex: 'updateAudio',
@@ -137,6 +125,11 @@ const sourceMaterial = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
+                    <Button size="small" style={{ marginLeft: 10 }} onClick={ () => {
+                            handleUpdateArr(record)
+                            handleSubmit('modal4Show', true)
+                       }
+                     }>修改多次释义</Button>
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
@@ -145,6 +138,27 @@ const sourceMaterial = ({
             }
         }
     ]
+    
+    // 修改多次释义
+    const handleUpdateArr = (record) => {
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                arrId: record.id - 0,
+                explainsArray: record.explainsArray
+            }
+        })
+    }
+
+    const handleExplainsArray = () => {
+        dispatch({
+            type: 'sourcematerial/editSource',
+            payload: {
+                id: sourcematerial.arrId,
+                explainsArray: explainsArray
+            }
+        })
+    }
 
     // 修改用户头像
     const changeSource = (url, record, rowname) => {
@@ -309,8 +323,19 @@ const sourceMaterial = ({
     const handleTabChange = (key = '0') => {
         if (key === '0') {
             dispatch({
+                type: 'sourcematerial/setParam',
+                payload: {
+                    startTime: '',
+                    endTime: '',
+                    pageNum: 1,
+                    pageSize: 10,
+                    text: '',
+                    openLike: ''
+                }
+            })
+            dispatch({
                 type: 'sourcematerial/getSource',
-                payload: { pageNum, pageSize, startTime, endTime, openLike }
+                payload: { pageNum, pageSize, startTime, endTime, text, openLike }
             })
         }
     	dispatch({
@@ -403,6 +428,32 @@ const sourceMaterial = ({
             </FormInlineLayout>
 
             <Modal
+                title="修改多次释义"
+                visible={modal4Show}
+                onCancel= { () => handleSubmit('modal4Show', false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <Form>
+                    <FormItem
+                        {...formItemLayout}>
+                        <TextArea rows={4} value={explainsArray} placeholder="修改释义"></TextArea>
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}>
+                        <Button type="primary" onClick={
+                            () => {
+                                handleSubmit('modal4Show', false)
+                                handleExplainsArray()
+                            }                
+                        } style={{ marginLeft: 75 }}>提交</Button>
+                    </FormItem>
+                </Form>
+            </Modal>
+
+            <Modal
                 title="新增素材"
                 visible={modalShow}
                 onCancel= { () => handleSubmit('modalShow',false) }
@@ -493,7 +544,7 @@ const sourceMaterial = ({
                         <FormItem
                             {...formItemLayout}>
                             <Button type="primary" onClick={handleSubmitSource} style={{ marginLeft: 45 }}>提交</Button>
-                            <Button onClick={() => handleReset('modal3Show')} style={{ marginLeft: 15 }}>取消</Button>
+                            <Button onClick={() => {handleReset('modal3Show')}} style={{ marginLeft: 15 }}>取消</Button>
                         </FormItem>
                     </Form>
                 </Modal>
