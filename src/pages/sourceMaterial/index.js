@@ -6,6 +6,7 @@ import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
 import VaildForm from './VaildForm';
+import MyUpload from '@/components/UploadComponent';
 import EditForm from './editForm';
 
 import moment from 'moment';
@@ -35,7 +36,21 @@ const sourceMaterial = ({
         {
             title: '素材内容',
             dataIndex: 'text',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改素材内容'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								text: v
+							}
+						})
+					}/>
         }, {
           title: '素材图标',
           dataIndex: 'icon',
@@ -52,25 +67,70 @@ const sourceMaterial = ({
           }
         }, {
             title: '音标',
-            dataIndex: 'phonetic'
+            dataIndex: 'phonetic',
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改音标'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								phonetic: v
+							}
+						})
+					}/>
         }, {
             title: '单次释义',
             dataIndex: 'translation',
-            render: (text) => <span>{ text.replace(/\[|\]|\"/g, '') }</span>
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改单次释义(在[]中输入)'}
+					valueData={text || '[]'}
+					defaultValue={text || '[]'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								translation: v
+							}
+						})
+					}/>
         }, {
             title: '多次释义',
             dataIndex: 'explainsArray',
-            render: (text) => {
-                let str = text.replace(/\[|\]|\"/g, '')
-                if (!str) {
-                    return <span>无</span>
-                } else if (str.length < 20) {
-                    return <span>{ str }</span>
-                } else {
-                    return <Tooltip title={str}>
-                        <span>{ str.substr(0, 20) + '...' }</span>
-                    </Tooltip>
-                }
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改多次释义(在[]中输入 用 , 分隔)'}
+					valueData={renderExplainsArray(text) || '无'}
+					defaultValue={renderExplainsArray(text) || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								explainsArray: v
+							}
+						})
+					}/>
+        }, {
+        	title: '修改音频',
+        	dataIndex: 'updateAudio',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择音频'} uploadSuccess={(url) => {
+                    changeSource(url, record, 'audio')
+                }}></MyUpload>
+            }
+        }, {
+        	title: '修改图标',
+        	dataIndex: 'updateImage',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeSource(url, record, 'icon')
+                }}></MyUpload>
             }
         }, {
           title: '操作',
@@ -80,11 +140,34 @@ const sourceMaterial = ({
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
-                    <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit(record)}>修改</Button>
+                    {/* <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit(record)}>修改</Button> */}
                 </span>
             }
         }
     ]
+
+    // 修改用户头像
+    const changeSource = (url, record, rowname) => {
+        dispatch({
+            type: 'sourcematerial/editSource',
+            payload: {
+                id: record.id - 0,
+                [rowname]: url
+            }
+        })
+    }
+
+    // 渲染多释义   text.replace(/\[|\]|\"/g, '')
+    const renderExplainsArray = (text) => {
+        let str = text
+        if (!str) {
+            return '[]'
+        } else if (str.length < 20) {
+            return str
+        } else {
+            return str.substr(0, 20) + '...'
+        }
+    }
 
     /**
      * 删除教材
@@ -346,7 +429,7 @@ const sourceMaterial = ({
                     sourcematerial={sourcematerial}
                     maskClosable={false}
                 >
-                <EditForm></EditForm>
+                {/* <EditForm></EditForm> */}
                 </Modal>
 
                 <Modal

@@ -242,7 +242,8 @@ const TeachingManage = ({
     // 调转到单元页面
     const linktoUnit = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/teachingManage/unit'
+            pathname: '/teachingManage/unit',
+            search: `textBookId=${record.id}`
         }));
     }
     
@@ -586,19 +587,19 @@ const TeachingManage = ({
                 allColumns={columnsOpt[activeKey + 'Columns']}
                 />
             {
-                activeKey === 'book' &&
-                <PaginationLayout
-                    total={totalCount}
-                    onChange={(page, pageSize) => handleChange({
-                        pageNum: page,
-                        pageSize
-                    })}
-                    onShowSizeChange={(current, pageSize) => handleChange({
-                        pageNum: 1,
-                        pageSize
-                    })}
-                    current={pageNum}
-                    pageSize={pageSize} />
+                // activeKey === 'book' &&
+                // <PaginationLayout
+                //     total={totalCount}
+                //     onChange={(page, pageSize) => handleChange({
+                //         pageNum: page,
+                //         pageSize
+                //     })}
+                //     onShowSizeChange={(current, pageSize) => handleChange({
+                //         pageNum: 1,
+                //         pageSize
+                //     })}
+                //     current={pageNum}
+                //     pageSize={pageSize} />
             }
 		</div>
 	)

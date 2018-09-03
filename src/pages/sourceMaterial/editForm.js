@@ -43,10 +43,10 @@ const editForm = ({
                 }
             })
         });
-        dispatch({
-            type: 'sourcematerial/editSource',
-            payload: filterObj(data)
-        })
+        // dispatch({
+        //     type: 'sourcematerial/editSource',
+        //     payload: filterObj(data)
+        // })
     }
 
     // 取消重置表单

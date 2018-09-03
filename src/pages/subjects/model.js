@@ -10,7 +10,6 @@ export default {
 		subjectList: [],     // 题目列表
 		descList: [],        // 题目详情
         bookList: [],        // 教材列表
-		customPassId: '',    // 关卡id
 		customsPassName: '', // 关卡名
         subjectTypeId: '',   // 题目类型id
         startTime: '',
@@ -18,8 +17,8 @@ export default {
 		sourceIds: '',       // 搜索题目内容
         modalShow: false,    // 添加题目
         modal2Show: false,   // 添加素材
-		textbookId: 1,       // 教材id
-		customsPassId: 505,    // 关卡id
+		textbookId: '',       // 教材id
+		customsPassId: '',    // 关卡id
 		sort: 0,             // 题目顺序
 		detpage: false,      // 是否为题目详情页
 		
@@ -78,10 +77,28 @@ export default {
 							payload: { 
 								activeKey: '0',
 								customsPassId: '',
-								sort: ''
+								customsPassName: '',
+								sort: '',
+								sourceIds: '',
+								textbookId: '',
+								subjectTypeId: '',
+								pageSize: 10,
+                                pageNum: 1
 							}
 						})
-						dispatch({ type: 'getSubject' })
+						dispatch({ 
+							type: 'getSubject', 
+							payload: { 
+								customsPassId: '',
+								customsPassName: '',
+								sort: '',
+								sourceIds: '',
+								textbookId: '',
+								subjectTypeId: '',
+								pageSize: 10,
+                                pageNum: 1
+							}
+						})
 					}
 				}
 			});

@@ -23,8 +23,23 @@ export default {
 	},
 
 	subscriptions: {
-        setup({ dispatch, history }) {	
-			dispatch({ type: 'getBook' });
+        setup({ dispatch, history }) {
+			return history.listen(location => {
+				if (location.pathname === '/teachingManage/book') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							startTime: '',
+                            endTime: '',
+							pageSize: 10,
+							pageNum: 1,
+							bookVersionId: '',
+							gradeId: ''
+						}
+					});
+					dispatch({ type: 'getBook' });
+				}
+			})	
 		},
 	},
 
