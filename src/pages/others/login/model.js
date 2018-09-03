@@ -13,10 +13,11 @@ export default {
 	
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ type: 'clearStorage' });
 			return history.listen(({ pathname }) => {
-				if (pathname !== '/login') {
+				if (pathname === '/' || pathname === '/roleSetting') {
 					dispatch({ type: 'app/fetch' })
+				} else if (pathname === '/login') {
+                    dispatch({ type: 'clearStorage' })
 				}
 			});
 		},
