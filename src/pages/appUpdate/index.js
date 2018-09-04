@@ -194,8 +194,8 @@ const AppverUpdate = ({
 		dispatch({
 			type: 'appver/setParam',
 			payload: {
-				startTime: t[0] + ':00',
-				endTime: t[1] + ':00'
+				startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
 			}
 		})
 	}
@@ -281,11 +281,19 @@ const AppverUpdate = ({
 
 	// 搜索版本信息
 	const handleSearch = () => {
+		let pageParam = {
+			pageSize: 10,
+			pageNum: 1
+		}
+		dispatch({
+			type: 'appver/setParam',
+			payload: pageParam
+		})
 		dispatch({
 			type: 'appver/getVerList',
 			payload: filterObj({
-				pageNum,
-				pageSize,
+				pageNum: 1,
+				pageSize: 10,
 				appTypeId,
 				startTime,
 				endTime,

@@ -220,6 +220,13 @@ const Authmenu = ({
 
     // 搜索
     const handleSearch = () => {
+		dispatch({
+			type: 'authmenu/setParam',
+			payload: {
+				pageSize: 10,
+				pageNum: 1
+			}
+		})
     	dispatch({ type: 'authmenu/getMenu' })
 	}
 

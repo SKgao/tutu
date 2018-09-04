@@ -208,9 +208,17 @@ const sourceMaterial = ({
 
     // 搜索
     const handleSearch = () => {
+        let pageParam = {
+            pageSize: 10,
+            pageNum: 1
+        }
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: pageParam
+        })
       dispatch({
         type: 'sourcematerial/getSource',
-        payload: filterObj({ startTime, endTime, text, pageNum, pageSize, openLike })
+        payload: filterObj({ startTime, endTime, text, openLike, ...pageParam })
       })
     }
     // 添加素材

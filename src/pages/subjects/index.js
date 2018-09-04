@@ -203,8 +203,8 @@ const Subject = ({
         dispatch({
         	type: 'subject/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
@@ -240,9 +240,17 @@ const Subject = ({
                 payload: filterObj({ customsPassId, sort })
             })
         } else {
+            let pageParam = {
+                pageSize: 10,
+                pageNum: 1
+            }
+            dispatch({
+                type: 'subject/setParam',
+                payload: pageParam
+            })
             dispatch({
                 type: 'subject/getSubject',
-                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
+                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, ...pageParam })
             })
         }
     }

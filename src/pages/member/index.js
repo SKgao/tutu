@@ -139,6 +139,13 @@ const Member = ({
 
     // 搜索
     const handleSearch = (param) => {
+        dispatch({
+			type: 'member/setParam',
+			payload: {
+				pageSize: 10,
+				pageNum: 1
+			}
+		})
         if (activeKey === '0') {
             dispatch({ type: 'member/getMember' })
         } else if (activeKey === '1') {
@@ -171,8 +178,8 @@ const Member = ({
         dispatch({
         	type: 'member/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
