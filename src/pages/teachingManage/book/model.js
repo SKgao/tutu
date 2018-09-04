@@ -48,6 +48,13 @@ export default {
 			const { startTime, endTime,  pageSize, pageNum, gradeId, bookVersionId } = yield select(state => state.teachingmanage);
 			const res = yield call(api.getBook, filterObj({ startTime, endTime, pageSize, pageNum, gradeId, bookVersionId }));
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						bookList: [],
+						totalCount: 0
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {

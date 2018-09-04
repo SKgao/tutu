@@ -49,6 +49,13 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
+						partList: [],
+						totalCount: 0
+					}
+				})
+				yield put({
+					type: 'save',
+					payload: {
 						partList: (res.data.data) ? res.data.data.data : [],
 						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
