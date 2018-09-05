@@ -22,7 +22,7 @@ const Activity = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, selectList, modalShow, addStatus, levelList, beginAt, endAt, pageSize, pageNum } = activity;
+    let { tableData, selectList, modalShow, modal2Show, addStatus, levelList, beginAt, endAt, pageSize, pageNum } = activity;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -308,7 +308,19 @@ const Activity = ({
     }
 
     // 文件上传成功
-    const uploadSuccess = (url) => setFieldsValue({'icon': url})
+    const uploadSuccess = (url) => {
+        setFieldsValue({'icon': url})
+    }
+
+    // 修改封面图片
+    const modShareImage = (url) => {
+        dispatch({
+    		type: 'activity/setParam',
+    		payload: {
+                shareimg: url
+            }
+        })
+    }
    
 	return (
 		<div>
@@ -349,6 +361,10 @@ const Activity = ({
 
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加活动</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <Button onClick={() => changeModalState('modal2Show', true)}>查看分享海报</Button>
                     </FormItem>
 
                 </Form>
@@ -500,6 +516,25 @@ const Activity = ({
                             {...formItemLayout}>
                             <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
                             <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
+                        </FormItem>
+                    </Form>
+                </Modal>
+
+                <Modal
+                    title="修改分享海报"
+                    visible={modal2Show}
+                    onCancel= { () => changeModalState('modal2Show', false) }
+                    okText="确认"
+                    cancelText="取消"
+                    footer={null}
+                    >
+                    <Form> 
+                        <a href={ activity.shareimg } >
+                            <img src={ activity.shareimg } style={{ width: 260, height: 360 }}/>
+                        </a>
+
+                        <FormItem>                        
+                            <MyUpload uploadSuccess={modShareImage}></MyUpload>
                         </FormItem>
                     </Form>
                 </Modal>

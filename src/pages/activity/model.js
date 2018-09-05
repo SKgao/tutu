@@ -18,7 +18,9 @@ export default {
         pageNum: 1,
 		totalCount: 0,
 		modalShow: false,
+		modal2Show: false,
 		addStatus: 1,   // 添加活动的状态
+		shareimg: 'http://web.chengxuyuantoutiao.com/static/share.png'
 	},
 
 	subscriptions: {
