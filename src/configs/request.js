@@ -27,7 +27,7 @@ axios.interceptors.response.use(res => {
 		case 0:
 			return res;
 		default:
-		    (code !== 45 && code !== 46) && message.error(msg);
+		    code !== 45 && code !== 46 && message.error(msg);
 			return false;
 	}
 });

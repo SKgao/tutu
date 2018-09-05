@@ -18,4 +18,7 @@ export default {
 
 	// 题目修改
 	updateSubject: data => axios.post('subject/subject/update', data),
+
+	// 题目删除
+	deleteSource: data => axios.post('subject/delete', data),
 }

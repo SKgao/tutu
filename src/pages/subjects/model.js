@@ -172,7 +172,18 @@ export default {
 
 		*updateSubject({ payload }, { call, put, select }) {
 			const res = yield call(api.updateSubject, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' })
+			}
+		},
+
+		*deleteSource({ payload }, { call, put }) {
+			const res = yield call(api.deleteSource, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' })
+			}
 		},
 		 
         *getBook({ payload }, { call, put, select }) {
