@@ -29,8 +29,8 @@ export default {
 		breadCrumd: {},      // 面包屑
 		historyList: [],     // 历史导航
 		redirectUrl: '/',    // 登录后跳转页面
-		firPath: [localStorage.getItem('firPath')] || ['117'],
-		secPath: [localStorage.getItem('secPath')] || ['/userSetting']
+		firPath: localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['117'],
+		secPath: localStorage.getItem('secPath') ? [localStorage.getItem('secPath')] : ['/userSetting']
 	},
 
 	subscriptions: {

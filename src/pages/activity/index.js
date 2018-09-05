@@ -71,19 +71,19 @@ const Activity = ({
             }
         }, {
             title: '活动金额',
-            dataIndex: 'orgAmount',
+            dataIndex: 'activeMoney',
             sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改活动金额'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
+					valueData={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无'}
+					defaultValue={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无' }
 					onOk={v => 
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
 								id: record.id,
-								orgAmount: (Number(v) / 100).toFixed(2)
+								activeMoney: Number(v.replace(/元/g, '')) * 100
 							}
 						})
 					}/>

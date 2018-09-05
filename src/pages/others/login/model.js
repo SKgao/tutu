@@ -34,6 +34,8 @@ export default {
 				localStorage.setItem('account', res.data.data.account);
 				localStorage.setItem('avatar', res.data.data.avatar);
 				localStorage.setItem('HAS_LOGIN', true);
+				localStorage.setItem('firPath', '117');
+				localStorage.setItem('secPath', '/userSetting');
 				// yield put({type: 'save', payload});
 				axios.defaults.headers = { 'token': res.data.data.token }
 				yield put(routerRedux.push('/'));
