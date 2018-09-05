@@ -38,6 +38,13 @@ export default {
 				localStorage.setItem('secPath', '/userSetting');
 				// yield put({type: 'save', payload});
 				axios.defaults.headers = { 'token': res.data.data.token }
+				yield put({
+					type: 'app/setPath',
+					payload: {
+						firPath: ['117'],
+						secPath: ['/userSetting']
+					}
+				})
 				yield put(routerRedux.push('/'));
 			}
 		},
