@@ -65,16 +65,6 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "sourceMaterial" */ './pages/sourceMaterial/model')]
 		},
 		{
-			path: '/units/part',
-			component: () => import(/* webpackChunkName: "/units/part" */ './pages/part/index'),
-			models: () => [import(/* webpackChunkName: "/units/part" */ './pages/part/model')]
-		},
-		{
-			path: '/subject',
-			component: () => import(/* webpackChunkName: "subject" */ './pages/subject/index'),
-			models: () => [import(/* webpackChunkName: "subject" */ './pages/subject/model')]
-		},
-		{
 			path: '/subjects',
 			component: () => import(/* webpackChunkName: "subjects" */ './pages/subjects/index'),
 			models: () => [import(/* webpackChunkName: "subjects" */ './pages/subjects/model')]
@@ -98,11 +88,7 @@ const Routers = ({
 			path: '/activity',
 			component: () => import(/* webpackChunkName: "activity" */ './pages/activity/index'),
 			models: () => [import(/* webpackChunkName: "activity" */ './pages/activity/model')]
-		},
-		{
-			path: '/progress',
-			component: () => import(/* webpackChunkName: "sourceMaterial" */ './pages/subject/progress')
-		},
+		}
 	]
 
 	return (
