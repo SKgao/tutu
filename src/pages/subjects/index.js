@@ -11,7 +11,7 @@ import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message, Popconfirm, Table } from 'antd';
+import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message, Popconfirm, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -86,8 +86,9 @@ const Subject = ({
             render: (text, record) => {
                 return <span>
                     <Button size="small" onClick={() => linktoDet(record)}>题目详情</Button>
+
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
                 </span>
             }
@@ -164,10 +165,10 @@ const Subject = ({
     // 删除题目
     const handleDelete = (record) => {
         dispatch({
-        	type: 'subject/deleteSource',
-        	payload: {
-                customsPassId: record.customsPassId,
-                sort: record.sort
+            type: 'subject/deleteSubject',
+            payload: {
+                customsPassId: record.customsPassId - 0,
+                sort: record.sort - 0,
             }
         })
     }
@@ -175,28 +176,24 @@ const Subject = ({
     // 添加题目
     const handleSubmitSubject = () => {
         let { textbookId, file } = subject
-        if (file[0]) {
-            let formData = new FormData()
-            formData.append('textbookId', textbookId)
-            formData.append('file', file[0])
-            axios.post('subject/subject/import', formData)
-                .then((res) => {
-                    if (res.data.code === 0) {
-                        dispatch({
-                            type: 'subject/setParam',
-                            payload: {
-                                file: [],
-                                modalShow: false,
-                                activeKey: '1'
-                            }
-                        })
-                    } else {
-                        message.error(res.data.message)
-                    }
-                })
-        } else {
-            message.warning('请选择题目')
-        }
+        let formData = new FormData()
+        formData.append('textbookId', textbookId)
+        file[0] && formData.append('file', file[0])
+        axios.post('subject/subject/import', formData)
+            .then((res) => {
+                if (res.data.code === 0) {
+                    dispatch({
+                        type: 'subject/setParam',
+                        payload: {
+                            file: [],
+                            modalShow: false,
+                            activeKey: '1'
+                        }
+                    })
+                } else {
+                    message.error(res.data.message)
+                }
+            })
     }
 
     // 添加题目资源(音频集合、图片集合)
@@ -235,9 +232,7 @@ const Subject = ({
         dispatch({
     		type: 'subject/setParam',
     		payload: {
-                [_m]: false,
-                file: [],
-                textbookId: ''
+    			[_m]: false
     		}
     	})
     }
@@ -272,7 +267,7 @@ const Subject = ({
             })
             dispatch({
                 type: 'subject/getSubject',
-                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, ...pageParam })
+                payload: filterObj({ startTime, endTime, customsPassId, sourceIds, customsPassName, ...pageParam })
             })
         }
     }
@@ -284,7 +279,7 @@ const Subject = ({
         })
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, customsPassName, ...param })
+    		payload: filterObj({ startTime, endTime, customsPassId, sourceIds, customsPassName, ...param })
     	})
     }
 
@@ -389,7 +384,7 @@ const Subject = ({
                             }
                             
                             {
-                                !detpage  ? null : 
+                                !detpage && !customsPassId ? null : 
                                 <FormItem>
                                     <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                                 </FormItem>
@@ -434,12 +429,11 @@ const Subject = ({
                             <FormItem
                                 label="题目"
                                 {...formItemLayout}
-                                help={ (subject.file.length && subject.file[0]) ?  subject.file[0].name : '' }
                                 >
                                 {getFieldDecorator('file', {
                                     rules: [{ required: true, message: '请上传题目包!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'file')} showUploadList={false}> 
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'file')}>
                                         <Button>
                                             <Icon type="upload"/>上传题目
                                         </Button>

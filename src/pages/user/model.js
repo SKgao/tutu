@@ -1,6 +1,7 @@
 import api from './service';
 import { message } from 'antd';
 import api_role from '@/pages/role/service';
+import { filterObj } from '@/utils/tools';
 
 export default {
 	namespace: 'userSetting',
@@ -12,7 +13,12 @@ export default {
 		endTime: '',
 		account: '',
 		modalShow: false,
-		avatar: '' // 用户头像url
+		modal2Show: false,
+		avatar: '', // 用户头像url
+		userid: '', // 当前行用户id
+		pageSize: 10,
+        pageNum: 1,
+        totalCount: 0
 	},
 
 	subscriptions: {
@@ -24,17 +30,44 @@ export default {
 					pageSize: 100
 				}
 			})
+
+			return history.listen(location => {
+				if (location.pathname === '/userSetting') {
+					let pay = {
+						pageNum: 1,
+						pageSize: 10,
+						account: '',
+						startTime: '',
+						endTime: '',
+					}
+					dispatch({
+						type: 'setParam',
+						payload: pay
+					});
+					dispatch({ 
+						type: 'getUser',
+						payload: pay
+				    });
+				}
+			})
 		},
 	},
 
 	effects: {
 		*getUser({ payload }, { call, put }) {
-			const res = yield call(api.getUser, payload);
+			const res = yield call(api.getUser, filterObj(payload));
 			if (res) {
 				yield put({
 					type: 'save', 
 					payload: {
-						tableData: (res.data.data) ? res.data.data.data : []
+						tableData: []
+					}
+				})
+				yield put({
+					type: 'save', 
+					payload: {
+						tableData: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				})
 			}
@@ -52,16 +85,14 @@ export default {
 			}
 		},
 		
-		*addUser({ payload }, { call, put }) {
+		*addUser({ payload }, { call, put, select }) {
+			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.userSetting);
 			const res = yield call(api.addUser, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
 					type: 'getUser',
-					payload: {
-						pageNum: 1,
-						pageSize: 100
-					}
+					payload: { startTime, endTime, pageNum, pageSize }
 				})
 				yield put({
 					type: 'setParam',
@@ -73,32 +104,51 @@ export default {
 		},
 
 		*deleteUser({ payload }, { call, select, put }) {
-			const { tableData } = yield select(state => state.userSetting);
+			const { startTime, endTime, pageNum, pageSize, account } = yield select(state => state.userSetting);
 			const res = yield call(api.deleteUser, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
-					type: 'save',
-					payload: {
-						tableData: tableData.filter(e => e.id !== payload)
-					}
+					type: 'getUser',
+					payload: { startTime, endTime, pageNum, pageSize, account }
 				})
 			}
 		},
 
-		*forbiddenUser({ payload }, { call }) {
+		*forbiddenUser({ payload }, { call, select, put }) {
+			const { startTime, endTime, pageNum, pageSize, account } = yield select(state => state.userSetting);
 			const res = yield call(api.forbiddenUser, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({
+					type: 'getUser',
+					payload: { startTime, endTime, pageNum, pageSize, account }
+				})
+			}
 		},
 
-		*usingUser({ payload }, { call }) {
+		*usingUser({ payload }, { call, select, put }) {
+			const { startTime, endTime, pageNum, pageSize, account } = yield select(state => state.userSetting);
 			const res = yield call(api.usingUser, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({
+					type: 'getUser',
+					payload: { startTime, endTime, pageNum, pageSize, account }
+				})
+			}
 		},
 
-		*updateUser({ payload }, { call }) {
+		*updateUser({ payload }, { call, select, put }) {
+			const { startTime, endTime, pageNum, pageSize, account } = yield select(state => state.userSetting);
 			const res = yield call(api.updateUser, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({
+					type: 'getUser',
+					payload: { startTime, endTime, pageNum, pageSize, account }
+				})
+			}
 		},
 
 		*setParam({ payload }, { put }) {

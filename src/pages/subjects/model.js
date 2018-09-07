@@ -75,6 +75,8 @@ export default {
 						dispatch({ 
 							type: 'setParam',
 							payload: { 
+								startTime: '',
+		                        endTime: '',
 								activeKey: '0',
 								customsPassId: '',
 								customsPassName: '',
@@ -89,6 +91,8 @@ export default {
 						dispatch({ 
 							type: 'getSubject', 
 							payload: { 
+								startTime: '',
+		                        endTime: '',
 								customsPassId: '',
 								customsPassName: '',
 								sort: '',
@@ -107,8 +111,8 @@ export default {
 
 	effects: {
 		*getSubject({ payload }, { call, put, select }) {
-			const { pageNum, pageSize, sourceIds, customsPassName } = yield select(state => state.subject);
-			const _pay = payload ? payload : { pageNum, pageSize, sourceIds, customsPassName }
+			const { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId } = yield select(state => state.subject);
+			const _pay = payload ? payload : { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId }
 			const res = yield call(api.getSubject, filterObj(_pay))
 			if (res) {
 				yield put({
@@ -178,8 +182,8 @@ export default {
 			}
 		},
 
-		*deleteSource({ payload }, { call, put }) {
-			const res = yield call(api.deleteSource, payload);
+		*deleteSubject({ payload }, { call, put }) {
+			const res = yield call(api.deleteSubject, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getSubject' })

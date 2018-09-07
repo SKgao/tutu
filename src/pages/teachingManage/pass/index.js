@@ -105,15 +105,15 @@ const PartPass = ({
             search: `customsPassId=${record.id}`       
         }));
 
-        dispatch({
-            type: 'app/setPath',
-            payload: {
-                firPath: ['114'],
-                secPath: ['/subjects']
-            }
-        })
-        localStorage.setItem('firPath', ['114'])
-        localStorage.setItem('secPath', ['/subjects'])
+        // dispatch({
+        //     type: 'app/setPath',
+        //     payload: {
+        //         firPath: ['114'],
+        //         secPath: ['/subjects']
+        //     }
+        // })
+        // localStorage.setItem('firPath', ['114'])
+        // localStorage.setItem('secPath', ['/subjects'])
     }
     
     /**

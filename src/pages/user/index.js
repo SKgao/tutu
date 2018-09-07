@@ -8,8 +8,9 @@ import MyUpload from '@/components/UploadComponent';
 import VaildForm from './VaildForm';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
+import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Popconfirm, message, Modal } from 'antd';
+import { Form, DatePicker, Input, Button, Popconfirm, message, Modal, Badge } from 'antd';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 
@@ -18,8 +19,9 @@ const UserSetting = ({
     loading,
     ...props
 }) => {
-    let { dispatch } = props;
-    let { tableData, account, startTime, endTime, modalShow, avatar, roleList } = userSetting;
+    let { dispatch, form } = props;
+    let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
+    let { tableData, account, startTime, endTime, modalShow, modal2Show, avatar, roleList, pageNum, pageSize, totalCount } = userSetting;
     const columns = [
         {
             title: '用户名',
@@ -103,12 +105,12 @@ const UserSetting = ({
 						})
 					}/>
         }, {
-        	title: '角色',
-        	dataIndex: 'roleName',
+        	title: '用户角色',
+        	dataIndex: 'roleId',
             sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改角色'}
+					title={'修改用户角色'}
 					valueData={roleList}
 					focusSelect={() => dispatch({type: 'userSetting/getRoleList'})}
 					optionKey={'id'}
@@ -119,13 +121,29 @@ const UserSetting = ({
 							type: 'userSetting/updateUser',
 							payload: {
 								id: record.id,
-								roleId: v - 0
+								roleid: v - 0
 							}
 						})
 					}/>
         }, {
+        	title: '角色名称',
+        	dataIndex: 'roleName'
+        }, {
         	title: '创建时间',
         	dataIndex: 'createtime'
+        }, {
+        	title: '用户状态',
+            dataIndex: 'status',
+            render: (txt) => {
+				switch (txt) {
+					case 1:
+						return <Badge status="processing" text="正常"/>;
+					case 2:
+                        return <Badge status="warning" text="冻结"/>;
+                    case 3:
+						return <Badge status="error" text="已删除"/>;
+				}
+			}
         }, 
         {
         	title: '上传头像',
@@ -141,8 +159,23 @@ const UserSetting = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
-                    <Button type="primary" size="small" onClick={() => handleUsing(record)}>启动</Button>
-                    <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
+                    {
+                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleUsing(record)}>启用</Button>
+					}
+					{
+                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
+                    }
+                    
+                    <Button size="small" style={{ marginLeft: 5 }} onClick={() => {
+                        dispatch({
+                            type: 'userSetting/setParam',
+                            payload: {
+                                userid: record.id
+                            }
+                        })
+                        changeModalState('modal2Show', true)
+                    }}>修改密码</Button>
+
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
@@ -218,25 +251,25 @@ const UserSetting = ({
 
     // 搜索
     const handleSearch = () => {
-        let PP = {
-            pageNum: 1,
-            pageSize: 10,
-            startTime: startTime,
-            endTime: endTime,
-            account: account
-        }
+        dispatch({
+    		type: 'userSetting/setParam',
+    		payload: {
+                pageNum: 1,
+                pageSize: 10
+            }
+        })
      	dispatch({
     		type: 'userSetting/getUser',
-    		payload: filterObj(PP)
+    		payload: { account, startTime, endTime, pageNum: 1, pageSize: 10 }
     	})
     }
     
     // 展示modal
-    const changeModalState = (show) => {
+    const changeModalState = (modal, show) => {
         dispatch({
         	type: 'userSetting/setParam',
         	payload: {
-                modalShow: show
+                [modal]: show
             }
         })
     }
@@ -255,14 +288,50 @@ const UserSetting = ({
         dispatch({ type: 'userSetting/getRoleList' })
     }
 
-    // 确认密码
-    // const compareToFirstPassword = (rule, value, callback) => {
-    // 	if (value && value !== getFieldValue('password')) {
-    // 		callback('两次密码输入不相同！');
-    // 	} else {
-    // 		callback();
-    // 	}
-    // }
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'userSetting/setParam',
+    		payload: param
+        })
+        dispatch({ 
+            type: 'userSetting/getUser',
+            payload: { account, startTime, endTime, ...param }
+        })
+    }
+
+    // 表单取消
+	const handleReset = () => {
+		resetFields()
+		dispatch({
+			type: 'userSetting/setParam',
+			payload: {
+				modal2Show: false
+			}
+		})
+    }
+    
+    // 修改密码
+	const handlePassword = (e) => {
+		e.preventDefault();
+		validateFieldsAndScroll((err, values) => {
+			if (!err) {
+                console.log(values.password2, values.password, values.password2 == values.password)
+				if (values.password2 !== values.password) {
+                    message.warning('两次密码输入不一样！')
+                } else {    
+                    dispatch({
+                        type: 'userSetting/updateUser',
+                        payload: {
+                            id: userSetting.userid,
+                            password: values.passwrod
+                        }
+                    })
+                    handleReset()
+                }
+			}
+		});
+	}
 
 	return (
 		<div>
@@ -291,7 +360,7 @@ const UserSetting = ({
                     </FormItem>
 
                     <FormItem>
-                        <Button type="primary" onClick={() => changeModalState(true)}>添加用户</Button>
+                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加用户</Button>
                     </FormItem>
 
                 </Form>
@@ -300,8 +369,8 @@ const UserSetting = ({
             <Modal
                 title="新增用户"
                 visible={modalShow}
-                onOk={ () => changeModalState(false) }
-                onCancel= { () => changeModalState(false) }
+                onOk={ () => changeModalState('modalShow', false) }
+                onCancel= { () => changeModalState('modalShow', false) }
                 okText="确认"
                 cancelText="取消"
                 footer={null}
@@ -310,9 +379,50 @@ const UserSetting = ({
                     submitForm={submitForm}
                     getRoleList={getRoleList}
                     roleList={roleList}
-                    resetForm={() => changeModalState(false)}
+                    resetForm={() => ('modalShow', false)}
                     >
                 </VaildForm>
+            </Modal>
+
+            <Modal
+                title="修改密码"
+                visible={modal2Show}
+                onOk={ () => changeModalState('modal2Show', false) }
+                onCancel= { () => changeModalState('modal2Show', false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <Form>
+                    {/*App类型*/}
+                    <FormItem
+                        label="密码"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('password', {
+                            rules: [{ required: true, message: '请重新输入密码!' }],
+                        })(
+                            <Input type="password" placeholder="请输入密码"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="确认密码"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('password2', {
+                            rules: [{ required: true, message: '请确认密码!', whitespace: false }],
+                        })(
+                            <Input type="password" placeholder="请再次输入密码！"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}>
+                        <Button type="primary" onClick={handlePassword} style={{ marginLeft: 75 }}>提交</Button>
+                        <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
+                    </FormItem>
+                </Form>
             </Modal>
 
             <TableLayout
@@ -322,9 +432,17 @@ const UserSetting = ({
                 allColumns={columns}
                 />
             <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+                total={totalCount}
+                onChange={(page, pageSize) => handleChange({
+                    pageNum: page,
+                    pageSize
+                })}
+                onShowSizeChange={(current, pageSize) => handleChange({
+                    pageNum: 1,
+                    pageSize
+                })}
+                current={pageNum}
+                pageSize={pageSize} />
 		</div>
 	)
 };
@@ -333,5 +451,5 @@ UserSetting.propTypes = {
     userSetting: PropTypes.object
 };
 
-export default connect(({ userSetting, loading }) => ({ userSetting, loading }))(UserSetting);
+export default connect(({ userSetting, loading }) => ({ userSetting, loading }))(Form.create()(UserSetting));
 	

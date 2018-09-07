@@ -97,16 +97,10 @@ export default {
 		},
 
 		*deleteUnit({ payload }, { call, select, put }) {
-			const { tableData } = yield select(state => state.bookUnit);
 			const res = yield call(api.deleteUnit, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'save',
-					payload: {
-						tableData: tableData.filter(e => e.id !== payload)
-					}
-				})
+				yield put({ type: 'getUnit' });
 			}
         },
         
