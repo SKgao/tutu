@@ -87,6 +87,8 @@ const App = ({
 					secPath: [e.key]
 				}
 			})
+			localStorage.setItem('firPath', e.keyPath.slice(1))
+			localStorage.setItem('secPath', [e.key])
 			dispatch({
 				type: 'app/historyNavsAdd',
 				payload: {

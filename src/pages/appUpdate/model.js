@@ -14,13 +14,13 @@ export default {
 		appTypeId: '',
 		modalShow: false,
 		pageSize: 10,
-        pageNum: 1,
-        totalCount: 0
+		pageNum: 1,
+		totalCount: 0
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {	
-			dispatch({ type: 'getAppList'});
+			dispatch({ type: 'getAppList' });
 			dispatch({
 				type: 'getVerList',
 				payload: {
@@ -38,8 +38,7 @@ export default {
             	yield put({
             		type: 'save',
             		payload: {
-						appList: (res.data) ? res.data.data : [],
-						totalCount: 0
+						appList: (res.data) ? res.data.data : []
             		}
             	})
             }

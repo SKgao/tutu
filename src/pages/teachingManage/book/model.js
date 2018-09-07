@@ -23,8 +23,23 @@ export default {
 	},
 
 	subscriptions: {
-        setup({ dispatch, history }) {	
-			dispatch({ type: 'getBook' });
+        setup({ dispatch, history }) {
+			return history.listen(location => {
+				if (location.pathname === '/teachingManage/book') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							startTime: '',
+                            endTime: '',
+							pageSize: 10,
+							pageNum: 1,
+							bookVersionId: '',
+							gradeId: ''
+						}
+					});
+					dispatch({ type: 'getBook' });
+				}
+			})	
 		},
 	},
 
@@ -33,6 +48,13 @@ export default {
 			const { startTime, endTime,  pageSize, pageNum, gradeId, bookVersionId } = yield select(state => state.teachingmanage);
 			const res = yield call(api.getBook, filterObj({ startTime, endTime, pageSize, pageNum, gradeId, bookVersionId }));
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						bookList: [],
+						totalCount: 0
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
@@ -64,6 +86,15 @@ export default {
 				yield put({ type: 'getBook' })
 			}
 		},
+
+		*updateBook({ payload }, { call, put }) {
+			const res = yield call(api.updateBook, payload);
+			console.log('updateBook', payload)
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getBook' })
+			}
+		},
 		
 		*deleteGrade({ payload }, { call, put }) {
             const res = yield call(api.deleteGrade, payload);
@@ -74,7 +105,6 @@ export default {
 		},
 		
 		*deleteVersion({ payload }, { call, put }) {
-			console.log(payload);
             const res = yield call(api.deleteVersion, payload);
             if (res) {
 				message.success(res.data.message);
@@ -83,7 +113,7 @@ export default {
         },
         
         *getGrade({ payload }, { call, put }) {
-            const res = yield call(api.getGrade, payload);
+			const res = yield call(api.getGrade, payload);
             if (res.data.code == 0) {
             	yield put({
             		type: 'save',

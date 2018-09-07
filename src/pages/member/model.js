@@ -24,8 +24,27 @@ export default {
 	},
 
 	subscriptions: {
-		setup({ dispatch, history }) {	
-			dispatch({ type: 'getMember' });
+		setup({ dispatch, history }) {
+			return history.listen(location => {
+				if (location.pathname === '/member') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							pageNum: 1,
+							pageSize: 10,
+							hasSetPassword: '',
+							tutuNumber: '',
+							mobile: '',
+							userLevel: '',
+							startTime: '',
+							endTime: '',
+							bookVersionId: '',
+							sex: ''
+						}
+					});
+					dispatch({ type: 'getMember' });
+				}
+			})
 		},
 	},
 

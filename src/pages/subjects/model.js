@@ -1,5 +1,6 @@
 import api from './service';
 import api_teachingManage from '@/pages/teachingManage/book/service';
+import { filterObj } from '@/utils/tools';
 import { message } from 'antd';
 
 export default {
@@ -9,18 +10,17 @@ export default {
 		subjectList: [],     // 题目列表
 		descList: [],        // 题目详情
         bookList: [],        // 教材列表
-		customPassId: '',    // 关卡id
-		customsPassName: '', // 题目名
-        sourceIds: '',       // 素材id
+		customsPassName: '', // 关卡名
         subjectTypeId: '',   // 题目类型id
         startTime: '',
 		endTime: '',
 		sourceIds: '',       // 搜索题目内容
         modalShow: false,    // 添加题目
         modal2Show: false,   // 添加素材
-		textbookId: 1,       // 教材id
-		customsPassId: 0,    // 关卡id
+		textbookId: '',       // 教材id
+		customsPassId: '',    // 关卡id
 		sort: 0,             // 题目顺序
+		detpage: false,      // 是否为题目详情页
 		
 		audioArray: [],      // 音频文件
 		imageArray: [],      // 图片文件
@@ -38,34 +38,69 @@ export default {
 					let search = location.search.slice(1)
 					if (search) {
 						let arr = (search) ? search.split('&') : []
-						let customsPassId = arr[0].split('=')[1] - 0
-						let sort = arr[1].split('=')[1] - 0
+						let paramObj = { activeKey: '0', sort: '', }
+						for (let i = 0; i < arr.length; i++) {
+							let temp = arr[i].split('=')
+							if (temp[0] && temp[1] && temp[1] !== 'undefined') {
+								if (temp[0] === 'customsPassName') {
+									paramObj[temp[0]] = decodeURI(temp[1])
+								} else {
+									paramObj[temp[0]] = temp[1] - 0
+								}
+							}
+						}
 						dispatch({ 
 							type: 'setParam',
-							payload: { 
-								activeKey: '0',
-								customsPassId,
-								sort
-							}
+							payload: paramObj
 						})
-						dispatch({ 
-							type: 'subjectDesc',
-							payload: { customsPassId, sort }
-						})
+						if (paramObj.detpage) {
+							dispatch({ 
+								type: 'subjectDesc',
+								payload: { 
+									customsPassId: paramObj.customsPassId,
+									sort: paramObj.sort
+								}
+							})
+						} else {
+							dispatch({ 
+								type: 'getSubject',
+								payload: { 
+									customsPassId: paramObj.customsPassId,
+									pageSize: 10,
+                                    pageNum: 1
+								}
+							})
+						}
 					} else {
 						dispatch({ 
 							type: 'setParam',
 							payload: { 
+								startTime: '',
+		                        endTime: '',
 								activeKey: '0',
-								customsPassId: 0,
-								sort: 0
+								customsPassId: '',
+								customsPassName: '',
+								sort: '',
+								sourceIds: '',
+								textbookId: '',
+								subjectTypeId: '',
+								pageSize: 10,
+                                pageNum: 1
 							}
 						})
 						dispatch({ 
-							type: 'getSubject',
-							payload: {
+							type: 'getSubject', 
+							payload: { 
+								startTime: '',
+		                        endTime: '',
+								customsPassId: '',
+								customsPassName: '',
+								sort: '',
+								sourceIds: '',
+								textbookId: '',
+								subjectTypeId: '',
 								pageSize: 10,
-								pageNum: 1
+                                pageNum: 1
 							}
 						})
 					}
@@ -75,8 +110,10 @@ export default {
 	},
 
 	effects: {
-		*getSubject({ payload }, { call, put }) {
-            const res = yield call(api.getSubject, payload)
+		*getSubject({ payload }, { call, put, select }) {
+			const { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId } = yield select(state => state.subject);
+			const _pay = payload ? payload : { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId }
+			const res = yield call(api.getSubject, filterObj(_pay))
 			if (res) {
 				yield put({
 					type: 'save',
@@ -139,7 +176,18 @@ export default {
 
 		*updateSubject({ payload }, { call, put, select }) {
 			const res = yield call(api.updateSubject, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' })
+			}
+		},
+
+		*deleteSubject({ payload }, { call, put }) {
+			const res = yield call(api.deleteSubject, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' })
+			}
 		},
 		 
         *getBook({ payload }, { call, put, select }) {

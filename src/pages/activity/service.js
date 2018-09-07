@@ -21,5 +21,8 @@ export default {
 
 	// 活动列表-下拉框
 	activeSelect: data => axios.get('activity/list/combox', data),
+
+	// 改变活动状态
+	changeStatus: data => axios.post('activity/change/status', data),
 	
 }

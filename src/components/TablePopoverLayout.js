@@ -21,7 +21,7 @@ class TablePopoverLayout extends Component {
 	handleEle = () => {
 		let { valueData, focusSelect } = this.props;
 		if(typeof(valueData) === 'object' && !valueData.length) {
-			focusSelect()
+			focusSelect && focusSelect()
 		}
 		this.handleVisibleChange;
 	}

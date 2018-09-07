@@ -14,5 +14,5 @@ export default {
 	updatePart: data => axios.post('part/update', data),
 
 	// 删除part
-	deletePart: data => axios.get('part/del' + data, data),
+	deletePart: data => axios.get('part/del/' + data, data),
 }

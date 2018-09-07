@@ -22,6 +22,7 @@ const ValidForm = ({
         validateFieldsAndScroll((err, values) => {
             if (!err) {
                 submitForm && submitForm(values);
+                resetFields();
             }
         });
     }

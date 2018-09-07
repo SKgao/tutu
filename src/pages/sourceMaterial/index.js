@@ -6,6 +6,7 @@ import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
 import VaildForm from './VaildForm';
+import MyUpload from '@/components/UploadComponent';
 import EditForm from './editForm';
 
 import moment from 'moment';
@@ -16,6 +17,7 @@ import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Uploa
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
 
 const sourceMaterial = ({
@@ -24,7 +26,7 @@ const sourceMaterial = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { materialList, modalShow, modal2Show, modal3Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike } = sourcematerial;
+    let { materialList, modalShow, modal2Show, modal3Show, modal4Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike, explainsArray } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields } = form;
 
     // 鼠标放在图片上的事件
@@ -35,7 +37,21 @@ const sourceMaterial = ({
         {
             title: '素材内容',
             dataIndex: 'text',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改素材内容'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								text: v
+							}
+						})
+					}/>
         }, {
           title: '素材图标',
           dataIndex: 'icon',
@@ -52,39 +68,130 @@ const sourceMaterial = ({
           }
         }, {
             title: '音标',
-            dataIndex: 'phonetic'
+            dataIndex: 'phonetic',
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改音标'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								phonetic: v
+							}
+						})
+					}/>
         }, {
             title: '单次释义',
             dataIndex: 'translation',
-            render: (text) => <span>{ text.replace(/\[|\]|\"/g, '') }</span>
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改单次释义(在[]中输入)'}
+					valueData={text || '[]'}
+					defaultValue={text || '[]'}
+					onOk={v => 
+						dispatch({
+							type: 'sourcematerial/editSource',
+							payload: {
+								id: record.id - 0,
+								translation: v
+							}
+						})
+					}/>
         }, {
             title: '多次释义',
             dataIndex: 'explainsArray',
-            render: (text) => {
-                let str = text.replace(/\[|\]|\"/g, '')
-                if (!str) {
-                    return <span>无</span>
-                } else if (str.length < 20) {
-                    return <span>{ str }</span>
-                } else {
-                    return <Tooltip title={str}>
-                        <span>{ str.substr(0, 20) + '...' }</span>
-                    </Tooltip>
-                }
+            render: (text, record, index) => <span title={text} style={{ cursor: 'pointer' }} onClick={ () => {
+                handleUpdateArr(record)
+                handleSubmit('modal4Show', true)
+           }
+         }>{ renderExplainsArray(text) }</span>
+        }, {
+        	title: '修改音频',
+        	dataIndex: 'updateAudio',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择音频'} uploadSuccess={(url) => {
+                    changeSource(url, record, 'audio')
+                }}></MyUpload>
+            }
+        }, {
+        	title: '修改图标',
+        	dataIndex: 'updateImage',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeSource(url, record, 'icon')
+                }}></MyUpload>
             }
         }, {
           title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
+                    {/* <Button size="small" style={{ marginLeft: 10 }} >修改多次释义</Button> */}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
-                    <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit(record)}>修改</Button>
+                    {/* <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit(record)}>修改</Button> */}
                 </span>
             }
         }
     ]
+    
+    // 修改多次释义
+    const handleUpdateArr = (record) => {
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                arrId: record.id - 0,
+                explainsArray: record.explainsArray
+            }
+        })
+    }
+
+    const handleExplainsArray = () => {
+        dispatch({
+            type: 'sourcematerial/editSource',
+            payload: {
+                id: sourcematerial.arrId,
+                explainsArray: explainsArray
+            }
+        })
+    }
+
+    // 修改释义
+    const changeArray = (event) => {
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                explainsArray: event.target.value
+            }
+        })
+    }
+
+    // 修改用户头像
+    const changeSource = (url, record, rowname) => {
+        dispatch({
+            type: 'sourcematerial/editSource',
+            payload: {
+                id: record.id - 0,
+                [rowname]: url
+            }
+        })
+    }
+
+    // 渲染多释义   text.replace(/\[|\]|\"/g, '')
+    const renderExplainsArray = (text) => {
+        let str = text
+        if (!str) {
+            return '[]'
+        } else if (str.length < 20) {
+            return str
+        } else {
+            return str.substr(0, 20) + '...'
+        }
+    }
 
     /**
      * 删除教材
@@ -101,9 +208,17 @@ const sourceMaterial = ({
 
     // 搜索
     const handleSearch = () => {
+        let pageParam = {
+            pageSize: 10,
+            pageNum: 1
+        }
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: pageParam
+        })
       dispatch({
         type: 'sourcematerial/getSource',
-        payload: filterObj({ startTime, endTime, text, pageNum, pageSize, openLike })
+        payload: filterObj({ startTime, endTime, text, openLike, ...pageParam })
       })
     }
     // 添加素材
@@ -134,25 +249,7 @@ const sourceMaterial = ({
           }
       })
     }
-    // 确定修改素材
-    const submitEditForm = (e) => {
-        if (e!="false") {
-            let PP = {
-                // audio: getFieldValue('audio'),
-                // icon: getFieldValue('icon'),
-                // text: getFieldValue('text')
-                audio: e.audio,
-                icon: e.icon,
-                text: e.text
-            }
-            dispatch({
-                type: 'sourcematerial/addSource',
-                payload: filterObj(PP)
-            })
-        }else{
-            handleSubmit('modal2Show',false)
-        }
-    }
+
     // 表单取消
     const handleReset  = (m) => {
         resetFields();
@@ -167,18 +264,23 @@ const sourceMaterial = ({
         })
     }
     // 编辑素材 显示modal
-    const handleEdit=(e)=>{
+    const handleEdit= (e) =>{
         dispatch({
             type: 'sourcematerial/setParam',
             payload: {
                 modal2Show: true,
-                icon:e.icon,
-                audio:e.audio,
-                text:e.text
+                id: e.id,
+                icon: e.icon,
+                audio: e.audio,
+                text: e.text,
+                phonetic: e.phonetic,
+                translation: e.translation,
+                explainsArray: e.explainsArray
             }
         })
     }
-
+    
+    // 操作分页
     const handleChange = (param) => {
         dispatch({
     		type: 'sourcematerial/setParam',
@@ -195,8 +297,8 @@ const sourceMaterial = ({
         dispatch({
           type: 'sourcematerial/setParam',
           payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
@@ -228,9 +330,9 @@ const sourceMaterial = ({
         dispatch({
             type: 'sourcematerial/addSubjectSource',
             payload: { 
-                audioArray: audioArray.filter(e => e !== '.DS_Store'),
-                imageArray: imageArray.filter(e => e !== '.DS_Store'),
-                sentensArray: sentensArray.filter(e => e !== '.DS_Store')
+                audioArray: audioArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.mp3'),
+                imageArray: imageArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.png'),
+                sentensArray: sentensArray.filter(e => e.slice(0, 1) !== '.')
             }
         })
     }
@@ -239,8 +341,19 @@ const sourceMaterial = ({
     const handleTabChange = (key = '0') => {
         if (key === '0') {
             dispatch({
+                type: 'sourcematerial/setParam',
+                payload: {
+                    startTime: '',
+                    endTime: '',
+                    pageNum: 1,
+                    pageSize: 10,
+                    text: '',
+                    openLike: ''
+                }
+            })
+            dispatch({
                 type: 'sourcematerial/getSource',
-                payload: { pageNum, pageSize, startTime, endTime, openLike }
+                payload: { pageNum, pageSize, startTime, endTime, text, openLike }
             })
         }
     	dispatch({
@@ -333,6 +446,32 @@ const sourceMaterial = ({
             </FormInlineLayout>
 
             <Modal
+                title="修改多次释义"
+                visible={modal4Show}
+                onCancel= { () => handleSubmit('modal4Show', false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <Form>
+                    <FormItem
+                        {...formItemLayout}>
+                        <TextArea rows={4} value={explainsArray} placeholder="修改释义" onChange={ changeArray }></TextArea>
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}>
+                        <Button type="primary" onClick={
+                            () => {
+                                handleSubmit('modal4Show', false)
+                                handleExplainsArray()
+                            }                
+                        } style={{ marginLeft: 5 }}>提交</Button>
+                    </FormItem>
+                </Form>
+            </Modal>
+
+            <Modal
                 title="新增素材"
                 visible={modalShow}
                 onCancel= { () => handleSubmit('modalShow',false) }
@@ -359,8 +498,7 @@ const sourceMaterial = ({
                     sourcematerial={sourcematerial}
                     maskClosable={false}
                 >
-                    {/*<EditForm submitEditForm={submitEditForm}></EditForm>*/}
-                    <EditForm></EditForm>
+                {/* <EditForm></EditForm> */}
                 </Modal>
 
                 <Modal
@@ -424,7 +562,7 @@ const sourceMaterial = ({
                         <FormItem
                             {...formItemLayout}>
                             <Button type="primary" onClick={handleSubmitSource} style={{ marginLeft: 45 }}>提交</Button>
-                            <Button onClick={() => handleReset('modal3Show')} style={{ marginLeft: 15 }}>取消</Button>
+                            <Button onClick={() => {handleReset('modal3Show')}} style={{ marginLeft: 15 }}>取消</Button>
                         </FormItem>
                     </Form>
                 </Modal>

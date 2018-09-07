@@ -36,7 +36,7 @@ const BookUnit = ({
 					defaultValue={text || '无'}
 					onOk={v => 
 						dispatch({
-							type: 'userSetting/updateUser',
+							type: 'bookUnit/updateUnit',
 							payload: {
 								id: record.id,
 								text: v
@@ -164,6 +164,7 @@ const BookUnit = ({
     const handleSubmit = (e) => {
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
+            // values.icon = 'http://img.chengxuyuantoutiao.com/group1/M00/00/02/rBDnNluNLnmAJ1csAABHdhAtFfs693.png'
             !err && dispatch({
                 type: 'bookUnit/addUnit',
                 payload: filterObj(values)

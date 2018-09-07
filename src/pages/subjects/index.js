@@ -23,7 +23,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName} = subject;
+    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
     
     // 题目列表
@@ -80,6 +80,18 @@ const Subject = ({
             title: '题目顺序',
             dataIndex: 'sort',
             sorter: true
+        }, {
+            title: '操作',
+            dataIndex: 'action',
+            render: (text, record) => {
+                return <span>
+                    <Button size="small" onClick={() => linktoDet(record)}>题目详情</Button>
+
+                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
+                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
+                    </Popconfirm>
+                </span>
+            }
         }
     ]
     
@@ -104,17 +116,8 @@ const Subject = ({
         }
     ]
 
-    const columns = (customsPassId) ? descCol : subjectCol
-    const dataSource = (customsPassId) ? subject.descList : subject.subjectList
-
-    const openNotification = () => {
-        notification.open({
-            duration: 1,
-            message: '暂不支持查看素材包~',
-            description: '请等待后续开发。',
-            icon: <Icon type="smile-circle" style={{ color: '#108ee9' }} />
-        });
-      }
+    const columns = (detpage) ? descCol : subjectCol
+    const dataSource = (detpage) ? subject.descList : subject.subjectList
     
     const expandedRowRender = () => {
         const sourceCol = [
@@ -149,6 +152,25 @@ const Subject = ({
               pagination={false}
             />
           )
+    }
+
+    // 调转到题目详情
+    const linktoDet = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/subjects',
+            search: `customsPassId=${record.customsPassId}&sort=${record.sort}&detpage=1`
+        }));
+    }
+
+    // 删除题目
+    const handleDelete = (record) => {
+        dispatch({
+            type: 'subject/deleteSubject',
+            payload: {
+                customsPassId: record.customsPassId - 0,
+                sort: record.sort - 0,
+            }
+        })
     }
 
     // 添加题目
@@ -198,8 +220,8 @@ const Subject = ({
         dispatch({
         	type: 'subject/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
@@ -216,19 +238,36 @@ const Subject = ({
     }
 
     // 返回
-    const goBack = () => dispatch(routerRedux.goBack(-1))
+    const goBack = () => {
+        dispatch(routerRedux.goBack(-1))
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+                sort: '',
+                detpage: ''
+            }
+        })
+    }
 
     // 搜搜题目
     const handleSearch = () => {
-        if (customsPassId) {
+        if (detpage) {
             dispatch({
                 type: 'subject/subjectDesc',
                 payload: filterObj({ customsPassId, sort })
             })
         } else {
+            let pageParam = {
+                pageSize: 10,
+                pageNum: 1
+            }
+            dispatch({
+                type: 'subject/setParam',
+                payload: pageParam
+            })
             dispatch({
                 type: 'subject/getSubject',
-                payload: filterObj({ startTime, endTime, sourceIds, customsPassName, pageNum, pageSize })
+                payload: filterObj({ startTime, endTime, customsPassId, sourceIds, customsPassName, ...pageParam })
             })
         }
     }
@@ -240,7 +279,7 @@ const Subject = ({
         })
         dispatch({
     		type: 'subject/getSubject',
-    		payload: filterObj({ startTime, endTime, sourceIds, customsPassName, ...param })
+    		payload: filterObj({ startTime, endTime, customsPassId, sourceIds, customsPassName, ...param })
     	})
     }
 
@@ -307,20 +346,22 @@ const Subject = ({
                                     />
                             </FormItem>
 
-                            {/*关卡名称*/}
-                            <FormItem label="关卡名称">
-                                <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
-                            </FormItem>
+                            {
+                                detpage  ? null : 
+                                <FormItem label="关卡名称">
+                                    <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
+                                </FormItem>
+                            }
 
                             {
-                                customsPassId  ? null : 
+                                detpage  ? null : 
                                 <FormItem label="题目">
                                     <Input placeholder="输入题目名" onChange={(e) => handleInput(e, 'sourceIds')}/>
                                 </FormItem>
                             }
 
                             {
-                                !customsPassId  ? null : 
+                                !detpage  ? null : 
                                 <FormItem  label="题目顺序">
                                     <Input placeholder="输入题目顺序" onChange={(e) => handleInput(e, 'sort')}/>
                                 </FormItem>
@@ -334,13 +375,16 @@ const Subject = ({
                             {/* <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
                             </FormItem> */}
-
-                            <FormItem>
-                                <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
-                            </FormItem>
                             
                             {
-                                !customsPassId  ? null : 
+                                detpage  ? null : 
+                                <FormItem>
+                                    <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
+                                </FormItem>
+                            }
+                            
+                            {
+                                !detpage && !customsPassId ? null : 
                                 <FormItem>
                                     <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                                 </FormItem>
@@ -458,12 +502,12 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
-                            expandedRowRender={customsPassId ? expandedRowRender : null}
+                            expandedRowRender={detpage ? expandedRowRender : null}
                             expandRowByClick={true}
-                            loading={ loading.effects['subject/getSubject'] }
+                            loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }
                             />
                         {
-                            customsPassId ? null :
+                            detpage ? null :
                             <PaginationLayout
                                 total={subject.totalCount}
                                 onChange={(page, pageSize) => handleChange({
@@ -481,7 +525,7 @@ const Subject = ({
                 </TabPane>
                 
                 {
-                    (customsPassId || activeKey === '0') ? null :
+                    (detpage || activeKey === '0') ? null :
                     <TabPane tab="上传进度" key="1">
                         <UploadProgress
                            cardTitle={'题目上传进度'}

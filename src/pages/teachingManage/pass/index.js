@@ -102,8 +102,18 @@ const PartPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.id}&sort=${record.sort}`
+            search: `customsPassId=${record.id}`       
         }));
+
+        // dispatch({
+        //     type: 'app/setPath',
+        //     payload: {
+        //         firPath: ['114'],
+        //         secPath: ['/subjects']
+        //     }
+        // })
+        // localStorage.setItem('firPath', ['114'])
+        // localStorage.setItem('secPath', ['/subjects'])
     }
     
     /**

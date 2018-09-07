@@ -5,12 +5,17 @@ export default {
 	namespace: 'memberLevel',
 
 	state: {
-        levelList: []
+		levelList: [],
+		modalShow: false
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {	
-			dispatch({ type: 'getMemberLevel' });
+			return history.listen(location => {
+				if (location.pathname === '/memberLevel') {
+					dispatch({ type: 'getMemberLevel' });
+				}
+			})
 		},
 	},
 
@@ -33,6 +38,22 @@ export default {
                 res && message.success(res.data.message);
 				yield put({
 					type: 'getMemberLevel'
+				});
+			}
+		},
+
+		*addMemberLevel({ payload }, { call, put }) {
+			const res = yield call(api.addMemberLevel, payload);
+			if (res) {
+                res && message.success(res.data.message);
+				yield put({
+					type: 'getMemberLevel'
+				});
+				yield put({
+					type: 'setParam',
+					payload: {
+						modalShow: false
+					}
 				});
 			}
 		},

@@ -20,21 +20,46 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({  type: 'getUnit' })
+			return history.listen(location => {
+				if (location.pathname === '/teachingManage/unit') {
+					let _search = location.search.slice(1)
+					let arr = (_search) ? _search.split('=') : []
+					let _bookId = (arr.length) ? arr[1] - 0 : ''
+					let param = {
+						startTime: '',
+						endTime: '',
+						pageSize: 10,
+						pageNum: 1,
+						textBookId: _bookId
+					}
+					dispatch({
+						type: 'setParam',
+						payload: param
+					})
+					dispatch({ type: 'getUnit', param });
+				}
+			})
 		}
 	},
 
 	effects: {
      	*getUnit({ payload }, { call, put, select }) {
 			const { pageNum, pageSize, startTime, endTime, textBookId } = yield select(state => state.bookUnit);
-            const res = yield call(api.getUnit, filterObj({ 
-				pageNum, pageSize, startTime, endTime, textBookId 
-			}));
+			const _pay = (payload) ? payload : { pageNum, pageSize, startTime, endTime, textBookId };
+            const res = yield call(api.getUnit, filterObj(_pay));
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
-						tableData: (res.data.data) ? res.data.data.data : []
+						tableData: [],
+						totalCount: 0
+					}
+				})
+				yield put({
+					type: 'save',
+					payload: {
+						tableData: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				})
 			}
@@ -72,16 +97,10 @@ export default {
 		},
 
 		*deleteUnit({ payload }, { call, select, put }) {
-			const { tableData } = yield select(state => state.bookUnit);
 			const res = yield call(api.deleteUnit, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'save',
-					payload: {
-						tableData: tableData.filter(e => e.id !== payload)
-					}
-				})
+				yield put({ type: 'getUnit' });
 			}
         },
         

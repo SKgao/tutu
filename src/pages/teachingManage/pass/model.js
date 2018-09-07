@@ -8,7 +8,7 @@ export default {
         tableData: [],
         subjectList: [],
 		modalShow: false,
-		partsId: 0,  // partsId
+		partsId: '',  // partsId
 		pageSize: 10,
         pageNum: 1,
         totalCount: 0
@@ -45,6 +45,13 @@ export default {
      	*getPass({ payload }, { call, put }) {
 			const res = yield call(api.getPass, payload);
 			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						tableData: [],
+						totalCount: 0
+					}
+				})
 				yield put({
 					type: 'save',
 					payload: {
@@ -92,16 +99,14 @@ export default {
 		},
 
 		*deletePass({ payload }, { call, select, put }) {
-			const { tableData } = yield select(state => state.partPass);
+			const { partsId, pageNum, pageSize } = yield select(state => state.partPass);
 			const res = yield call(api.deletePass, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({
-					type: 'save',
-					payload: {
-						tableData: tableData.filter(e => e.id !== payload)
-					}
-				})
+                    type: 'getPass',
+                    payload: { pageNum, pageSize, partsId}
+                })
 			}
         },
         

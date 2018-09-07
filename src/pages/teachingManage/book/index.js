@@ -10,6 +10,7 @@ import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
+import { axios } from '@/configs/request';
 
 import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, message } from 'antd';
 const FormItem = Form.Item;
@@ -33,20 +34,82 @@ const TeachingManage = ({
         bookColumns: [
             {
                 title: '教材名',
-                dataIndex: 'name'
+                dataIndex: 'name',
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改教材名'}
+                        valueData={text || '无'}
+                        defaultValue={text || '无'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateBook',
+                                payload: {
+                                    id: record.id,
+                                    name: v
+                                }
+                            })
+                        }/>
             }, {
                 title: '创建时间',
                 dataIndex: 'createdAt'
             }, {
                 title: '年级',
                 dataIndex: 'gradeId',
-                sorter: true
+                sorter: true,
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改年级'}
+                        valueData={gradeList}
+                        focusSelect={() => dispatch({type: 'teachingmanage/getGrade'})}
+                        optionKey={'id'}
+                        optionItem={'gradeName'}
+                        defaultValue={text || '无'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateBook',
+                                payload: {
+                                    id: record.id,
+                                    gradeId: v - 0
+                                }
+                            })
+                        }/>
+            }, {
+                title: '教材版本',
+                dataIndex: 'bookVersionId',
+                sorter: true,
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改教材版本'}
+                        valueData={versionList}
+                        focusSelect={() => dispatch({type: 'teachingmanage/getVersion'})}
+                        optionKey={'id'}
+                        optionItem={'name'}
+                        defaultValue={text || '无'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateBook',
+                                payload: {
+                                    id: record.id,
+                                    bookVersionId: v - 0
+                                }
+                            })
+                    }/>
             }, {
                 title: '教材封面图',
                 dataIndex: 'icon',
                 sorter: true,
                 render: (text) => {
                    return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+                }
+            }, {
+                title: '年级顺序',
+                dataIndex: 'status',
+                sorter: true
+            }, {
+                title: '上传封面图',
+                dataIndex: 'updateicon',
+                render: (txt, record, index) => {
+                    return <MyUpload uploadTxt={'上传封面图'} uploadSuccess={(url) => changeImages(url, record)}></MyUpload>
                 }
             }, {
                 title: '操作',
@@ -85,6 +148,24 @@ const TeachingManage = ({
                 title: '年级id',
                 dataIndex: 'id',
                 sorter: true
+            }, {
+                title: '年级顺序',
+                dataIndex: 'status',
+                sorter: true,
+                render: (text, record) =>
+                    <TablePopoverLayout
+                        title={'修改年级顺序'}
+                        valueData={text || '0'}
+                        defaultValue={text || '0'}
+                        onOk={v => 
+                            dispatch({
+                                type: 'teachingmanage/updateGrade',
+                                payload: {
+                                    id: record.id,
+                                    status: v - 0
+                                }
+                            })
+                    }/>
             }, {
                 title: '操作',
                 dataIndex: 'action',
@@ -133,11 +214,36 @@ const TeachingManage = ({
             }
         ]
     }
+    
+    // 修改素材
+    const changeImages = (url, record) => {
+        // dispatch({
+    	// 	type: 'teachingManage/updateBook',
+    	// 	payload: {
+        //         id: record.id,
+        //         icon: url
+        //     }
+        // })
+        axios.post('book/update', {
+                id: record.id,
+                icon: url
+            })
+            .then((res) => {
+                if (res.data.code === 0) {
+                    message.success(res.data.message);
+                    dispatch({ type: 'getBook' })
+                } else {
+                    message.error(res.data.message)
+                }
+            })
+    }
+    
 
     // 调转到单元页面
     const linktoUnit = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/teachingManage/unit'
+            pathname: '/teachingManage/unit',
+            search: `textBookId=${record.id}`
         }));
     }
     
@@ -168,7 +274,7 @@ const TeachingManage = ({
     }
 
     /**
-     * 删除教材版本
+     * 删除教材
      * @param  {object} 列数据
      */
     const handleDelete = (param) => {
@@ -246,8 +352,8 @@ const TeachingManage = ({
         dispatch({
         	type: 'teachingmanage/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
@@ -481,19 +587,19 @@ const TeachingManage = ({
                 allColumns={columnsOpt[activeKey + 'Columns']}
                 />
             {
-                activeKey === 'book' &&
-                <PaginationLayout
-                    total={totalCount}
-                    onChange={(page, pageSize) => handleChange({
-                        pageNum: page,
-                        pageSize
-                    })}
-                    onShowSizeChange={(current, pageSize) => handleChange({
-                        pageNum: 1,
-                        pageSize
-                    })}
-                    current={pageNum}
-                    pageSize={pageSize} />
+                // activeKey === 'book' &&
+                // <PaginationLayout
+                //     total={totalCount}
+                //     onChange={(page, pageSize) => handleChange({
+                //         pageNum: page,
+                //         pageSize
+                //     })}
+                //     onShowSizeChange={(current, pageSize) => handleChange({
+                //         pageNum: 1,
+                //         pageSize
+                //     })}
+                //     current={pageNum}
+                //     pageSize={pageSize} />
             }
 		</div>
 	)

@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { formItemLayout } from '@/configs/layout';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
+import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
+import { filterObj } from '@/utils/tools';
 
-import { Form, Input, Button, Modal, Icon, Popconfirm, Select } from 'antd';
+import { Form, Input, Button, Modal, Icon, Popconfirm, Select, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -15,11 +18,15 @@ const MemberLevel = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { levelList, startTime, endTime, userLevel} = memberLevel;
-    let { getFieldDecorator, getFieldValue } = form;
+    let { levelList, startTime, endTime, userLevel, modalShow} = memberLevel;
+    let { getFieldDecorator, getFieldValue, validateFieldsAndScroll, setFieldsValue, resetFields } = form;
 
     const columns = [
         {
+            title: '会员等级id',
+            dataIndex: 'userLevel',
+            sorter: true
+        }, {
             title: '会员等级名称',
             dataIndex: 'levelName',
             render: (text, record) =>
@@ -80,14 +87,14 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改原始价格'}
-					valueData={ (Number(text) / 100).toFixed(2) || '0'}
-					defaultValue={ (Number(text) / 100).toFixed(2) || '0'}
+					valueData={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
+					defaultValue={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								orgMoney: Number(v)
+								orgMoney: Number(v.replace(/元/g, '')) * 100
 							}
 						})
 					}/>
@@ -98,17 +105,25 @@ const MemberLevel = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改需充值金额'}
-					valueData={ (Number(text) / 100).toFixed(2) || '0'}
-					defaultValue={ (Number(text) / 100).toFixed(2) || '0'}
+					valueData={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
+					defaultValue={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
 					onOk={v => 
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
 								userLevel: record.userLevel - 0,
-								needMoney: Number(v)
+								needMoney: Number(v.replace(/元/g, '')) * 100
 							}
 						})
 					}/>
+        }, {
+        	title: '上传图标',
+        	dataIndex: 'updateicon',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -121,6 +136,17 @@ const MemberLevel = ({
             }
         }
     ]
+
+    // 修改会员图标
+    const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'memberLevel/updateMemberLevel',
+    		payload: {
+                id: record.id,
+                icon: url
+            }
+    	})
+    }
 
     // 删除会员等级
     const handleDelete = (param) => {
@@ -139,35 +165,150 @@ const MemberLevel = ({
     		payload: v
     	})
     }
+
+
+    // 展示modal
+    const changeModalState = (show) => {
+        dispatch({
+        	type: 'memberLevel/setParam',
+        	payload: {
+                modalShow: show
+            }
+        })
+    }
+
+    // 表单取消
+    const handleReset  = () => {
+        resetFields()
+        dispatch({
+    		type: 'memberLevel/setParam',
+    		payload: {
+                modalShow: false
+    		}
+    	})
+    }
+
+    // 添加版本信息
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		validateFieldsAndScroll((err, values) => {
+			if (!err) {
+                let arr = levelList.map(e => e.userLevel)
+                values.exprieDays && (values.exprieDays = values.exprieDays - 0)
+                values.orgMoney && (values.orgMoney =  Number(values.orgMoney) * 100)
+                values.needMoney && (values.needMoney = Number(values.needMoney) * 100)
+                values.userLevel && (values.userLevel = Number(values.userLevel))
+                if (arr.includes(values.userLevel)) {
+                    message.warning('等级id已存在, 请重新输入')
+                } else {
+                    dispatch({
+                        type: 'memberLevel/addMemberLevel',
+                        payload: filterObj(values)
+                    })
+                }
+			}
+		});
+    }
+
+   // 文件上传成功
+   const uploadSuccess = (url) => setFieldsValue({'icon': url})
    
 	return (
 		<div>
-			{/* <FormInlineLayout>
+			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>            
-                    <FormItem label="会员等级">
-                        <Select
-                            showSearch
-                            onFocus={() => dispatch({type: 'memberLevel/getMemberLevel'})}
-                            placeholder="请选择会员等级"
-                            onChange={v => changeSelect({ userLevel: v })}
-                            >
-                            {
-                                memberLevelList.map(item =>
-                                    <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
-                                )
-                            }
-                        </Select>
-                    </FormItem>
-
                     <FormItem>
-                        <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
+                        <Button type="primary" onClick={() => changeModalState(true)}>添加会员等级</Button>
+                    </FormItem>
+                </Form>
+            </FormInlineLayout>
+
+            <Modal
+                title="新增会员等级"
+                visible={modalShow}
+                onCancel= { () => changeModalState(false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <Form>
+                    <FormItem
+                        label="会员等级名称"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('levelName', {
+                            rules: [{ required: true, message: '请输入会员等级名称!', whitespace: true }],
+                        })(
+                            <Input placeholder="请输入会员等级名称"/>
+                        )}
                     </FormItem>
 
+                    <FormItem
+                        label="会员等级id"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('userLevel', {
+                            rules: [{ required: true, message: '请输入会员等级id!', whitespace: true }],
+                        })(
+                            <Input placeholder="请输入会员等级id"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="会员过期时间"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('exprieDays', {
+                            rules: [{ required: true, message: '请输入会员过期时间!', whitespace: true }],
+                        })(
+                            <Input placeholder="以天为单位（0为永久有效）"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="原始价格"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('orgMoney', {
+                            rules: [{ required: true, message: '请输入原始价格!', whitespace: true }],
+                        })(
+                            <Input placeholder="请输入原始价格"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="需充值金额"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('needMoney', {
+                            rules: [{ required: true, message: '请输入需充值金额!', whitespace: true }],
+                        })(
+                            <Input placeholder="请输入需充值金额"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="图标"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('icon', {
+                            
+                        })(
+                            <MyUpload uploadSuccess={uploadSuccess} uploadTxt={'上传图片'}></MyUpload>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}>
+                        <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
+                        <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
+                    </FormItem>
                 </Form>
-            </FormInlineLayout> */}
+            </Modal>
 
             <TableLayout
                 pagination={false}
+                scrollX={true}
                 dataSource={levelList}
                 allColumns={columns}
                 loading={ loading.effects['memberLevel/getMemberLevel'] }

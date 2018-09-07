@@ -26,6 +26,7 @@ const ValidForm = ({
                 } else {
                     delete values['confirm'];
                     submitForm && submitForm(values);
+                    resetFields();
                 }
             }
         });

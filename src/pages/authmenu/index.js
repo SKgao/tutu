@@ -215,18 +215,19 @@ const Authmenu = ({
     		type: 'authmenu/setParam',
     		payload: param
         })
-        dispatch({
-    		type: 'authmenu/getMenu',
-    		payload: filterObj({ menuName, ...param})
-    	})
+        dispatch({ type: 'authmenu/getMenu' })
     }
 
     // 搜索
     const handleSearch = () => {
-    	dispatch({
-    		type: 'authmenu/getMenu',
-    		payload: filterObj({ pageNum, pageSize, menuName })
-    	})
+		dispatch({
+			type: 'authmenu/setParam',
+			payload: {
+				pageSize: 10,
+				pageNum: 1
+			}
+		})
+    	dispatch({ type: 'authmenu/getMenu' })
 	}
 
 	return (

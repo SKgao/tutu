@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
 import { formItemLayout } from '@/configs/layout';
+import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -12,30 +13,40 @@ const editForm = ({
 }) => {
     let { form,dispatch } = props;
     const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
-    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text,iconUrl } = sourcematerial;
+    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text,iconUrl, id, phonetic, translation, explainsArray } = sourcematerial;
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
-        let data={
-            icon:icon|| '',
-            audio:audio|| '',
-            text:text||''
+        let data = {
+            id: id,
+            icon: icon || '',
+            audio: audio || '',
+            text: text || '',
+            phonetic: phonetic || '',
+            translation: translation || '',
+            explainsArray: explainsArray || ''
         }
         validateFieldsAndScroll((err, values) => {
             validateFieldsAndScroll((err, values) => {
                 if (!err) {
                     for (let key in values) {
                         if (values[key]) {
-                            data[key]=values[key]
+                            if (key === 'id') {
+                                data[key] = values[key] -0
+                            } else if (values[key] == data[key]) {
+                                data[key] = ''
+                            } else {
+                                data[key] = values[key]
+                            }
                         }
                     }
                 }
             })
         });
-        dispatch({
-            type: 'sourcematerial/editSource',
-            payload: data
-        })
+        // dispatch({
+        //     type: 'sourcematerial/editSource',
+        //     payload: filterObj(data)
+        // })
     }
 
     // 取消重置表单
@@ -88,7 +99,7 @@ const editForm = ({
                     label="素材图标地址"
                     >
                     {getFieldDecorator('icon',{
-                        initialValue:icon || ''
+                        initialValue: icon || ''
                     })(
                         <Input placeholder="请输入素材内容" disabled/>
                     )}
@@ -108,7 +119,7 @@ const editForm = ({
                     label="音频地址"
                     >
                     {getFieldDecorator('audio',{
-                        initialValue:audio || ''
+                        initialValue: audio || ''
                     })(
                         <Input placeholder="请输入素材内容" disabled/>
                     )}
@@ -122,6 +133,39 @@ const editForm = ({
                         rules: [{ required: true, message: '请输入音频地址!' }],
                     })(
                         <MyUpload uploadSuccess={audioUploadSuccess}></MyUpload>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="音标"
+                    >
+                    {getFieldDecorator('phonetic', {
+                        initialValue: phonetic || '',
+                    })(
+                        <Input placeholder="请输入音标"/>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="释义"
+                    >
+                    {getFieldDecorator('translation', {
+                        initialValue: translation || '',
+                    })(
+                        <Input placeholder="请输入释义"/>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="多次释义"
+                    >
+                    {getFieldDecorator('explainsArray', {
+                        initialValue: explainsArray || '',
+                    })(
+                        <Input placeholder="请输入多次释义"/>
                     )}
                 </FormItem>
 

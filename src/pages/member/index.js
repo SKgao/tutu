@@ -28,38 +28,26 @@ const Member = ({
             dataIndex: 'tutuNumber',
             sorter: true
         }, {
-            title: '用户名',
+            title: '用户昵称',
             dataIndex: 'realName'
         }, {
             title: '用户头像',
             dataIndex: 'icon',
             render: (text) => {
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
-             }
+            }
         }, {
             title: '会员等级',
-            dataIndex: 'userLevelName',
-            // render: (text, record) =>
-			// 	<TablePopoverLayout
-			// 		title={'修改会员等级'}
-			// 		valueData={memberLevelList}
-			// 		focusSelect={() => dispatch({type: 'member/getMemberLevel'})}
-			// 		optionKey={'userLevel'}
-			// 		optionItem={'levelName'}
-			// 		defaultValue={text || '无'}
-            //         onOk={v => 
-			// 			dispatch({
-			// 				type: 'member/updateUserLevel',
-			// 				payload: {
-			// 					id: record.id,
-			// 					userLevel: (v === '普通用户') ? 1 : v - 0
-			// 				}
-			// 			})
-			// 		}/>
+            dataIndex: 'userLevelName'
         }, {
             title: '会员到期时间',
             dataIndex: 'exprieTime',
             sorter: true
+        }, {
+            title: '累计消费金额',
+            dataIndex: 'userMoney',
+            sorter: true,
+            render: (text) => (Number(text) / 100).toFixed(2) + '元'
         }, {
             title: '手机号',
             dataIndex: 'mobile',
@@ -87,30 +75,24 @@ const Member = ({
             title: '注册时间',
             dataIndex: 'createdAt'
         }, {
-            title: '最近闯关记录',
-            dataIndex: 'record',
-            children: [
-                {
-                    title: '教材版本',
-                    dataIndex: 'bookVersionName',
-                    render: (text) => <span>{ text ? text :  '无' }</span>
-                }, {
-                    title: '练习教材名称',
-                    dataIndex: 'textbookNamePractice',
-                    render: (text) => <span>{ text ? text :  '无' }</span>
-                },  {
-                    title: '配音教材名称',
-                    dataIndex: 'textbookNameAudio',
-                    render: (text) => <span>{ text ? text :  '无' }</span>
-                }, {
-                    title: '闯关进度',
-                    dataIndex: 'unitName',
-                    render: (text, record) => {
-                        let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
-                        return <span>{ arr.filter(e => e).join(' > ') }</span>
-                    }
-                }
-            ]
+            title: '教材版本',
+            dataIndex: 'bookVersionName',
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '练习教材名称',
+            dataIndex: 'textbookNamePractice',
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '配音教材名称',
+            dataIndex: 'textbookNameAudio',
+            render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '闯关进度',
+            dataIndex: 'unitName',
+            render: (text, record) => {
+                let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
+                return <span>{ arr.filter(e => e).join(' > ') }</span>
+            }
         }, {
         	title: '操作',
             dataIndex: 'action',
@@ -157,6 +139,13 @@ const Member = ({
 
     // 搜索
     const handleSearch = (param) => {
+        dispatch({
+			type: 'member/setParam',
+			payload: {
+				pageSize: 10,
+				pageNum: 1
+			}
+		})
         if (activeKey === '0') {
             dispatch({ type: 'member/getMember' })
         } else if (activeKey === '1') {
@@ -189,8 +178,8 @@ const Member = ({
         dispatch({
         	type: 'member/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }

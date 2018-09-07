@@ -25,6 +25,9 @@ export default {
 	// 删除教材
 	deleteBook: data => axios.post('book/delete', data),
 
+	// 修改教材
+	updateBook: data => axios.post('book/update', data),
+
 	// 添加教材版本
 	addVersion: data => axios.post('book/version/add', data),
 

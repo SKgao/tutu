@@ -18,13 +18,28 @@ export default {
         pageNum: 1,
 		totalCount: 0,
 		modalShow: false,
+		modal2Show: false,
 		addStatus: 1,   // 添加活动的状态
+		shareimg: 'http://web.chengxuyuantoutiao.com/static/share.png'
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			console.log('aaaa')
-			dispatch({ type: 'getActivity' });
+			return history.listen(location => {
+				if (location.pathname === '/activity') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							pageNum: 1,
+							pageSize: 10,
+							startTime: '',
+							endTime: '',
+							id: ''
+						}
+					});
+					dispatch({ type: 'getActivity' });
+				}
+			})
 		},
 	},
 
@@ -33,6 +48,13 @@ export default {
 			const { startTime, endTime, pageNum, pageSize, id } = yield select(state => state.activity);
 			const res = yield call(api.getActivity, filterObj({ id, startTime, endTime, pageNum, pageSize }));
 			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						tableData: [],
+						totalCount: 0
+					}
+				});
 				yield put({
 					type: 'save',
 					payload: {
@@ -72,6 +94,14 @@ export default {
 
 		*updateActivity({ payload }, { call, put }) {
 			const res = yield call(api.updateActivity, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({	type: 'getActivity' });
+			}
+		},
+
+		*changeStatus({ payload }, { call, put }) {
+			const res = yield call(api.changeStatus, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({	type: 'getActivity' });

@@ -22,7 +22,7 @@ const Activity = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, selectList, modalShow, addStatus, levelList, beginAt, endAt, pageSize, pageNum } = activity;
+    let { tableData, selectList, modalShow, modal2Show, addStatus, levelList, beginAt, endAt, pageSize, pageNum } = activity;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -71,19 +71,19 @@ const Activity = ({
             }
         }, {
             title: '活动金额',
-            dataIndex: 'orgAmount',
+            dataIndex: 'activeMoney',
             sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改活动金额'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
+					valueData={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无'}
+					defaultValue={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无' }
 					onOk={v => 
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
 								id: record.id,
-								orgAmount: (Number(v) / 100).toFixed(2)
+								activeMoney: Number(v.replace(/元/g, '')) * 100
 							}
 						})
 					}/>
@@ -162,6 +162,12 @@ const Activity = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
+                    {
+                        record.status === 2 && <Button type="primary" size="small" onClick={() => changeStatus(record, 1)}>打开</Button>
+					}
+					{
+                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => changeStatus(record, 2)}>关闭</Button>
+					}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
@@ -180,19 +186,37 @@ const Activity = ({
     	})
     }
 
+    // 改变状态
+    const changeStatus = (record, status) => {
+        dispatch({
+    		type: 'activity/changeStatus',
+    		payload: {
+                id: record.id - 0,
+                status: status - 0
+            }
+    	})
+    }
+
     // 选择时间框
     const datepickerChange = (d, t) => {
         dispatch({
         	type: 'activity/setParam',
         	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
+                startTime: t[0] ? t[0] + ':00' : '',
+                endTime: t[1] ? t[1] + ':00' : ''
             }
         })
     }
 
     // 搜索
     const handleSearch = (param) => {
+        dispatch({
+			type: 'activity/setParam',
+			payload: {
+				pageSize: 10,
+				pageNum: 1
+			}
+		})
         dispatch({ type: 'activity/getActivity' })
     }
 
@@ -284,7 +308,19 @@ const Activity = ({
     }
 
     // 文件上传成功
-    const uploadSuccess = (url) => setFieldsValue({'icon': url})
+    const uploadSuccess = (url) => {
+        setFieldsValue({'icon': url})
+    }
+
+    // 修改封面图片
+    const modShareImage = (url) => {
+        dispatch({
+    		type: 'activity/setParam',
+    		payload: {
+                shareimg: url
+            }
+        })
+    }
    
 	return (
 		<div>
@@ -325,6 +361,10 @@ const Activity = ({
 
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加活动</Button>
+                    </FormItem>
+
+                    <FormItem>
+                        <Button onClick={() => changeModalState('modal2Show', true)}>查看分享海报</Button>
                     </FormItem>
 
                 </Form>
@@ -479,10 +519,30 @@ const Activity = ({
                         </FormItem>
                     </Form>
                 </Modal>
+
+                <Modal
+                    title="修改分享海报"
+                    visible={modal2Show}
+                    onCancel= { () => changeModalState('modal2Show', false) }
+                    okText="确认"
+                    cancelText="取消"
+                    footer={null}
+                    >
+                    <Form> 
+                        <a href={ activity.shareimg } >
+                            <img src={ activity.shareimg } style={{ width: 260, height: 360 }}/>
+                        </a>
+
+                        <FormItem>                        
+                            <MyUpload uploadSuccess={modShareImage}></MyUpload>
+                        </FormItem>
+                    </Form>
+                </Modal>
             </FormInlineLayout>
 
             <TableLayout
                 pagination={false}
+                scrollX={true}
                 dataSource={tableData}
                 allColumns={columns}
                 loading={ loading.effects['activity/getActivity'] }
