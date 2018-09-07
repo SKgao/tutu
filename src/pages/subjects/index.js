@@ -148,7 +148,7 @@ const Subject = ({
         return (
             <Table
               columns={sourceCol}
-              dataSource={dataSource[0].sourceVOS}
+              dataSource={ (dataSource[0].sourceVOS && dataSource[0].sourceVOS[0]) ? dataSource[0].sourceVOS : [] }
               pagination={false}
             />
           )
@@ -177,23 +177,27 @@ const Subject = ({
     const handleSubmitSubject = () => {
         let { textbookId, file } = subject
         let formData = new FormData()
-        formData.append('textbookId', textbookId)
-        file[0] && formData.append('file', file[0])
-        axios.post('subject/subject/import', formData)
-            .then((res) => {
-                if (res.data.code === 0) {
-                    dispatch({
-                        type: 'subject/setParam',
-                        payload: {
-                            file: [],
-                            modalShow: false,
-                            activeKey: '1'
-                        }
-                    })
-                } else {
-                    message.error(res.data.message)
-                }
-            })
+        if (file[0]) {
+            formData.append('textbookId', textbookId)
+            formData.append('file', file[0])
+            axios.post('subject/subject/import', formData)
+                .then((res) => {
+                    if (res.data.code === 0) {
+                        dispatch({
+                            type: 'subject/setParam',
+                            payload: {
+                                file: [],
+                                modalShow: false,
+                                activeKey: '1'
+                            }
+                        })
+                    } else {
+                        message.error(res.data.message)
+                    }
+                })
+        } else {
+           message.warning('请选择文件')
+        }
     }
 
     // 添加题目资源(音频集合、图片集合)
@@ -232,7 +236,9 @@ const Subject = ({
         dispatch({
     		type: 'subject/setParam',
     		payload: {
-    			[_m]: false
+                [_m]: false,
+                file: [],
+                textbookId: ''
     		}
     	})
     }
@@ -414,6 +420,7 @@ const Subject = ({
                                 })(
                                     <Select
                                         showSearch
+                                        placeholder="请选择教材"
                                         onChange={v => changeTextBookId({ textbookId: v })}
                                         onFocus={() => dispatch({type: 'subject/getBook'})}
                                         >
@@ -428,12 +435,13 @@ const Subject = ({
 
                             <FormItem
                                 label="题目"
+                                help={ subject.file.length && subject.file[0] ? subject.file[0].name : '' }
                                 {...formItemLayout}
                                 >
                                 {getFieldDecorator('file', {
                                     rules: [{ required: true, message: '请上传题目包!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'file')}>
+                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'file')} showUploadList={false}>
                                         <Button>
                                             <Icon type="upload"/>上传题目
                                         </Button>

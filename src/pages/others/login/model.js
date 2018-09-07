@@ -37,7 +37,10 @@ export default {
 				localStorage.setItem('firPath', '117');
 				localStorage.setItem('secPath', '/userSetting');
 				// yield put({type: 'save', payload});
-				axios.defaults.headers = { 'token': res.data.data.token }
+				axios.defaults.headers = { 
+					'Content-Type': 'application/json',
+					'token': res.data.data.token
+				}
 				yield put({
 					type: 'app/setPath',
 					payload: {
@@ -57,7 +60,10 @@ export default {
 			localStorage.removeItem('firPath');
 			localStorage.removeItem('secPath');
 			localStorage.removeItem('HAS_LOGIN', false);
-			axios.defaults.headers = { 'token': '' }
+			axios.defaults.headers = { 
+				'Content-Type': 'application/json',
+				'token': ''
+			}
 		}
 	},
 

@@ -140,7 +140,10 @@ export default {
 				localStorage.removeItem('HAS_LOGIN');
 				localStorage.removeItem('firPath');
 			    localStorage.removeItem('secPath');
-				axios.defaults.headers = { 'token': '' };
+				axios.defaults.headers = { 
+					'Content-Type': 'application/json',
+					'token': ''
+				}
 				yield put(routerRedux.push('/login'));
 			}
 		},

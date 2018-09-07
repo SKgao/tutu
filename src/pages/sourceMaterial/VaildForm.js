@@ -71,9 +71,7 @@ const ValidForm = ({
                     {...formItemLayout}
                     label="音频地址"
                     >
-                    {getFieldDecorator('audio', {
-                        rules: [{ required: true, message: '请输入音频地址!' }],
-                    })(
+                    {getFieldDecorator('audio')(
                         <MyUpload uploadSuccess={audioUploadSuccess}></MyUpload>
                     )}
                 </FormItem>

@@ -9,7 +9,7 @@ import { axios } from '@/configs/request';
  */
 class MyUpload extends Component {
     constructor(props) {
-        super(props);     
+        super(props);    
     }
 
     // handleUpload = (file) => {
@@ -43,8 +43,10 @@ class MyUpload extends Component {
             let uploadSuccess = this.props.uploadSuccess
             let formData = new FormData()
             formData.append('file', file)
+            message.loading('文件上传中...', 0)
             axios.post('file/upload', formData)
                 .then((res) => {
+                    message.destroy()
                     if (res.data.code === 0) {
                         message.success('上传成功！')
                         uploadSuccess && uploadSuccess(res.data.data)
@@ -53,7 +55,7 @@ class MyUpload extends Component {
                     }
                 })
                 .catch((err) => {
-
+                    message.destroy()
                 });
         } else {
             message.error('请选择文件')
@@ -74,7 +76,7 @@ class MyUpload extends Component {
                        uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '上传文件'
                     }
                 </Button>
-            </Upload>
+            </Upload> 
         );
     }
 }
