@@ -512,7 +512,7 @@ const sourceMaterial = ({
                     >
                     <Form>
                         <FormItem
-                            label="音频文件目录"
+                            label="单词音频目录"
                             help={ audioArray.length ? `已选择${audioArray.length}个音频文件` : '请选择音频文件，不能超过500个' }
                             {...formItemLayout}
                             >
@@ -544,7 +544,7 @@ const sourceMaterial = ({
                         </FormItem>
 
                         <FormItem
-                            label="句子素材目录"
+                            label="句子音频目录"
                             help={sentensArray.length ? `已选择${sentensArray.length}个句子文件` : '请选择句子文件，不能超过500个'}
                             {...formItemLayout}
                             >

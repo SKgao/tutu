@@ -160,7 +160,13 @@ const UserSetting = ({
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.status === 2 && <Button type="primary" size="small" onClick={() => handleUsing(record)}>启用</Button>
+                        record.status !== 1 && 
+                        <Button 
+                           type="primary" 
+                           size="small" 
+                           onClick={() => handleUsing(record)}>
+                           { record.status === 2 ? '启用' : '恢复' }
+                        </Button>
 					}
 					{
                         record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
