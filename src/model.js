@@ -30,6 +30,7 @@ export default {
 		breadCrumd: {},      // 面包屑
 		historyList: [],     // 历史导航
 		redirectUrl: '/',    // 登录后跳转页面
+		modalShow: false,    // 修改密码
 		firPath: localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['117'],
 		secPath: localStorage.getItem('secPath') ? [localStorage.getItem('secPath')] : ['/userSetting']
 	},
@@ -157,6 +158,7 @@ export default {
 				localStorage.removeItem('account');
 				localStorage.removeItem('avatar');
 				localStorage.removeItem('HAS_LOGIN');
+				localStorage.removeItem('id');
 				localStorage.removeItem('firPath');
 			    localStorage.removeItem('secPath');
 				axios.defaults.headers = { 
@@ -210,6 +212,17 @@ export default {
 					historyList: his.filter(e => e.key !== payload.targetKey)
 				}
 			})
+		},
+
+		*setParam({ payload }, { put }) {
+			for (let key in payload) {
+				yield put({
+					type: 'save',
+					payload: {
+						[key]: payload[key]
+					}
+				})
+			}
 		}
 	},
 

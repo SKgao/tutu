@@ -7,6 +7,7 @@ import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
 import VaildForm from './VaildForm';
 import MyUpload from '@/components/UploadComponent';
+import MultipleUpload from '@/components/MultipleUpload';
 import EditForm from './editForm';
 
 import moment from 'moment';
@@ -15,10 +16,10 @@ import { formItemLayout } from '@/configs/layout';
 
 import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message, Tooltip, Checkbox } from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
+const Option = Select.Option;
 
 const sourceMaterial = ({
     sourcematerial,
@@ -28,6 +29,7 @@ const sourceMaterial = ({
     let { dispatch, form } = props;
     let { materialList, modalShow, modal2Show, modal3Show, modal4Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike, explainsArray } = sourcematerial;
     let { getFieldDecorator, getFieldValue, resetFields } = form;
+
 
     // 鼠标放在图片上的事件
     const mouseEnter=(e)=>{
@@ -279,6 +281,14 @@ const sourceMaterial = ({
             }
         })
     }
+
+    // 改版教材id
+    const changeTextBookId = (param) => {
+        dispatch({
+    		type: 'sourcematerial/setParam',
+    		payload: param
+        })
+    }
     
     // 操作分页
     const handleChange = (param) => {
@@ -330,6 +340,7 @@ const sourceMaterial = ({
         dispatch({
             type: 'sourcematerial/addSubjectSource',
             payload: { 
+                textbookId: sourcematerial.textbookId,
                 audioArray: audioArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.mp3'),
                 imageArray: imageArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.png'),
                 sentensArray: sentensArray.filter(e => e.slice(0, 1) !== '.')
@@ -436,6 +447,10 @@ const sourceMaterial = ({
                         <Button type="primary" onClick={() => handleSubmit('modal3Show', true)}>导入素材</Button>
                     </FormItem>
 
+                    {/* <FormItem>
+                        <MultipleUpload></MultipleUpload>
+                    </FormItem> */}
+
                     <FormItem>
                         <Popconfirm title="是否删除选中素材?" onConfirm={handleBatchDelete}>
                             <Button type="danger" disabled={!sourcematerial.sourceIds.length}>批量删除</Button>
@@ -485,7 +500,7 @@ const sourceMaterial = ({
                     //     <VaildForm submitForm={submitForm}>
                     //     </VaildForm>
                     // </Form>*/}
-                    <VaildForm submitForm={submitForm}>
+                    <VaildForm submitForm={submitForm} changeTextBookId={changeTextBookId}>
                     </VaildForm>
                 </Modal>
                 <Modal
@@ -511,6 +526,30 @@ const sourceMaterial = ({
                     footer={null}
                     >
                     <Form>
+                        <FormItem
+                            label="教材"
+                            hasFeedback
+                            {...formItemLayout}
+                            >
+                            {getFieldDecorator('textbookId', {
+                                initialValue: sourcematerial.textbookId,
+                                rules: [{ required: true, message: '请选择教材!' }],
+                            })(
+                                <Select
+                                    showSearch
+                                    placeholder="请选择教材"
+                                    onChange={v => changeTextBookId({ textbookId: v })}
+                                    onFocus={() => dispatch({type: 'sourcematerial/getBook'})}
+                                    >
+                                    {
+                                        sourcematerial.bookList.map(item =>
+                                            <Option key={item.id} value={item.id}>{item.name}</Option>
+                                        )
+                                    }
+                                </Select>
+                            )}
+                        </FormItem>
+
                         <FormItem
                             label="单词音频目录"
                             help={ audioArray.length ? `已选择${audioArray.length}个音频文件` : '请选择音频文件，不能超过500个' }

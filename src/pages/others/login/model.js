@@ -33,6 +33,7 @@ export default {
 				localStorage.setItem('token', res.data.data.token);
 				localStorage.setItem('account', res.data.data.account);
 				localStorage.setItem('avatar', res.data.data.avatar);
+				localStorage.setItem('id', res.data.data.id);
 				localStorage.setItem('HAS_LOGIN', true);
 				yield put(routerRedux.push('/'));
 				// yield put({type: 'save', payload});
@@ -50,6 +51,7 @@ export default {
 			localStorage.removeItem('avatar');
 			localStorage.removeItem('firPath');
 			localStorage.removeItem('secPath');
+			localStorage.removeItem('id');
 			localStorage.removeItem('HAS_LOGIN', false);
 			axios.defaults.headers = { 
 				'Content-Type': 'application/json',
