@@ -1,7 +1,6 @@
 import jsonp from '@/utils/jsonp';
 import axios from 'axios';
 import qs from 'qs';
-import { routerRedux } from 'dva/router';
 import { message } from 'antd';
 
 const DEFAULT_TIMEOUT = 15000;
