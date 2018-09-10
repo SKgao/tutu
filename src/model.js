@@ -7,6 +7,7 @@ import { message } from 'antd';
 import api_login from '@/pages/others/login/service';
 import api_role from '@/pages/role/service';
 import layoutConfig from '@/configs/layout';
+import { getField, flatten } from '@/utils/tools';
 
 function getMenuList() {
 	return new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ export default {
 		breadCrumd: {},      // 面包屑
 		historyList: [],     // 历史导航
 		redirectUrl: '/',    // 登录后跳转页面
+		modalShow: false,    // 修改密码
 		firPath: localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['117'],
 		secPath: localStorage.getItem('secPath') ? [localStorage.getItem('secPath')] : ['/userSetting']
 	},
@@ -54,10 +56,28 @@ export default {
 			} else {
                 yield put(routerRedux.push('/login'));
 			}
+			let urlArr = flatten(getField(authMenu, 'path'))
+			let idArr = flatten(getField(authMenu, 'id'))
 			const datalist = yield call(getMenuList);
+			let _fir, _sec;
+			if (localStorage.getItem('secPath')) {
+				_fir = [localStorage.getItem('firPath')]
+				_sec = [localStorage.getItem('secPath')]
+			} else if (urlArr.includes('/userSetting')) {
+				_fir = ['117']
+				_sec = ['/userSetting']
+			} else {
+                _fir = [idArr[0] + '']
+				_sec = [urlArr[0]]
+			}
+			yield put(routerRedux.push(_sec[0]));
+			localStorage.setItem('firPath', idArr[0]);
+			localStorage.setItem('secPath', urlArr[0]);
 			yield put({
 				type: 'save',
 				payload: {
+					firPath: _fir,
+					secPath: _sec,
 					datalist: datalist,
 					siderList: authMenu,
 				}
@@ -138,6 +158,7 @@ export default {
 				localStorage.removeItem('account');
 				localStorage.removeItem('avatar');
 				localStorage.removeItem('HAS_LOGIN');
+				localStorage.removeItem('id');
 				localStorage.removeItem('firPath');
 			    localStorage.removeItem('secPath');
 				axios.defaults.headers = { 
@@ -191,6 +212,17 @@ export default {
 					historyList: his.filter(e => e.key !== payload.targetKey)
 				}
 			})
+		},
+
+		*setParam({ payload }, { put }) {
+			for (let key in payload) {
+				yield put({
+					type: 'save',
+					payload: {
+						[key]: payload[key]
+					}
+				})
+			}
 		}
 	},
 

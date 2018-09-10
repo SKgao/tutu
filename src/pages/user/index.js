@@ -322,7 +322,6 @@ const UserSetting = ({
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                console.log(values.password2, values.password, values.password2 == values.password)
 				if (values.password2 !== values.password) {
                     message.warning('两次密码输入不一样！')
                 } else {    
@@ -330,7 +329,7 @@ const UserSetting = ({
                         type: 'userSetting/updateUser',
                         payload: {
                             id: userSetting.userid,
-                            password: values.passwrod
+                            password: values.password
                         }
                     })
                     handleReset()
@@ -436,6 +435,7 @@ const UserSetting = ({
                 loading={ loading.effects['userSetting/getUser'] }
                 dataSource={tableData}
                 allColumns={columns}
+                scrollX={true}
                 />
             <PaginationLayout
                 total={totalCount}

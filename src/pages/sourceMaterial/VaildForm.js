@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
-import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
+import { connect } from 'dva';
+import { Form, Input, Row, Col, Checkbox, Button, Radio, message, Select } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 const ValidForm = ({
     submitForm,
+    sourcematerial,
+    changeTextBookId,
     ...props
 }) => {
-    let { form } = props;
+    let { form, dispatch } = props;
     const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
     // 提交表单
     const handleSubmit = (e) => {
@@ -40,13 +44,39 @@ const ValidForm = ({
     const iconUploadSuccess = (url) => {
         setFieldsValue({'icon': url})
     }
-    // 上传音频回调
+    // 上传音频回调  sourcematerial.bookList
     const audioUploadSuccess = (url) => {
         setFieldsValue({'audio': url})
     }
+
     return (
         <div>
             <Form onSubmit={handleSubmit}>
+                <FormItem
+                    label="教材"
+                    hasFeedback
+                    {...formItemLayout}
+                    >
+                    {getFieldDecorator('textbookId', {
+                        initialValue: sourcematerial.textbookId,
+                        rules: [{ required: true, message: '请选择教材!' }],
+                    })(
+                        <Select
+                            showSearch
+                            placeholder="请选择教材"
+                            onChange={v => changeTextBookId({ textbookId: v })}
+                            onFocus={() => dispatch({type: 'sourcematerial/getBook'})}
+                            > 
+
+                            {
+                                sourcematerial.bookList.map(item =>
+                                    <Option key={item.id} value={item.id}>{item.name}</Option>
+                                )
+                            }
+                        </Select>
+                    )}
+                </FormItem>
+
                 <FormItem
                     {...formItemLayout}
                     label="素材内容"
@@ -88,6 +118,7 @@ const ValidForm = ({
 
 ValidForm.propTypes = {
     submitForm: PropTypes.func, // 表单提交
+    changeTextBookId: PropTypes.func
 };
 
-export default (Form.create()(ValidForm));
+export default connect(({ sourcematerial }) => ({ sourcematerial }))(Form.create()(ValidForm));

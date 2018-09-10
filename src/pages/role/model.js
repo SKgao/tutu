@@ -74,7 +74,12 @@ export default {
 		},
 
 		*setauthRole({ payload }, { call, put }) {
-			const res = yield call(api.setauthRole, payload);
+			const pay = {
+				menuIds: payload.menuIds.map(e => e - 0),
+				roleId: payload.roleId - 0
+			}
+			console.log(payload, pay)
+			const res = yield call(api.setauthRole, pay);
 			if (res) {
 				yield put({ type: 'app/fetch' });
 				message.success(res.data.message);

@@ -11,10 +11,11 @@ import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, notification, Modal, Select, Icon, Upload, Tabs, Card, Col, Row, message, Popconfirm, Table } from 'antd';
+import { Form, DatePicker, Input, Button, Radio, Modal, Select, Icon, Upload, Tabs, message, Popconfirm, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
 
 const Subject = ({
@@ -175,26 +176,28 @@ const Subject = ({
 
     // 添加题目
     const handleSubmitSubject = () => {
-        let { textbookId, file } = subject
+        let { textbookId, file, addType } = subject
         let formData = new FormData()
         if (file[0]) {
             formData.append('textbookId', textbookId)
+            formData.append('type', addType - 0)
             formData.append('file', file[0])
-            axios.post('subject/subject/import', formData)
-                .then((res) => {
-                    if (res.data.code === 0) {
-                        dispatch({
-                            type: 'subject/setParam',
-                            payload: {
-                                file: [],
-                                modalShow: false,
-                                activeKey: '1'
-                            }
-                        })
-                    } else {
-                        message.error(res.data.message)
-                    }
-                })
+            console.log(textbookId, file, addType - 0)
+            // axios.post('subject/subject/import', formData)
+            //     .then((res) => {
+            //         if (res.data.code === 0) {
+            //             dispatch({
+            //                 type: 'subject/setParam',
+            //                 payload: {
+            //                     file: [],
+            //                     modalShow: false,
+            //                     activeKey: '1'
+            //                 }
+            //             })
+            //         } else {
+            //             message.error(res.data.message)
+            //         }
+            //     })
         } else {
            message.warning('请选择文件')
         }
@@ -327,7 +330,17 @@ const Subject = ({
 				activeKey: key
 			}
     	})
-	}
+    }
+    
+    // 导入题目操作类型
+    const changeAddtype = (e) => {
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+    			addType: e.target.value
+    		}
+    	})
+    }
 
 	return (
 		<div>
@@ -400,7 +413,7 @@ const Subject = ({
                     </FormInlineLayout>
 
                     <Modal
-                        title="导入题目"
+                        title="导入题目、大纲检测"
                         visible={modalShow}
                         onOk={ () => changeModalState('modalShow', false) }
                         onCancel= { () => changeModalState('modalShow', false) }
@@ -446,6 +459,21 @@ const Subject = ({
                                             <Icon type="upload"/>上传题目
                                         </Button>
                                     </Upload>
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                {...formItemLayout}
+                                label="操作类型"
+                                >
+                                {getFieldDecorator('type', {
+                                    initialValue: subject.addType,
+                                    rules: [{ requied: true, message: '请选择操作类型!' }],
+                                })(
+                                    <RadioGroup onChange={changeAddtype}>
+                                        <Radio key={'2'} value={'2'}>题目导入</Radio>
+                                        <Radio key={'1'} value={'1'}>大纲检测</Radio>
+                                    </RadioGroup>
                                 )}
                             </FormItem>
 

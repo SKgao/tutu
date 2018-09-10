@@ -12,26 +12,6 @@ class MyUpload extends Component {
         super(props);    
     }
 
-    // handleUpload = (file) => {
-    //     let formData = new FormData();
-    //     let { uploadSuccess } = this.props
-    //     if (file.event && file.event.type === 'progress') {
-    //         formData.append('file', file.fileList[0].originFileObj)
-    //         axios.post('file/upload', formData)
-    //             .then((res) => {
-    //                 if (res.data.code === 0) {
-    //                     message.success('上传成功！')
-    //                     uploadSuccess && uploadSuccess(res.data.data)
-    //                 } else {
-    //                     message.error(res.data.message)
-    //                 }
-    //             })
-    //             .catch((err) => {
-
-    //             });
-    //     }
-    // }
-
     beforeUpload = (file, fileList) => {
         return new Promise((resolve, reject) => {
             this.customRequest(file)
@@ -66,9 +46,7 @@ class MyUpload extends Component {
         const { uploadTxt, directory } = this.props;
         return (
             <Upload 
-                beforeUpload={this.beforeUpload}  
-                //onChange={this.handleUpload}
-                //customRequest={this.customRequest}
+                beforeUpload={this.beforeUpload}
                 directory={directory}>
                 <Button>
                     <Icon type="upload"/>

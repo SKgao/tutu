@@ -1,6 +1,7 @@
 import api from './service';
 import { message } from 'antd';
 import { filterObj } from '@/utils/tools';
+import api_teachingManage from '@/pages/teachingManage/book/service';
 export default {
 	namespace: "sourcematerial",
 
@@ -9,10 +10,12 @@ export default {
     endTime: '',
     text: '',  // 素材内容
     materialList: [], // 素材数据
+    bookList: [], // 教材列表
 		modalShow: false,
     modal2Show:false,
     modal3Show: false,
     modal4Show: false,
+    textbookId: '',  // 教材id
     id: '',  // 修改素材id
 		icon: '',//素材图标
     audio:'',//素材音频
@@ -169,6 +172,22 @@ export default {
         });
       }
     },
+
+    *getBook({ payload }, { call, put, select }) {
+			const res = yield call(api_teachingManage.getBook, {
+          pageNum: 1,
+          pageSize: 100
+      });
+      
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						bookList: (res.data.data) ? res.data.data.data : []
+					}
+				})
+			}
+		},
 
     *setParam({ payload }, { put }) {
 			for (let key in payload) {
