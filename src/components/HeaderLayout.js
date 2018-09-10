@@ -1,9 +1,11 @@
 import BreadcrumbLayout from './BreadcrumbLayout';
-
-
-import { Layout, Menu, Icon, Tooltip, Avatar } from 'antd';
+import FormInlineLayout from '@/components/FormInlineLayout';
+import { formItemLayout } from '@/configs/layout';
+import { axios } from '@/configs/request';
+import { Layout, Menu, Icon, Tooltip, Avatar, Modal, Button, Form, Input, message } from 'antd';
 const { SubMenu } = Menu;
 const { Header } = Layout;
+const FormItem = Form.Item;
 
 const HeaderLayout = ({
 	collapsed,
@@ -11,9 +13,39 @@ const HeaderLayout = ({
 	handleCollapse,
 	handleUser,
 	breadCrumd,
-	pathname
+	changeModalState,
+	modalShow,
+	pathname,
+	...props
 }) => {
+	let { dispatch, form } = props;
+	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 	
+	// 修改密码
+	const handlePassword = (e) => {
+		e.preventDefault();
+		validateFieldsAndScroll((err, values) => {
+			if (!err) {
+				if (values.password2 !== values.password) {
+                    message.warning('两次密码输入不一样！')
+                } else {    
+					axios.post('user/update', {
+					   id: localStorage.getItem('id'),
+					   password: values.password
+					}).then((res) => {
+						if (res.data.code === 0) {
+                            message.success(res.data.message)
+						} else {
+							message.error(res.data.message)
+						}
+					})
+                    resetFields()
+					changeModalState('modalShow', false)
+                }
+			}
+		});
+	}
+
 	return (
 		<Header className="header">
 			<div className="header-left">
@@ -53,16 +85,61 @@ const HeaderLayout = ({
 				<Menu 
 					mode="horizontal"
 					className="header-menu header-btns"
-					onSelect={handleUser}>
+					onClick={handleUser}>
 					<SubMenu title={<span><em>{ localStorage.getItem('account') || 'admin' }</em></span>}>
-						<Menu.Item key="setting">修改配置</Menu.Item>
+						<Menu.Item key="setting">修改密码</Menu.Item>
 						<Menu.Item key="logout">退出</Menu.Item>
 					</SubMenu>
 				</Menu>
+
+				<Modal
+					title="修改密码"
+					visible={modalShow}
+					onOk={ () => changeModalState('modalShow', false) }
+					onCancel= { () => changeModalState('modalShow', false) }
+					okText="确认"
+					cancelText="取消"
+					footer={null}
+					>
+					<Form>
+						{/*App类型*/}
+						<FormItem
+							label="密码"
+							{...formItemLayout}
+							>
+							{getFieldDecorator('password', {
+								rules: [{ required: true, message: '请重新输入密码!' }],
+							})(
+								<Input type="password" placeholder="请输入密码"/>
+							)}
+						</FormItem>
+
+						<FormItem
+							label="确认密码"
+							{...formItemLayout}
+							>
+							{getFieldDecorator('password2', {
+								rules: [{ required: true, message: '请确认密码!', whitespace: false }],
+							})(
+								<Input type="password" placeholder="请再次输入密码！"/>
+							)}
+						</FormItem>
+
+						<FormItem
+							{...formItemLayout}>
+							<Button type="primary" onClick={handlePassword} style={{ marginLeft: 75 }}>提交</Button>
+							<Button onClick={ ()=> {
+								resetFields()
+								changeModalState('modalShow', false)
+							}} style={{ marginLeft: 15 }}>取消</Button>
+						</FormItem>
+					</Form>
+				</Modal>
 			</div>
 
 		</Header>
 	);
 };
 
-export default HeaderLayout;
+export default (Form.create()(HeaderLayout));
+

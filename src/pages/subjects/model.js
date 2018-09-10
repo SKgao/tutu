@@ -25,6 +25,7 @@ export default {
 		audioArray: [],      // 音频文件
 		imageArray: [],      // 图片文件
 		file: [],            // 题目文件
+		addType: '2',          // 导入题目类型（默认导入）
 		activeKey: '0',      // tabs选项
         pageSize: 10,
         pageNum: 1,

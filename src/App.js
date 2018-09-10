@@ -26,7 +26,7 @@ const App = ({
 }) => {
 	const { pathname } = location;
 	const { singleView, hideLeftView } = layoutConfig;
-	let { collapsed, datalist, siderList, breadCrumd, historyList, firstMenuText, firPath, secPath } = app;
+	let { collapsed, datalist, siderList, breadCrumd, historyList, firstMenuText, firPath, secPath, modalShow } = app;
 
 
 	// 用户未登录跳转到登录页面
@@ -53,12 +53,12 @@ const App = ({
 
 	// 退出登录
 	const handleUser = ({key, selectedKeys}) => {
-
 		switch(key) {
 			case 'logout':
 				dispatch({ type: 'app/loginout' })
 				break;
 			case 'setting':
+			    changeModalState('modalShow', true)
 				break;
 		}
 	}
@@ -125,6 +125,16 @@ const App = ({
 			dispatch(routerRedux.push(key))
 		}
 	}
+	
+	// 展示modal
+    const changeModalState = (modal, show) => {
+        dispatch({
+        	type: 'app/setParam',
+        	payload: {
+                [modal]: show
+            }
+        })
+    }
 
 	// 筛选项目(改变一级分类)
 	const menuSelect = (key) => {
@@ -158,6 +168,8 @@ const App = ({
 					handleCollapse={handleCollapse}
 					handleUser={handleUser}
 					breadCrumd={breadCrumd}
+					changeModalState={changeModalState}
+					modalShow={modalShow}			
 					pathname={pathname} />
 				<HistoryNavsLayout
 				    historyList={historyList}

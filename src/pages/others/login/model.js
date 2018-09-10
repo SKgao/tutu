@@ -14,7 +14,7 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(({ pathname }) => {
-				if (pathname === '/' || pathname === '/roleSetting') {
+				if (pathname === '/') {
 					dispatch({ type: 'app/fetch' })
 				} else if (pathname === '/login') {
                     dispatch({ type: 'clearStorage' })
@@ -33,22 +33,14 @@ export default {
 				localStorage.setItem('token', res.data.data.token);
 				localStorage.setItem('account', res.data.data.account);
 				localStorage.setItem('avatar', res.data.data.avatar);
+				localStorage.setItem('id', res.data.data.id);
 				localStorage.setItem('HAS_LOGIN', true);
-				localStorage.setItem('firPath', '117');
-				localStorage.setItem('secPath', '/userSetting');
+				yield put(routerRedux.push('/'));
 				// yield put({type: 'save', payload});
 				axios.defaults.headers = { 
 					'Content-Type': 'application/json',
 					'token': res.data.data.token
 				}
-				yield put({
-					type: 'app/setPath',
-					payload: {
-						firPath: ['117'],
-						secPath: ['/userSetting']
-					}
-				})
-				yield put(routerRedux.push('/'));
 			}
 		},
 		
@@ -59,6 +51,7 @@ export default {
 			localStorage.removeItem('avatar');
 			localStorage.removeItem('firPath');
 			localStorage.removeItem('secPath');
+			localStorage.removeItem('id');
 			localStorage.removeItem('HAS_LOGIN', false);
 			axios.defaults.headers = { 
 				'Content-Type': 'application/json',
