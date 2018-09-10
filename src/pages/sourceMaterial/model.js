@@ -15,6 +15,7 @@ export default {
     modal2Show:false,
     modal3Show: false,
     modal4Show: false,
+    content: '',     // 素材内容
     textbookId: '',  // 教材id
     id: '',  // 修改素材id
 		icon: '',//素材图标
@@ -97,6 +98,14 @@ export default {
       const res = yield call(api.addSource, payload);
       if (res) {
         message.success(res.data.message);
+        yield put({
+					type: 'setParam',
+					payload: {
+            content: '',
+						audioUrl: '',
+            iconUrl: ''
+					}
+				})
         yield put({
           type: 'getSource',
           payload: { pageNum, pageSize, startTime, endTime, openLike }

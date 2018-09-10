@@ -20,7 +20,7 @@ class MyUpload extends Component {
 
     customRequest = (file) => {
         if (file) {
-            let uploadSuccess = this.props.uploadSuccess
+            let { uploadSuccess, getFileInfo } = this.props
             let formData = new FormData()
             formData.append('file', file)
             message.loading('文件上传中...', 0)
@@ -30,6 +30,7 @@ class MyUpload extends Component {
                     if (res.data.code === 0) {
                         message.success('上传成功！')
                         uploadSuccess && uploadSuccess(res.data.data)
+                        getFileInfo && getFileInfo(file)
                     } else {
                         message.error(res.data.message)
                     }
@@ -62,6 +63,7 @@ class MyUpload extends Component {
 MyUpload.propTypes = {
     directory: PropTypes.bool,     // 支持上传文件夹
     uploadSuccess: PropTypes.func, // 上传成功回调
+    getFileInfo: PropTypes.func,   // 获取文件信息
     uploadTxt: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.bool

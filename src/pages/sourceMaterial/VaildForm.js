@@ -25,6 +25,7 @@ const ValidForm = ({
         // })
         validateFieldsAndScroll((err, values) => {
             if (!err) {
+                values.text = sourcematerial.content;
                 submitForm && submitForm(values);
                 resetFields();
             }
@@ -34,6 +35,14 @@ const ValidForm = ({
     // 重置表单
     const handleReset = (e) => {
         resetFields();
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                content: '',
+                iconUrl: '',
+                audioUrl: ''
+            }
+        })
         submitForm("false")
     }
     // 上传图片回调
@@ -42,11 +51,50 @@ const ValidForm = ({
     // }
     // 上传音频回调
     const iconUploadSuccess = (url) => {
-        setFieldsValue({'icon': url})
+        setFieldsValue({
+            'icon': url
+        })
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                iconUrl: url
+            }
+        })
     }
+    
+    // 获取文件信息
+    const getFileInfo = (file, tag) => {
+        if (tag === 'icon') {
+            dispatch({
+                type: 'sourcematerial/setParam',
+                payload: {
+                    content: file.name.trim().slice(0, -4)
+                }
+            })
+        } else if (tag === 'audio') {
+            let reg = /[a-zA-Z]|\s+/g;
+            if (sourcematerial.audioUrl) {
+                return;
+            } else {
+                dispatch({
+                    type: 'sourcematerial/setParam',
+                    payload: {
+                        content: file.name.trim().slice(0, -4).match(reg).join('').toLowerCase()
+                    }
+                })
+            }
+        }
+    }
+
     // 上传音频回调  sourcematerial.bookList
     const audioUploadSuccess = (url) => {
         setFieldsValue({'audio': url})
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                audioUrl: url
+            }
+        })
     }
 
     return (
@@ -82,9 +130,10 @@ const ValidForm = ({
                     label="素材内容"
                     >
                     {getFieldDecorator('text', {
+                        initialValue: sourcematerial.content,
                         rules: [{ required: true, message: '请输入素材内容!', whitespace: true }],
                     })(
-                        <Input placeholder="请输入素材内容"/>
+                        <Input placeholder="请输入素材内容" readOnly/>
                     )}
                 </FormItem>
 
@@ -93,7 +142,10 @@ const ValidForm = ({
                     label="素材图标地址"
                     >
                     {getFieldDecorator('icon')(
-                        <MyUpload uploadSuccess={iconUploadSuccess}></MyUpload>
+                        <MyUpload
+                           uploadSuccess={iconUploadSuccess}
+                           getFileInfo={ (file) => getFileInfo(file, 'icon') }>
+                        </MyUpload>
                     )}
                 </FormItem>
 
@@ -102,7 +154,10 @@ const ValidForm = ({
                     label="音频地址"
                     >
                     {getFieldDecorator('audio')(
-                        <MyUpload uploadSuccess={audioUploadSuccess}></MyUpload>
+                        <MyUpload 
+                            uploadSuccess={audioUploadSuccess}
+                            getFileInfo={ (file) => getFileInfo(file, 'audio') }>>
+                        </MyUpload>
                     )}
                 </FormItem>
 
