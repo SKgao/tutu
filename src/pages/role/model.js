@@ -9,7 +9,10 @@ export default {
 		tableData: [],
 		account: '',
 		modalShow: false,
+		modal2Show: false,
 		siderList: [],
+		rolename: '',  // 当前角色
+		roleid: '',    // 角色id
 		menuIds: [],   // 授权菜单
 		defaultCheckedKeys: [],  // 权限树默认选中
 	},
@@ -23,12 +26,23 @@ export default {
 
 	effects: {
 		*getSliderBar({ payload }, { call, put, select }) {
-			const res = yield call(api.menusRole);
+			const res = yield call(api.getMenus, {id: 1});
 			yield put({
 				type: 'save',
 				payload: {
-					siderList: (res.data) ? res.data.data : [],
-					defaultCheckedKeys: (res.data) ? res.data.data.map(e => e.id + '') : []
+					siderList: (res.data) ? res.data.data : []
+				}
+			});
+		},
+		
+		// 获取当前角色菜单
+		*getMenus({ payload }, { call, put, select }) {
+			const res = yield call(api.getMenus, payload);
+			yield put({
+				type: 'save',
+				payload: {
+					defaultCheckedKeys: (res.data) ? res.data.data.map(e => e.id + '') : [],
+					modal2Show: true
 				}
 			});
 		},
@@ -78,11 +92,17 @@ export default {
 				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0
 			}
-			console.log(payload, pay)
 			const res = yield call(api.setauthRole, pay);
 			if (res) {
 				yield put({ type: 'app/fetch' });
 				message.success(res.data.message);
+				yield put({ type: 'app/fetch' });
+				yield put({
+					type: 'save',
+					payload: {
+						modal2Show: false
+					}
+				});
 			}
 		},
 

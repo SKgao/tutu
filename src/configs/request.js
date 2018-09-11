@@ -3,10 +3,10 @@ import axios from 'axios';
 import qs from 'qs';
 import { message } from 'antd';
 
-const DEFAULT_TIMEOUT = 15000;
+const DEFAULT_TIMEOUT = 60000;
 
-//axios.defaults.baseURL = '//test.api.admin.tutukids.com/';
-axios.defaults.baseURL = '//api.admin.tutukids.com'
+axios.defaults.baseURL = '//test.api.admin.tutukids.com/';
+//axios.defaults.baseURL = '//api.admin.tutukids.com'
 //axios.defaults.withCredentials = true;
 axios.defaults.timeout = DEFAULT_TIMEOUT;
 
@@ -40,9 +40,9 @@ axios.interceptors.response.use(res => {
 // }
 
 // admin端
-//export const BASIC_URL = '//test.api.admin.tutukids.com/' 
+export const BASIC_URL = '//test.api.admin.tutukids.com/' 
 
-export const BASIC_URL = '//api.admin.tutukids.com'
+//export const BASIC_URL = '//api.admin.tutukids.com'
 
 /**
  * jsonp方法

@@ -49,6 +49,7 @@ const ValidForm = ({
     // const iconUploadSuccess = (url) => {
     //     console.log(this.props.form.getFieldsValue())
     // }
+    
     // 上传音频回调
     const iconUploadSuccess = (url) => {
         setFieldsValue({
@@ -73,7 +74,7 @@ const ValidForm = ({
             })
         } else if (tag === 'audio') {
             let reg = /[a-zA-Z]|\s+/g;
-            if (sourcematerial.audioUrl) {
+            if (sourcematerial.iconUrl) {
                 return;
             } else {
                 dispatch({
@@ -133,7 +134,7 @@ const ValidForm = ({
                         initialValue: sourcematerial.content,
                         rules: [{ required: true, message: '请输入素材内容!', whitespace: true }],
                     })(
-                        <Input placeholder="请输入素材内容" readOnly/>
+                        <Input placeholder="请上传素材图片、音频" readOnly/>
                     )}
                 </FormItem>
 
