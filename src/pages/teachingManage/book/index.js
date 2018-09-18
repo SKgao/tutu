@@ -26,7 +26,7 @@ const TeachingManage = ({
     let { dispatch, form } = props;
     let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId, pageNum, pageSize, totalCount } = teachingmanage;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue } = form;
-    
+
     // 表格配置
     const columnsOpt = {
         bookList, gradeList, versionList,
@@ -40,7 +40,7 @@ const TeachingManage = ({
                         title={'修改教材名'}
                         valueData={text || '无'}
                         defaultValue={text || '无'}
-                        onOk={v => 
+                        onOk={v =>
                             dispatch({
                                 type: 'teachingmanage/updateBook',
                                 payload: {
@@ -64,7 +64,7 @@ const TeachingManage = ({
                         optionKey={'id'}
                         optionItem={'gradeName'}
                         defaultValue={text || '无'}
-                        onOk={v => 
+                        onOk={v =>
                             dispatch({
                                 type: 'teachingmanage/updateBook',
                                 payload: {
@@ -85,7 +85,7 @@ const TeachingManage = ({
                         optionKey={'id'}
                         optionItem={'name'}
                         defaultValue={text || '无'}
-                        onOk={v => 
+                        onOk={v =>
                             dispatch({
                                 type: 'teachingmanage/updateBook',
                                 payload: {
@@ -135,7 +135,7 @@ const TeachingManage = ({
                         title={'修改年级名称'}
                         valueData={text || '无'}
                         defaultValue={text || '无'}
-                        onOk={v => 
+                        onOk={v =>
                             dispatch({
                                 type: 'teachingmanage/updateGrade',
                                 payload: {
@@ -157,7 +157,7 @@ const TeachingManage = ({
                         title={'修改年级顺序'}
                         valueData={text || '0'}
                         defaultValue={text || '0'}
-                        onOk={v => 
+                        onOk={v =>
                             dispatch({
                                 type: 'teachingmanage/updateGrade',
                                 payload: {
@@ -188,7 +188,7 @@ const TeachingManage = ({
                         title={'修改教材版本名称'}
                         valueData={text || '无'}
                         defaultValue={text || '无'}
-                        onOk={v => 
+                        onOk={v =>
                             dispatch({
                                 type: 'teachingmanage/updateVersion',
                                 payload: {
@@ -214,7 +214,7 @@ const TeachingManage = ({
             }
         ]
     }
-    
+
     // 修改素材
     const changeImages = (url, record) => {
         // dispatch({
@@ -237,7 +237,7 @@ const TeachingManage = ({
                 }
             })
     }
-    
+
 
     // 调转到单元页面
     const linktoUnit = (record) => {
@@ -246,7 +246,7 @@ const TeachingManage = ({
             search: `textBookId=${record.id}`
         }));
     }
-    
+
     /**
      * 删除年级
      * @param  {object} 列数据
@@ -336,7 +336,7 @@ const TeachingManage = ({
     		payload: v
     	})
     }
-    
+
     // 展示modal
     const changeModalState = (flag, show) => {
         dispatch({
@@ -364,6 +364,8 @@ const TeachingManage = ({
             dispatch({ type: 'teachingmanage/getGrade' })
         } else if (key === 'version') {
             dispatch({ type: 'teachingmanage/getVersion' })
+        } else if (key === 'book') {
+            dispatch({ type: 'teachingmanage/getBook'})
         }
     	dispatch({
     		type: 'teachingmanage/setParam',
@@ -372,7 +374,7 @@ const TeachingManage = ({
             }
     	})
     }
-    
+
     // 文件上传成功
     const uploadSuccess = (url) => {
         setFieldsValue({'icon': url})
@@ -387,7 +389,7 @@ const TeachingManage = ({
 			}
 		})
     }
-    
+
     // 操作分页
     const handleChange = (param) => {
         dispatch({
@@ -396,7 +398,7 @@ const TeachingManage = ({
         })
         dispatch({ type: 'teachingmanage/getBook' })
     }
-   
+
 	return (
 		<div>
             <Tabs
@@ -419,7 +421,7 @@ const TeachingManage = ({
                                 onChange={datepickerChange}
                                 />
                         </FormItem>
-                        
+
                         {/*年级*/}
                         <FormItem label="年级">
                             <Select
@@ -489,7 +491,7 @@ const TeachingManage = ({
                             >
                             {getFieldDecorator('icon', {
                                 rules: [{
-                                    message: '请上传书本素材!', 
+                                    message: '请上传书本素材!',
                                     whitespace: true
                                 }],
                             })(
@@ -511,7 +513,7 @@ const TeachingManage = ({
                                     onFocus={() => dispatch({type: 'teachingmanage/getGrade'})}
                                     >
                                     {
-                                        gradeList.map(item => 
+                                        gradeList.map(item =>
                                             <Option key={item.id} value={item.id}>{item.gradeName}</Option>
                                         )
                                     }
@@ -556,7 +558,7 @@ const TeachingManage = ({
                         <FormItem>
                             <Input placeholder="请输入年级名称" onChange={(e) => handleInput(e, 'gradeName')}/>
                         </FormItem>
-                     
+
                         <FormItem>
                             <Button type="primary" onClick={() => handleAdd('Grade')}>添加年级</Button>
                         </FormItem>
@@ -570,7 +572,7 @@ const TeachingManage = ({
                         <FormItem>
                             <Input placeholder="请输入教材版本" onChange={(e) => handleInput(e, 'bookVersionName')}/>
                         </FormItem>
-                     
+
                         <FormItem>
                             <Button type="primary" onClick={() => handleAdd('Version')}>添加教材版本</Button>
                         </FormItem>
@@ -578,13 +580,14 @@ const TeachingManage = ({
                 </FormInlineLayout>
             </TabPane>
             </Tabs>
-			
+
 
             <TableLayout
                 pagination={false}
                 loading={ loading.effects['teachingmanage/getBook'] || loading.effects['teachingmanage/getVersion'] }
                 dataSource={columnsOpt[activeKey + 'List']}
                 allColumns={columnsOpt[activeKey + 'Columns']}
+                scrollX={true}
                 />
             {
                 // activeKey === 'book' &&
@@ -610,4 +613,3 @@ TeachingManage.propTypes = {
 };
 
 export default connect(({ teachingmanage, loading }) => ({ teachingmanage, loading }))(Form.create()(TeachingManage));
-	

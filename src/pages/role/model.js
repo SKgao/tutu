@@ -34,7 +34,7 @@ export default {
 				}
 			});
 		},
-		
+
 		// 获取当前角色菜单
 		*getMenus({ payload }, { call, put, select }) {
 			const res = yield call(api.getMenus, payload);
@@ -58,13 +58,13 @@ export default {
 				})
 			}
 		},
-		
+
 		*addRole({ payload }, { call, put }) {
 			const res = yield call(api.addRole, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getRole' });
-				yield put({ 
+				yield put({
 					type: 'setParam',
 					payload: {
 						modalShow: false
@@ -128,4 +128,3 @@ export default {
 		}
 	},
 };
-	

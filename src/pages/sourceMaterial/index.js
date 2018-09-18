@@ -611,6 +611,7 @@ const sourceMaterial = ({
                 dataSource={materialList}
                 allColumns={columns}
                 loading={ loading.effects['sourcematerial/getSource'] }
+                scrollX={true}
                 />
             <PaginationLayout
                 total={sourcematerial.totalCount}

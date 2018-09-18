@@ -9,9 +9,8 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
 const ValidForm = ({
-    submitForm,
     sourcematerial,
-    changeTextBookId,
+    changeModalState,
     ...props
 }) => {
     let { form, dispatch } = props;
@@ -22,10 +21,11 @@ const ValidForm = ({
         validateFieldsAndScroll((err, values) => {
             if (!err) {
                 values.text = sourcematerial.content;
-                submitForm && dispatch({
+                dispatch({
                     type: 'sourcematerial/addSource',
                     payload: filterObj(values)
                 });
+                changeModalState && changeModalState();
                 resetFields();
             }
         });
@@ -39,10 +39,11 @@ const ValidForm = ({
             payload: {
                 content: '',
                 iconUrl: '',
-                audioUrl: ''
+                audioUrl: '',
+                modalShow: false
             }
         })
-        submitForm("false")
+        changeModalState && changeModalState();
     }
 
     // 上传音频回调
@@ -109,7 +110,6 @@ const ValidForm = ({
                         <Select
                             showSearch
                             placeholder="请选择教材"
-                            onChange={v => changeTextBookId({ textbookId: v })}
                             onFocus={() => dispatch({type: 'sourcematerial/getBook'})}
                             >
 
@@ -150,7 +150,9 @@ const ValidForm = ({
                     {...formItemLayout}
                     label="音频地址"
                     >
-                    {getFieldDecorator('audio')(
+                    {getFieldDecorator('audio', {
+                        rules: [{ required: true, message: '请上传音频!' }],
+                    })(
                         <MyUpload
                             uploadSuccess={audioUploadSuccess}
                             getFileInfo={ (file) => getFileInfo(file, 'audio') }>>
@@ -170,7 +172,8 @@ const ValidForm = ({
 
 ValidForm.propTypes = {
     submitForm: PropTypes.func, // 表单提交
-    changeTextBookId: PropTypes.func
+    changeTextBookId: PropTypes.func,
+    changeModalState: PropTypes.func
 };
 
 export default connect(({ sourcematerial }) => ({ sourcematerial }))(Form.create()(ValidForm));

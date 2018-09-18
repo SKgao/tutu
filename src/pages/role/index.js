@@ -49,7 +49,7 @@ const RoleSetting = ({
 			return <TreeNode title={item.name} key={item.id + ''}/>
 		}
     }
-    
+
     // 点击权限数
     const checkTree = (checkedKeys, e) => {
         dispatch({
@@ -77,7 +77,7 @@ const RoleSetting = ({
             }
         })
     }
-    
+
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -132,7 +132,7 @@ const RoleSetting = ({
         	payload: getFieldValue('rolename')
         })
     }
-    
+
     // 展示modal
     const changeModalState = (modal, show) => {
         dispatch({
@@ -142,7 +142,7 @@ const RoleSetting = ({
             }
         })
     }
-   
+
 
 	return (
 		<div>
@@ -192,7 +192,7 @@ const RoleSetting = ({
                 title={ roleSetting.rolename ? `给${roleSetting.rolename}授权` : '给当前角色授权' }
                 visible={modal2Show}
                 onOk={() => {
-                    changeModalState('modal2Show', false) 
+                    changeModalState('modal2Show', false)
                     rolesetAuthority()
                 }}
                 onCancel= { () => changeModalState('modal2Show', false) }
@@ -210,7 +210,7 @@ const RoleSetting = ({
                             siderList.map(item => renderTree(item))
                         }
                     </Tree>
-                </div>           
+                </div>
             </Modal>
 
             <TableLayout
@@ -226,4 +226,3 @@ RoleSetting.propTypes = {
 };
 
 export default connect(({ roleSetting }) => ({ roleSetting }))(Form.create()(RoleSetting));
-	

@@ -48,7 +48,7 @@ export default {
 
 	effects: {
 		*getMember({ payload }, { call, put, select }) {
-			const _state = yield select(state => state.member);
+			const _state = yield select(state => state.memberInfo);
 			const res = yield call(api.getMember, filterObj({
 				userLevel: _state.userLevel,
 				startTime: _state.startTime,

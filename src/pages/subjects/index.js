@@ -545,7 +545,7 @@ const Subject = ({
                         footer={null}
                         maskClosable={false}
                         >
-                            <VaildForm></VaildForm>
+                            <VaildForm changeModalState={ () => changeModalState('modal3Show', false) }></VaildForm>
                     </Modal>
 
                     <div>
@@ -556,6 +556,7 @@ const Subject = ({
                             expandedRowRender={detpage ? expandedRowRender : null}
                             expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }
+                            scrollX={true}
                             />
                         {
                             detpage ? null :

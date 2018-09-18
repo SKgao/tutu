@@ -138,8 +138,8 @@ const MemberInfo = ({
 
             <TableLayout
                 pagination={false}
-                dataSource={columns}
-                allColumns={memberList}
+                dataSource={memberList}
+                allColumns={columns}
                 loading={ loading.effects['memberInfo/getMember'] }
                 scrollX={true}
                 />
