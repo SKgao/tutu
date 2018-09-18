@@ -13,17 +13,20 @@ class MultipleUpload extends Component {
         this.state = {
             modalShow: false,
             doneFiles: [], // 已上传文件
-            fileList: []    // 上次文件列表
-        } 
+            urlList: [],   // 服务端返回url
+            fileList: []   // 上次文件列表
+        }
     }
 
     beforeUpload = (file, fileList) => {
-        this.setState({ 
+        this.setState({
             modalShow: true,
             doneFiles: [],
+            urlList: [],
             fileList
         }, () => {
             return new Promise((resolve, reject) => {
+                message.loading('文件上传中...', 0)
                 this.customRequest(file, fileList)
             })
         })
@@ -31,38 +34,38 @@ class MultipleUpload extends Component {
 
     customRequest = (file, fileList) => {
         const lastFile = fileList[fileList.length - 1].name
+        let { doneFiles, urlList } = this.state
         this.setState({ doneFiles: [...this.state.doneFiles, file.name] })
-        if (file) {      
-            if (file.name === lastFile) {
-                message.success('上传结束')
-            }
-            // let uploadSuccess = this.props.uploadSuccess
-            // let formData = new FormData()
-            // formData.append('file', file)
-            // message.loading('文件上传中...', 0)
-            // axios.post('file/upload', formData)
-            //     .then((res) => {
-            //         message.destroy()
-            //         if (res.data.code === 0) {
-            //             message.success('上传成功！')
-            //             uploadSuccess && uploadSuccess(res.data.data)
-            //         } else {
-            //             message.error(res.data.message)
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         message.destroy()
-            //     });
+        if (file) {
+            let uploadSuccess = this.props.uploadSuccess
+            let formData = new FormData()
+            formData.append('file', file)
+            axios.post('file/upload', formData)
+                .then((res) => {
+                    if (res.data.code === 0) {
+                        this.setState({
+                            urlList: [...urlList, res.data.data]
+                        });
+                    } else {
+                        message.error(res.data.message)
+                    }
+                    if (file.name === lastFile) {
+                        this.setState({
+                            modalShow: false
+                        });
+                        message.destroy()
+                        message.success('上传完毕！')
+                        uploadSuccess && uploadSuccess(res.data.data)
+                    }
+                })
+                .catch((err) => {
+                    message.destroy()
+                });
         } else {
-            message.error('请选择文件')
+            message.error('文件不存在！')
         }
     }
 
-    shouldComponentUpdate(nextProps,nextState) {
-        console.log(nextState)
-        return true;
-    }
-    
     // 上传文件进度条
     changeModalState = (modal, show) => {
         this.setState({
@@ -76,7 +79,7 @@ class MultipleUpload extends Component {
         const antIcon = <Icon type="loading" style={{ fontSize: 18 }} spin />;
         return (
             <div>
-                <Upload 
+                <Upload
                     beforeUpload={this.beforeUpload}
                     multiple={true}
                     directory={true}>
@@ -86,8 +89,8 @@ class MultipleUpload extends Component {
                         uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '批量上传'
                         }
                     </Button>
-                </Upload> 
-               
+                </Upload>
+
                 <Modal
                     title="文件上传进度"
                     visible={this.state.modalShow}
@@ -100,7 +103,7 @@ class MultipleUpload extends Component {
 
                     <p>{ doneFiles }</p>
 
-                    { 
+                    {
                         doneFiles.map(e => {
                             e && <p>{ e.name + '上传成功！' }</p>
                         })

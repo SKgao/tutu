@@ -45,7 +45,7 @@ const sourceMaterial = ({
 					title={'修改素材内容'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'sourcematerial/editSource',
 							payload: {
@@ -76,7 +76,7 @@ const sourceMaterial = ({
 					title={'修改音标'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'sourcematerial/editSource',
 							payload: {
@@ -93,7 +93,7 @@ const sourceMaterial = ({
 					title={'修改单次释义(在[]中输入)'}
 					valueData={text || '[]'}
 					defaultValue={text || '[]'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'sourcematerial/editSource',
 							payload: {
@@ -140,7 +140,7 @@ const sourceMaterial = ({
             }
         }
     ]
-    
+
     // 修改多次释义
     const handleUpdateArr = (record) => {
         dispatch({
@@ -289,7 +289,7 @@ const sourceMaterial = ({
     		payload: param
         })
     }
-    
+
     // 操作分页
     const handleChange = (param) => {
         dispatch({
@@ -339,7 +339,7 @@ const sourceMaterial = ({
     const handleSubmitSource = () => {
         dispatch({
             type: 'sourcematerial/addSubjectSource',
-            payload: { 
+            payload: {
                 textbookId: sourcematerial.textbookId,
                 audioArray: audioArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.mp3'),
                 imageArray: imageArray.filter(e => e.slice(0, 1) !== '.' && e.slice(-4) === '.png'),
@@ -374,7 +374,7 @@ const sourceMaterial = ({
 			}
     	})
     }
-    
+
     // table选中
     const tableRowSelectd = (selectedRowKeys, selectedRows) => {
         let sourceIds = selectedRows.map(e => e.id)
@@ -386,7 +386,7 @@ const sourceMaterial = ({
 			}
     	})
     }
-     
+
     // 批量删除素材
     const handleBatchDelete = () => {
         dispatch({
@@ -394,7 +394,7 @@ const sourceMaterial = ({
     		payload: sourcematerial.sourceIds
     	})
     }
-    
+
     // 是否开启模糊搜索
     const handleOpenlike = (e) => {
         let isopen = e.target.checked
@@ -480,7 +480,7 @@ const sourceMaterial = ({
                             () => {
                                 handleSubmit('modal4Show', false)
                                 handleExplainsArray()
-                            }                
+                            }
                         } style={{ marginLeft: 5 }}>提交</Button>
                     </FormItem>
                 </Form>
@@ -493,15 +493,9 @@ const sourceMaterial = ({
                 okText="确认"
                 cancelText="取消"
                 footer={null}
-                sourcematerial={sourcematerial}
                 maskClosable={false}
                 >
-                    {/*// <Form>
-                    //     <VaildForm submitForm={submitForm}>
-                    //     </VaildForm>
-                    // </Form>*/}
-                    <VaildForm submitForm={submitForm} changeTextBookId={changeTextBookId}>
-                    </VaildForm>
+                    <VaildForm></VaildForm>
                 </Modal>
                 <Modal
                     title="修改素材"

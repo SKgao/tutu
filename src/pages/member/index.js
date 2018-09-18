@@ -40,9 +40,11 @@ const Member = ({
             title: '会员等级',
             dataIndex: 'userLevelName'
         }, {
+            title: '会员开始时间',
+            dataIndex: 'payTime',
+        }, {
             title: '会员到期时间',
             dataIndex: 'exprieTime',
-            sorter: true
         }, {
             title: '累计消费金额',
             dataIndex: 'userMoney',
@@ -56,7 +58,6 @@ const Member = ({
         }, {
             title: 'E-mail',
             dataIndex: 'email',
-            sorter: true
         }, {
             title: '会员生日',
             dataIndex: 'birthday',
@@ -222,7 +223,7 @@ const Member = ({
             dispatch({ type: 'member/getFeedList' })
         }
 	}
-   
+
 	return (
 		<div>
             <Tabs
@@ -245,7 +246,7 @@ const Member = ({
                                 onChange={datepickerChange}
                                 />
                         </FormItem> */}
-                    
+
                         {/*图图号*/}
                         <FormItem label="图图号">
                             <Input placeholder="输入图图号" value={member.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
@@ -367,4 +368,3 @@ Member.propTypes = {
 };
 
 export default connect(({ member, loading }) => ({ member, loading }))(Form.create()(Member));
-	

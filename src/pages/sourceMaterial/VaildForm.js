@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { Form, Input, Row, Col, Checkbox, Button, Radio, message, Select } from 'antd';
 import { formItemLayout } from '@/configs/layout';
+import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -18,15 +19,13 @@ const ValidForm = ({
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
-        // submitForm({
-        //   audio: 1,
-        //   icon: 2,
-        //   text: 3
-        // })
         validateFieldsAndScroll((err, values) => {
             if (!err) {
                 values.text = sourcematerial.content;
-                submitForm && submitForm(values);
+                submitForm && dispatch({
+                    type: 'sourcematerial/addSource',
+                    payload: filterObj(values)
+                });
                 resetFields();
             }
         });
@@ -45,11 +44,7 @@ const ValidForm = ({
         })
         submitForm("false")
     }
-    // 上传图片回调
-    // const iconUploadSuccess = (url) => {
-    //     console.log(this.props.form.getFieldsValue())
-    // }
-    
+
     // 上传音频回调
     const iconUploadSuccess = (url) => {
         setFieldsValue({
@@ -62,25 +57,26 @@ const ValidForm = ({
             }
         })
     }
-    
+
     // 获取文件信息
     const getFileInfo = (file, tag) => {
+        const FILENAME = file.name.trim().slice(0, -4)
         if (tag === 'icon') {
             dispatch({
                 type: 'sourcematerial/setParam',
                 payload: {
-                    content: file.name.trim().slice(0, -4)
+                    content: FILENAME
                 }
             })
         } else if (tag === 'audio') {
-            let reg = /[a-zA-Z]|\s+/g;
+            let reg = /[a-zA-Z]/g;
             if (sourcematerial.iconUrl) {
                 return;
             } else {
                 dispatch({
                     type: 'sourcematerial/setParam',
                     payload: {
-                        content: file.name.trim().slice(0, -4).match(reg).join('').toLowerCase()
+                        content: FILENAME.match(reg).join('').toLowerCase()
                     }
                 })
             }
@@ -115,7 +111,7 @@ const ValidForm = ({
                             placeholder="请选择教材"
                             onChange={v => changeTextBookId({ textbookId: v })}
                             onFocus={() => dispatch({type: 'sourcematerial/getBook'})}
-                            > 
+                            >
 
                             {
                                 sourcematerial.bookList.map(item =>
@@ -155,7 +151,7 @@ const ValidForm = ({
                     label="音频地址"
                     >
                     {getFieldDecorator('audio')(
-                        <MyUpload 
+                        <MyUpload
                             uploadSuccess={audioUploadSuccess}
                             getFileInfo={ (file) => getFileInfo(file, 'audio') }>>
                         </MyUpload>

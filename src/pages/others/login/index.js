@@ -31,7 +31,7 @@ const Login = ({
 	return (
 		<div className="form">
 		    <div className="logo">
-			    <img src="//img.chengxuyuantoutiao.com/group1/M00/00/00/rBDnNlt2pyeATwmRAACkk3_3iZY828.png"/>
+			    <img src="../../../assets/tutu_logo.png"/>
 				<span>图图英语</span>
 			</div>
 			<form>
@@ -73,4 +73,3 @@ Login.propTypes = {
 };
 
 export default connect(({ login, loading }) => ({ login, loading }))(Form.create()(Login));
-	
