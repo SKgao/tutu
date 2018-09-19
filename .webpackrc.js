@@ -32,5 +32,13 @@ export default {
     "browserslist": [
         "> 5%",
         "last 40 Chrome versions"
-    ]
+    ],
+    
+    "entry": "src/index.js",
+
+    "html": {
+        "template": "./src/index.ejs"
+    },
+    
+    "hash": true
 }

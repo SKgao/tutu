@@ -6,6 +6,7 @@ import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
+import VaildForm from '../sourceMaterial//VaildForm';
 import moment from 'moment';
 import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
@@ -24,9 +25,9 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { modalShow, modal2Show, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
     let { getFieldDecorator, setFieldsValue, resetFields } = form;
-    
+
     // 题目列表
     const subjectCol = [
         {
@@ -49,7 +50,7 @@ const Subject = ({
 					title={'修改关卡名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
@@ -67,7 +68,7 @@ const Subject = ({
 					title={'修改题目内容'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
@@ -95,7 +96,7 @@ const Subject = ({
             }
         }
     ]
-    
+
     // 关卡详情列表
     const descCol = [
         {
@@ -119,15 +120,15 @@ const Subject = ({
 
     const columns = (detpage) ? descCol : subjectCol
     const dataSource = (detpage) ? subject.descList : subject.subjectList
-    
+
     const expandedRowRender = () => {
         const sourceCol = [
-            { 
-                title: '题目', 
+            {
+                title: '题目',
                 dataIndex: 'text',
-                key: '_text' 
-            }, { 
-                title: '图标', 
+                key: '_text'
+            }, {
+                title: '图标',
                 dataIndex: 'icon',
                 key: '_icon',
                 render: (text) => {
@@ -136,8 +137,8 @@ const Subject = ({
                             <img src={ text } style={{ width: 30, height: 40 }}/>
                         </Popconfirm>
                 }
-            }, { 
-                title: '音频', 
+            }, {
+                title: '音频',
                 dataIndex: 'audio',
                 key: '_audio',
                 render: (audio) => {
@@ -182,22 +183,21 @@ const Subject = ({
             formData.append('textbookId', textbookId)
             formData.append('type', addType - 0)
             formData.append('file', file[0])
-            console.log(textbookId, file, addType - 0)
-            // axios.post('subject/subject/import', formData)
-            //     .then((res) => {
-            //         if (res.data.code === 0) {
-            //             dispatch({
-            //                 type: 'subject/setParam',
-            //                 payload: {
-            //                     file: [],
-            //                     modalShow: false,
-            //                     activeKey: '1'
-            //                 }
-            //             })
-            //         } else {
-            //             message.error(res.data.message)
-            //         }
-            //     })
+            axios.post('subject/subject/import', formData)
+                .then((res) => {
+                    if (res.data.code === 0) {
+                        dispatch({
+                            type: 'subject/setParam',
+                            payload: {
+                                file: [],
+                                modalShow: false,
+                                activeKey: '1'
+                            }
+                        })
+                    } else {
+                        message.error(res.data.message)
+                    }
+                })
         } else {
            message.warning('请选择文件')
         }
@@ -211,7 +211,7 @@ const Subject = ({
         	payload: { audioArray, imageArray }
         })
     }
-    
+
     // 展示modal
     const changeModalState = (_m, show) => {
         dispatch({
@@ -280,7 +280,7 @@ const Subject = ({
             })
         }
     }
-   
+
     const handleChange = (param) => {
         dispatch({
     		type: 'subject/setParam',
@@ -331,7 +331,7 @@ const Subject = ({
 			}
     	})
     }
-    
+
     // 导入题目操作类型
     const changeAddtype = (e) => {
         dispatch({
@@ -366,21 +366,21 @@ const Subject = ({
                             </FormItem>
 
                             {
-                                detpage  ? null : 
+                                detpage  ? null :
                                 <FormItem label="关卡名称">
                                     <Input placeholder="输入关卡名称名" onChange={(e) => handleInput(e, 'customsPassName')}/>
                                 </FormItem>
                             }
 
                             {
-                                detpage  ? null : 
+                                detpage  ? null :
                                 <FormItem label="题目">
                                     <Input placeholder="输入题目名" onChange={(e) => handleInput(e, 'sourceIds')}/>
                                 </FormItem>
                             }
 
                             {
-                                !detpage  ? null : 
+                                !detpage  ? null :
                                 <FormItem  label="题目顺序">
                                     <Input placeholder="输入题目顺序" onChange={(e) => handleInput(e, 'sort')}/>
                                 </FormItem>
@@ -389,21 +389,23 @@ const Subject = ({
                             <FormItem>
                                 <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                             </FormItem>
-                            
 
-                            {/* <FormItem>
-                                <Button type="primary" onClick={() => changeModalState('modal2Show', true)}>导入素材</Button>
-                            </FormItem> */}
-                            
                             {
-                                detpage  ? null : 
+                                detpage ? <FormItem>
+                                    <Button type="primary" onClick={() => changeModalState('modal3Show', true)}>添加素材</Button>
+                                </FormItem>
+                                : null
+                            }
+
+                            {
+                                detpage ? null :
                                 <FormItem>
                                     <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
                                 </FormItem>
                             }
-                            
+
                             {
-                                !detpage && !customsPassId ? null : 
+                                !detpage && !customsPassId ? null :
                                 <FormItem>
                                     <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                                 </FormItem>
@@ -533,6 +535,19 @@ const Subject = ({
                         </Form>
                     </Modal>
 
+                    <Modal
+                        title="新增素材"
+                        visible={modal3Show}
+                        onOk={ () => changeModalState('modal3Show', false) }
+                        onCancel= { () => changeModalState('modal3Show', false) }
+                        okText="确认"
+                        cancelText="取消"
+                        footer={null}
+                        maskClosable={false}
+                        >
+                            <VaildForm changeModalState={ () => changeModalState('modal3Show', false) }></VaildForm>
+                    </Modal>
+
                     <div>
                         <TableLayout
                             pagination={false}
@@ -541,6 +556,7 @@ const Subject = ({
                             expandedRowRender={detpage ? expandedRowRender : null}
                             expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }
+                            scrollX={true}
                             />
                         {
                             detpage ? null :
@@ -559,7 +575,7 @@ const Subject = ({
                         }
                     </div>
                 </TabPane>
-                
+
                 {
                     (detpage || activeKey === '0') ? null :
                     <TabPane tab="上传进度" key="1">
@@ -580,4 +596,3 @@ Subject.propTypes = {
 };
 
 export default connect(({ subject, loading }) => ({ subject, loading }))(Form.create()(Subject));
-	

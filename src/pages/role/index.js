@@ -13,7 +13,7 @@ const RoleSetting = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, account, siderList, menuIds, defaultCheckedKeys } = roleSetting;
+    let { tableData, modalShow, modal2Show, account, siderList, defaultCheckedKeys } = roleSetting;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -26,26 +26,7 @@ const RoleSetting = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
-                    <Popover placement="left"
-                        title={'授权菜单'} 
-                        content={
-                            <div>
-                                <Tree
-                                    checkable
-                                    defaultCheckedKeys={ menuIds.length ? menuIds.map(e => e + '') : defaultCheckedKeys }
-                                    onCheck={checkTree}
-                                >
-                                    {
-                                        siderList.map(item => renderTree(item))
-                                    }
-                                </Tree>
-
-                                <a onClick={() => rolesetAuthority(record)} style={{ margin: 5 }}>确认授权</a>
-                            </div>
-                        } 
-                        trigger="click">
-                        <Button type="primary" size="small">授权</Button>
-                    </Popover>
+                    <Button type="primary" size="small" onClick={() => getMenus(record)}>授权</Button>
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
@@ -68,25 +49,35 @@ const RoleSetting = ({
 			return <TreeNode title={item.name} key={item.id + ''}/>
 		}
     }
-    
+
     // 点击权限数
     const checkTree = (checkedKeys, e) => {
-        let menuIds = checkedKeys.map(e => e - 0);
         dispatch({
         	type: 'roleSetting/setParam',
         	payload: {
-                menuIds
+                defaultCheckedKeys: checkedKeys
             }
         })
     }
 
     // 获取左侧菜单数据
-    const getSiderData = () => {
+    const getMenus = (record) => {
         dispatch({
-            type: 'roleSetting/getSliderBar'
+        	type: 'roleSetting/setParam',
+        	payload: {
+                roleid: record.id,
+                rolename: record.name,
+                defaultCheckedKeys: []
+            }
+        })
+        dispatch({
+            type: 'roleSetting/getMenus',
+            payload: {
+                id: record.id
+            }
         })
     }
-    
+
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -102,13 +93,13 @@ const RoleSetting = ({
      * 给角色授权
      * @param  {object} 列数据
      */
-    const rolesetAuthority = (param) => {
-        if (menuIds.length > 0 || defaultCheckedKeys.length > 0) {
+    const rolesetAuthority = () => {
+        if (defaultCheckedKeys.length > 0) {
             dispatch({
             	type: 'roleSetting/setauthRole',
             	payload: {
-            		menuIds: (menuIds.length > 0) ? menuIds : defaultCheckedKeys,
-            		roleId: param.id
+            		menuIds: defaultCheckedKeys,
+            		roleId: roleSetting.roleid
             	}
             })
         } else {
@@ -141,17 +132,17 @@ const RoleSetting = ({
         	payload: getFieldValue('rolename')
         })
     }
-    
+
     // 展示modal
-    const changeModalState = (show) => {
+    const changeModalState = (modal, show) => {
         dispatch({
         	type: 'roleSetting/setParam',
         	payload: {
-                modalShow: show
+                [modal]: show
             }
         })
     }
-   
+
 
 	return (
 		<div>
@@ -167,7 +158,7 @@ const RoleSetting = ({
                     </FormItem>
 
                     <FormItem>
-                        <Button type="primary" onClick={() => changeModalState(true)}>添加角色</Button>
+                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加角色</Button>
                     </FormItem>
 
                 </Form>
@@ -176,8 +167,8 @@ const RoleSetting = ({
             <Modal
                 title="新增角色"
                 visible={modalShow}
-                onOk={ () => changeModalState(false) }
-                onCancel= { () => changeModalState(false) }
+                onOk={ () => changeModalState('modalShow', false) }
+                onCancel= { () => changeModalState('modalShow', false) }
                 okText="确认"
                 cancelText="取消"
                 footer={null}
@@ -197,14 +188,35 @@ const RoleSetting = ({
                 </Form>
             </Modal>
 
+            <Modal
+                title={ roleSetting.rolename ? `给${roleSetting.rolename}授权` : '给当前角色授权' }
+                visible={modal2Show}
+                onOk={() => {
+                    changeModalState('modal2Show', false)
+                    rolesetAuthority()
+                }}
+                onCancel= { () => changeModalState('modal2Show', false) }
+                okText="确认授权"
+                cancelText="取消"
+                >
+
+                <div>
+                    <Tree
+                        checkable
+                        checkedKeys={ roleSetting.defaultCheckedKeys }
+                        onCheck={checkTree}
+                    >
+                        {
+                            siderList.map(item => renderTree(item))
+                        }
+                    </Tree>
+                </div>
+            </Modal>
+
             <TableLayout
                 dataSource={tableData}
                 allColumns={columns}
-                />
-            <PaginationLayout
-                total={10}        
-                current={1}
-                pageSize={10} />
+            />
 		</div>
 	)
 };
@@ -214,4 +226,3 @@ RoleSetting.propTypes = {
 };
 
 export default connect(({ roleSetting }) => ({ roleSetting }))(Form.create()(RoleSetting));
-	

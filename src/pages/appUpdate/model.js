@@ -1,5 +1,6 @@
 import api from './service';
 import { message } from 'antd';
+import { filterObj } from '@/utils/tools';
 
 export default {
 	namespace: 'appver',
@@ -19,13 +20,28 @@ export default {
 	},
 
 	subscriptions: {
-		setup({ dispatch, history }) {	
-			dispatch({ type: 'getAppList' });
-			dispatch({
-				type: 'getVerList',
-				payload: {
-					pageNum: 1,
-					pageSize: 10
+		setup({ dispatch, history }) {
+			return history.listen(location => {
+				if (location.pathname === '/appverUpdate') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							pageSize: 10,
+							pageNum: 1,
+							totalCount: 0,
+							startTime: '',
+							endTime: '',
+							appTypeId: ''
+						}
+					});
+					dispatch({ type: 'getAppList' });
+					dispatch({
+						type: 'getVerList',
+						payload: {
+							pageNum: 1,
+							pageSize: 10
+						}
+					});
 				}
 			});
 		}
@@ -44,8 +60,10 @@ export default {
             }
 		},
 
-		*getVerList({ payload }, { put, call }) {
-			const res = yield call(api.getVersion, payload);
+		*getVerList({ payload }, { put, call, select }) {
+			const { startTime, endTime, appTypeId, pageNum, pageSize } = yield select(state => state.appver);
+			const _pay = payload || { startTime, endTime, appTypeId, pageNum, pageSize };
+			const res = yield call(api.getVersion, filterObj(_pay));
             if (res) {
             	yield put({
             		type: 'save',
@@ -60,23 +78,19 @@ export default {
 		*deleteType({ payload }, { call, put, select }) {
 			const { type, id } = payload;
 			const _API = (type === 'app') ? 'deleteApptype' : 'deleteVersion';
-			const _List = (type === 'app') ? 'appList' : 'verList';
-			const _Data = yield select(state => state.appver[_List]);
 			const res = yield call(api[_API], id);
             if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'save',
-					payload: {
-						[_List]: _Data.filter(e => e.id !== id)
-					}
-				});
+				if (type === 'app') {
+					yield put({ type: 'getAppList' });
+				} else {
+					yield put({ type: 'getVerList' });
+				}
 			}
 		},
 
 		*disableType({ payload }, { call, put, select }) {
 			const { type, id } = payload;
-			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.appver);
 			const _API = (type === 'app') ? 'disableApptype' : 'disableVersion';
 			const res = yield call(api[_API], id);
 			if (res) {
@@ -84,17 +98,13 @@ export default {
 				if (type === 'app') {
 					yield put({ type: 'getAppList' });
 				} else {
-					yield put({
-						type: 'getVerList',
-						payload: { startTime, endTime, pageNum, pageSize }
-					})
+					yield put({ type: 'getVerList' });
 				}
 			}
 		},
 
 		*enableType({ payload }, { call, put, select }) {
 			const { type, id } = payload;
-			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.appver);
 			const _API = (payload.type === 'app') ? 'enableApptype' : 'enableVersion';
 			const res = yield call(api[_API], id);
             if (res) {
@@ -102,10 +112,7 @@ export default {
 				if (type === 'app') {
 					yield put({ type: 'getAppList' });
 				} else {
-					yield put({
-						type: 'getVerList',
-						payload: { startTime, endTime, pageNum, pageSize }
-					})
+					yield put({ type: 'getVerList' });
 				}
 			}
 		},
@@ -120,14 +127,10 @@ export default {
 
 		*addVersion({ payload }, { call, put, select }) {
 			const res = yield call(api.addVersion, payload);
-			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.appver);
 			if (res) {
 				message.success(res.data.message);
-				yield put({ 
-					type: 'getAppList',
-					payload: { startTime, endTime, pageNum, pageSize }
-				})
-				yield put({ 
+				yield put({ type: 'getVerList' });
+				yield put({
 					type: 'setParam',
 					payload: {
 						modalShow: false
@@ -155,4 +158,3 @@ export default {
 		}
 	},
 };
-	

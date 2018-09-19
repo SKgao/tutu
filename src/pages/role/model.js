@@ -9,26 +9,50 @@ export default {
 		tableData: [],
 		account: '',
 		modalShow: false,
+		modal2Show: false,
 		siderList: [],
+		rolename: '',  // 当前角色
+		roleid: '',    // 角色id
 		menuIds: [],   // 授权菜单
 		defaultCheckedKeys: [],  // 权限树默认选中
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ type: 'getRole' })
-			dispatch({ type: 'getSliderBar' })
+			return history.listen(location => {
+				if (location.pathname === '/roleSetting') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							account: '',
+						}
+					});
+					dispatch({ type: 'getRole' })
+			        dispatch({ type: 'getSliderBar' })
+				}
+			});
 		}
 	},
 
 	effects: {
 		*getSliderBar({ payload }, { call, put, select }) {
-			const res = yield call(api.menusRole);
+			const res = yield call(api.getMenus, {id: 1});
 			yield put({
 				type: 'save',
 				payload: {
-					siderList: (res.data) ? res.data.data : [],
-					defaultCheckedKeys: (res.data) ? res.data.data.map(e => e.id + '') : []
+					siderList: (res.data) ? res.data.data : []
+				}
+			});
+		},
+
+		// 获取当前角色菜单
+		*getMenus({ payload }, { call, put, select }) {
+			const res = yield call(api.getMenus, payload);
+			yield put({
+				type: 'save',
+				payload: {
+					defaultCheckedKeys: (res.data) ? res.data.data.map(e => e.id + '') : [],
+					modal2Show: true
 				}
 			});
 		},
@@ -44,13 +68,13 @@ export default {
 				})
 			}
 		},
-		
+
 		*addRole({ payload }, { call, put }) {
 			const res = yield call(api.addRole, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getRole' });
-				yield put({ 
+				yield put({
 					type: 'setParam',
 					payload: {
 						modalShow: false
@@ -78,11 +102,17 @@ export default {
 				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0
 			}
-			console.log(payload, pay)
 			const res = yield call(api.setauthRole, pay);
 			if (res) {
 				yield put({ type: 'app/fetch' });
 				message.success(res.data.message);
+				yield put({ type: 'app/fetch' });
+				yield put({
+					type: 'save',
+					payload: {
+						modal2Show: false
+					}
+				});
 			}
 		},
 
@@ -108,4 +138,3 @@ export default {
 		}
 	},
 };
-	

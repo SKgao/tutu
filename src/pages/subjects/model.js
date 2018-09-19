@@ -16,12 +16,13 @@ export default {
 		endTime: '',
 		sourceIds: '',       // 搜索题目内容
         modalShow: false,    // 添加题目
-        modal2Show: false,   // 添加素材
+		modal2Show: false,   // 添加素材
+		modal3Show: false,   // 添加素材
 		textbookId: '',       // 教材id
 		customsPassId: '',    // 关卡id
 		sort: 0,             // 题目顺序
 		detpage: false,      // 是否为题目详情页
-		
+
 		audioArray: [],      // 音频文件
 		imageArray: [],      // 图片文件
 		file: [],            // 题目文件
@@ -50,22 +51,22 @@ export default {
 								}
 							}
 						}
-						dispatch({ 
+						dispatch({
 							type: 'setParam',
 							payload: paramObj
 						})
 						if (paramObj.detpage) {
-							dispatch({ 
+							dispatch({
 								type: 'subjectDesc',
-								payload: { 
+								payload: {
 									customsPassId: paramObj.customsPassId,
 									sort: paramObj.sort
 								}
 							})
 						} else {
-							dispatch({ 
+							dispatch({
 								type: 'getSubject',
-								payload: { 
+								payload: {
 									customsPassId: paramObj.customsPassId,
 									pageSize: 10,
                                     pageNum: 1
@@ -73,9 +74,9 @@ export default {
 							})
 						}
 					} else {
-						dispatch({ 
+						dispatch({
 							type: 'setParam',
-							payload: { 
+							payload: {
 								startTime: '',
 		                        endTime: '',
 								activeKey: '0',
@@ -89,9 +90,9 @@ export default {
                                 pageNum: 1
 							}
 						})
-						dispatch({ 
-							type: 'getSubject', 
-							payload: { 
+						dispatch({
+							type: 'getSubject',
+							payload: {
 								startTime: '',
 		                        endTime: '',
 								customsPassId: '',
@@ -132,7 +133,7 @@ export default {
 				})
 			}
 		},
-		
+
 		*subjectDesc({ payload }, { call, put }) {
 			const res = yield call(api.subjectDesc, payload)
 			if (res) {
@@ -190,7 +191,7 @@ export default {
 				yield put({ type: 'getSubject' })
 			}
 		},
-		 
+
         *getBook({ payload }, { call, put, select }) {
 			const res = yield call(api_teachingManage.getBook, {
                 pageNum: 1,
@@ -224,4 +225,3 @@ export default {
 		}
 	},
 };
-	

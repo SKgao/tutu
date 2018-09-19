@@ -125,7 +125,7 @@ const App = ({
 			dispatch(routerRedux.push(key))
 		}
 	}
-	
+
 	// 展示modal
     const changeModalState = (modal, show) => {
         dispatch({
@@ -169,7 +169,7 @@ const App = ({
 					handleUser={handleUser}
 					breadCrumd={breadCrumd}
 					changeModalState={changeModalState}
-					modalShow={modalShow}			
+					modalShow={modalShow}
 					pathname={pathname} />
 				<HistoryNavsLayout
 				    historyList={historyList}

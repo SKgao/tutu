@@ -31,8 +31,10 @@ export default {
 		historyList: [],     // 历史导航
 		redirectUrl: '/',    // 登录后跳转页面
 		modalShow: false,    // 修改密码
-		firPath: localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['117'],
-		secPath: localStorage.getItem('secPath') ? [localStorage.getItem('secPath')] : ['/userSetting']
+		firPath: [],
+		secPath: [],
+		// firPath: localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['117'],
+		// secPath: localStorage.getItem('secPath') ? [localStorage.getItem('secPath')] : ['/userSetting']
 	},
 
 	subscriptions: {
@@ -58,10 +60,10 @@ export default {
 			}
 			let urlArr = flatten(getField(authMenu, 'path'))
 			let idArr = flatten(getField(authMenu, 'id'))
-			const datalist = yield call(getMenuList);
+			const datalist = yield call(getMenuList)
 			let _fir, _sec;
 			if (localStorage.getItem('secPath')) {
-				_fir = [localStorage.getItem('firPath')]
+				_fir = localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['']
 				_sec = [localStorage.getItem('secPath')]
 			} else if (urlArr.includes('/userSetting')) {
 				_fir = ['117']
@@ -70,9 +72,9 @@ export default {
                 _fir = [idArr[0] + '']
 				_sec = [urlArr[0]]
 			}
-			yield put(routerRedux.push(_sec[0]));
-			localStorage.setItem('firPath', idArr[0]);
-			localStorage.setItem('secPath', urlArr[0]);
+			yield put(routerRedux.push(_sec[0]))
+			localStorage.setItem('firPath', idArr[0])
+			localStorage.setItem('secPath', urlArr[0])
 			yield put({
 				type: 'save',
 				payload: {
@@ -102,7 +104,6 @@ export default {
 					breadCrumd: b
 				}
 			});
-
 		},
 
 		// 切换导航

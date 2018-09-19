@@ -16,7 +16,7 @@ const PaginationLayout = ({
 	return (
 		<div className="main-pagination">
 			{
-				total > 0 && Math.ceil(total/pageSize) > 1 ? <div className="pagination-info">共 <span>{total}</span> 条记录 第 <span>{current}</span> / {Math.ceil(total/pageSize)} 页</div> : null
+				total > 0 ? <div className="pagination-info">共 <span>{total}</span> 条记录 第 <span>{current}</span> / {Math.ceil(total/pageSize)} 页</div> : null
 			}
 			<Pagination
 				showSizeChanger

@@ -10,7 +10,7 @@ export default {
 		username: '',
 		password: ''
 	},
-	
+
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(({ pathname }) => {
@@ -36,14 +36,14 @@ export default {
 				localStorage.setItem('id', res.data.data.id);
 				localStorage.setItem('HAS_LOGIN', true);
 				yield put(routerRedux.push('/'));
-				// yield put({type: 'save', payload});
-				axios.defaults.headers = { 
+				yield put({type: 'save', payload});
+				axios.defaults.headers = {
 					'Content-Type': 'application/json',
 					'token': res.data.data.token
 				}
 			}
 		},
-		
+
 		// 进页面先清除localStorage
 		*clearStorage({}, {}) {
             localStorage.removeItem('token');
@@ -53,7 +53,7 @@ export default {
 			localStorage.removeItem('secPath');
 			localStorage.removeItem('id');
 			localStorage.removeItem('HAS_LOGIN', false);
-			axios.defaults.headers = { 
+			axios.defaults.headers = {
 				'Content-Type': 'application/json',
 				'token': ''
 			}
@@ -66,4 +66,3 @@ export default {
 		}
 	},
 };
-	
