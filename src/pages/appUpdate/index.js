@@ -251,13 +251,11 @@ const AppverUpdate = ({
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
+				values.appTypeId && (values.appTypeId = values.appTypeId - 0);
 				values.forceUpdate && (values.forceUpdate = values.forceUpdate - 0);
-				values.updateDescribe && (values.updateDescribe = values.updateDescribe - 0);
 				dispatch({
 					type: 'appver/addVersion',
-					payload: {
-						name: filterObj(values)
-					}
+					payload: filterObj(values)
 				})
 			}
 		});
@@ -444,7 +442,7 @@ const AppverUpdate = ({
 								{...formItemLayout}
 								>
 								{getFieldDecorator('updateDescribe', {
-									rules: [{ message: '请选择格式!' }],
+									rules: [{ message: '输入版本描述' }],
 								})(
 									<TextArea placeholder="版本描述格式： 1.XXX 2.XXX 3.XXX" autosize={{ minRows: 3, maxRows: 6 }} />
 								)}

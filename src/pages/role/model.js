@@ -19,8 +19,18 @@ export default {
 
 	subscriptions: {
 		setup({ dispatch, history }) {
-			dispatch({ type: 'getRole' })
-			dispatch({ type: 'getSliderBar' })
+			return history.listen(location => {
+				if (location.pathname === '/roleSetting') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							account: '',
+						}
+					});
+					dispatch({ type: 'getRole' })
+			        dispatch({ type: 'getSliderBar' })
+				}
+			});
 		}
 	},
 
