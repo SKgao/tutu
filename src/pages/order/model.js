@@ -8,6 +8,7 @@ export default {
 	state: {
 		orderList: [],
 		selectList: [],
+		levelList: [],
 		id: '',     // 活动id
 		pageSize: 10,
         pageNum: 1,
@@ -20,19 +21,43 @@ export default {
 		orderNo: '',   // 订单号
 		orderStatus: '', // 支付状态
 		payType: '',   // 支付方式
-        activityId: ''
+		activityId: '',
+		itemId: '',    // 会员等级id
 	},
 
 	subscriptions: {
-		setup({ dispatch, history }) {	
-			dispatch({ type: 'getOrder'});
+		setup({ dispatch, history }) {
+			return history.listen(location => {
+				if (location.pathname === '/order') {
+					dispatch({
+						type: 'setParam',
+						payload: {
+							id: '',
+							pageNum: 1,
+							pageSize: 10,
+							totalCount: 0,
+							startTime: '',
+							startPayTime: '',
+							endTime: '',
+							endPayTime: '',
+							tutuNumber: '', // 图图号
+							orderNo: '',   // 订单号
+							orderStatus: '', // 支付状态
+							payType: '',   // 支付方式
+							activityId: '',
+							itemId: '',    // 会员等级id
+						}
+					});
+					dispatch({ type: 'getOrder' });
+				}
+			})
 		},
 	},
 
 	effects: {
 		*getOrder({ payload }, { call, put, select }) {
-			const { startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus } = yield select(state => state.order);
-			const res = yield call(api.getOrder, filterObj({ startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus }));
+			const { startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus, itemId } = yield select(state => state.order);
+			const res = yield call(api.getOrder, filterObj({ startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus, itemId }));
 			if (res) {
 				yield put({
 					type: 'save',
@@ -43,6 +68,18 @@ export default {
 				});
 			}
 		},
+
+		*getMemberLevel({ payload }, { call, put, select }) {
+			const res = yield call(api.getMemberLevel);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						levelList: (res.data) ? res.data.data : []
+					}
+				});
+			}
+        },
 
 		*activeSelect({ payload }, { call, put }) {
 			const res = yield call(api.activeSelect, payload);

@@ -12,12 +12,12 @@ export default {
         pageSize: 10,
         pageNum: 1,
         totalCount: 0,
-        startTime: '',
-		endTime: '',
+        expireStartTime: '', // 会员起始时间
+		expireEndTime : '',  // 会员截止时间
 		userLevel: '', // 用户等级
 		bookVersionId: '',  // 教材版本id
 		sex: '',  // 性别
-		tutuNumber: '', // 图图号       
+		tutuNumber: '', // 图图号
 		mobile: '',     // 手机号
 		hasSetPassword: '',   // 是否设置密码
 		activeKey: '0',       // 默认选中tabs
@@ -36,8 +36,8 @@ export default {
 							tutuNumber: '',
 							mobile: '',
 							userLevel: '',
-							startTime: '',
-							endTime: '',
+							expireStartTime: '',
+							expireEndTime: '',
 							bookVersionId: '',
 							sex: ''
 						}
@@ -51,11 +51,11 @@ export default {
 	effects: {
 		*getMember({ payload }, { call, put, select }) {
 			const _state = yield select(state => state.member);
-			const res = yield call(api.getMember, filterObj({ 
+			const res = yield call(api.getMember, filterObj({
 				userLevel: _state.userLevel,
-				startTime: _state.startTime,
-				endTime: _state.endTime,
-				pageNum: _state.pageNum, 
+				expireStartTime: _state.expireStartTime,
+				expireEndTime: _state.expireEndTime,
+				pageNum: _state.pageNum,
 				pageSize: _state.pageSize,
 				bookVersionId: _state.bookVersionId,
 				tutuNumber: _state.tutuNumber,
@@ -73,7 +73,7 @@ export default {
 				});
 			}
         },
-        
+
         *getMemberLevel({ payload }, { call, put }) {
 			const res = yield call(api.getMemberLevel, payload);
 			if (res) {
@@ -133,4 +133,3 @@ export default {
 		}
 	},
 };
-	

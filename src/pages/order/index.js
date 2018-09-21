@@ -17,7 +17,7 @@ const Order = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, tutuNumber, activityId, startTime, endTime, payType } = order;
+    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, tutuNumber, startTime, endTime, levelList } = order;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -68,7 +68,7 @@ const Order = ({
         }, {
             title: '创建时间',
             dataIndex: 'createdAt'
-        } 
+        }
     ]
 
     // 操作分页
@@ -113,7 +113,7 @@ const Order = ({
     		payload: v
     	})
     }
-   
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -139,6 +139,22 @@ const Order = ({
                     {/*订单号*/}
                     <FormItem label="订单号">
                         <Input placeholder="输入订单号" value={orderNo} onChange={(e) => handleInput(e, 'orderNo')}/>
+                    </FormItem>
+
+                    {/*会员等级*/}
+                    <FormItem label="会员等级">
+                        <Select
+                            showSearch
+                            onFocus={() => dispatch({type: 'order/getMemberLevel'})}
+                            placeholder="请选择会员等级"
+                            onChange={v => changeSelect({ itemId: v })}
+                            >
+                            {
+                                [{userLevel: '', levelName: '全部'}, ...levelList].map(item =>
+                                    <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
+                                )
+                            }
+                        </Select>
                     </FormItem>
 
                     {/*支付类型*/}
@@ -220,4 +236,3 @@ Order.propTypes = {
 };
 
 export default connect(({ order, loading }) => ({ order, loading }))(Form.create()(Order));
-	

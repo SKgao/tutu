@@ -15,10 +15,10 @@ export default {
 
 	// 启用App类型
 	enableApptype: data => axios.post('app/type/enable', data),
-	
+
 	// App类型列表
     getApptype: data => axios.post('app/type/list', data),
-    
+
     // 添加ver版本
 	addVersion: data => axios.post('app/version/add', data),
 
@@ -30,7 +30,10 @@ export default {
 
 	// 启用ver版本
 	enableVersion: data => axios.post('app/version/enable', data),
-	
+
 	// ver版本列表
-    getVersion: data => axios.post('app/version/page', data),
+	getVersion: data => axios.post('app/version/page', data),
+
+	// ios列表
+    getIos: data => axios.get('app/ios', data),
 }

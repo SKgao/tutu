@@ -2,12 +2,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import PaginationLayout from '@/components/PaginationLayout';
-import TablePopoverLayout from '@/components/TablePopoverLayout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs } from 'antd';
-import activity from '../activity';
+import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -222,7 +219,17 @@ const Member = ({
         } else if (key === '1') {
             dispatch({ type: 'member/getFeedList' })
         }
-	}
+    }
+
+    // 时间选择
+    const datePickerChange = (d1, d2, param) => {
+        dispatch({
+    		type: 'member/setParam',
+    		payload: {
+                [param]: d2 ? d2 : '',
+			}
+        })
+    }
 
 	return (
 		<div>
@@ -235,26 +242,22 @@ const Member = ({
                 <FormInlineLayout>
                     <Form layout="inline" style={{ marginLeft: 15 }}>
                         {/*时间*/}
-                        {/* <FormItem label="时间">
-                            <RangePicker
-                                format="YYYY-MM-DD HH:mm"
-                                showTime={{
-                                    huserLeveleDisabledOptions: true,
-                                    defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
-                                }}
-                                format="YYYY-MM-DD HH:mm"
-                                onChange={datepickerChange}
-                                />
-                        </FormItem> */}
-
-                        {/*图图号*/}
-                        <FormItem label="图图号">
-                            <Input placeholder="输入图图号" value={member.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
+                        <FormItem label="会员起始时间">
+                            <DatePicker
+                                showTime
+                                format="YYYY-MM-DD HH:mm:ss"
+                                placeholder="选择起始时间"
+                                onChange={(d1, d2) => datePickerChange(d1, d2, 'expireStartTime')}
+                            />
                         </FormItem>
 
-                        {/*手机号*/}
-                        <FormItem label="手机号">
-                            <Input placeholder="输入手机号" value={member.mobile} onChange={(e) => handleInput(e, 'mobile')}/>
+                        <FormItem label="会员到期时间">
+                            <DatePicker
+                                showTime
+                                format="YYYY-MM-DD HH:mm:ss"
+                                placeholder="选择到期时间"
+                                onChange={(d1, d2) => datePickerChange(d1, d2, 'expireEndTime')}
+                            />
                         </FormItem>
 
                         {/*会员等级*/}
@@ -271,6 +274,16 @@ const Member = ({
                                     )
                                 }
                             </Select>
+                        </FormItem>
+
+                        {/*图图号*/}
+                        <FormItem label="图图号">
+                            <Input placeholder="输入图图号" value={member.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
+                        </FormItem>
+
+                        {/*手机号*/}
+                        <FormItem label="手机号">
+                            <Input placeholder="输入手机号" value={member.mobile} onChange={(e) => handleInput(e, 'mobile')}/>
                         </FormItem>
 
                         {/*性别*/}
@@ -347,18 +360,28 @@ const Member = ({
                 loading={ loading.effects['member/getMember'] }
                 scrollX={true}
                 />
-            <PaginationLayout
-                total={totalCount}
-                onChange={(page, pageSize) => handleChange({
-                    pageNum: page,
-                    pageSize
-                })}
-                onShowSizeChange={(current, pageSize) => handleChange({
-                    pageNum: 1,
-                    pageSize
-                })}
-                current={pageNum}
-                pageSize={pageSize} />
+
+            <div className="main-pagination">
+                {
+                    totalCount > 0 ? <div className="pagination-info">总人数 <span className="mr10">{totalCount}</span> 第 <span>{pageNum}</span> / {Math.ceil(totalCount/pageSize)} 页</div> : null
+                }
+                <Pagination
+                    showSizeChanger
+                    showQuickJumper
+                    hideOnSinglePage
+                    pageSizeOptions={['10', '20', '50', '100']}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    total={totalCount}
+                    current={pageNum}
+                    pageSize={pageSize} />
+            </div>
 		</div>
 	)
 };

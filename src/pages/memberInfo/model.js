@@ -12,8 +12,8 @@ export default {
         pageSize: 10,
         pageNum: 1,
         totalCount: 0,
-        startTime: '',
-		endTime: '',
+        expireStartTime: '', // 会员起始时间
+		expireEndTime : '',  // 会员截止时间
 		userLevel: '', // 用户等级
 		bookVersionId: '',  // 教材版本id
 		sex: '',  // 性别
@@ -34,8 +34,8 @@ export default {
 							tutuNumber: '',
 							mobile: '',
 							userLevel: '',
-							startTime: '',
-							endTime: '',
+							expireStartTime: '', // 会员起始时间
+		                    expireEndTime : '',  // 会员截止时间
 							bookVersionId: '',
 							sex: ''
 						}
@@ -51,8 +51,8 @@ export default {
 			const _state = yield select(state => state.memberInfo);
 			const res = yield call(api.getMember, filterObj({
 				userLevel: _state.userLevel,
-				startTime: _state.startTime,
-				endTime: _state.endTime,
+				expireStartTime: _state.expireStartTime,
+				expireEndTime: _state.expireEndTime,
 				pageNum: _state.pageNum,
 				pageSize: _state.pageSize,
 				bookVersionId: _state.bookVersionId,
