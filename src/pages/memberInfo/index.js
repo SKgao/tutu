@@ -84,12 +84,13 @@ const MemberInfo = ({
     }
 
     // 时间选择
-    const datePickerChange = (d1, d2, param) => {
+    const datepickerChange = (d, t) => {
         dispatch({
-    		type: 'member/setParam',
-    		payload: {
-                [param]: d2 ? d2 : '',
-			}
+        	type: 'userSetting/setParam',
+        	payload: {
+                expireStartTime: t[0] ? t[0] + ':00' : '',
+                expireEndTime: t[1] ? t[1] + ':00' : ''
+            }
         })
     }
 
@@ -98,22 +99,16 @@ const MemberInfo = ({
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
                     {/*时间*/}
-                    <FormItem label="会员起始时间">
-                        <DatePicker
-                            showTime
-                            format="YYYY-MM-DD HH:mm:ss"
-                            placeholder="选择起始时间"
-                            onChange={(d1, d2) => datePickerChange(d1, d2, 'expireStartTime')}
-                        />
-                    </FormItem>
-
-                    <FormItem label="会员到期时间">
-                        <DatePicker
-                            showTime
-                            format="YYYY-MM-DD HH:mm:ss"
-                            placeholder="选择到期时间"
-                            onChange={(d1, d2) => datePickerChange(d1, d2, 'expireEndTime')}
-                        />
+                    <FormItem label="时间">
+                        <RangePicker
+                            format="YYYY-MM-DD HH:mm"
+                            showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                            }}
+                            format="YYYY-MM-DD HH:mm"
+                            onChange={datepickerChange}
+                            />
                     </FormItem>
 
                     {/*会员等级*/}
