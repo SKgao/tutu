@@ -20,6 +20,9 @@ axios.interceptors.response.use(res => {
 	let code = res.data.code
 	let msg = res.data.message
 	switch (code) {
+		case 45:
+			window.location.href = '#/login'
+			return false;
 		case 46:
 			window.location.href = '#/login'
 			return false;

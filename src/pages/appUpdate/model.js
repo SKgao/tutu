@@ -142,14 +142,14 @@ export default {
 			}
 		},
 
-		*getIos({ payload }, { call, put, select }) {
-			const { ios } = yield select(state => state.appver);
-            const res = yield call(api.getIos, filterObj(ios));
+		*getIos({ payload = {} }, { call, put }) {
+            const res = yield call(api.getIos, filterObj(payload));
 		    if (res) {
-				ios && message.success(res.data.message);
+				const res = yield call(api.getIos, payload);
+				payload.ios && message.success(res.data.message);
 				yield put({
 					type: 'save',
-					iosList: (res.data.data) ? res.data.data.data : [],
+					ios: res.data.data
 				})
 			}
 		},

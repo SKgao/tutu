@@ -134,8 +134,6 @@ const AppverUpdate = ({
 		}
 	}]
 
-	console.log(iosList)
-
 	// 表格列配置
 	let allColumns = (activeKey === '0') ? appColumns : (activeKey === '1') ? verColumns : iosColumns;
 	let dataSource = (activeKey === '0') ? appList : (activeKey === '1') ? verList : iosList;
@@ -273,7 +271,7 @@ const AppverUpdate = ({
 			type: 'appver/setParam',
 			payload: val
 		}).then(() => {
-            dispatch({ type: 'appver/getIos' })
+            dispatch({ type: 'appver/getIos', payload: val })
 		})
 	}
 
@@ -339,6 +337,7 @@ const AppverUpdate = ({
 			}
 		})
 	}
+
 
 	return (
 		<div>
@@ -491,8 +490,8 @@ const AppverUpdate = ({
 				<TabPane tab="IOS审核" key="2">
 					<FormInlineLayout>
 						<Form layout="inline" style={{ marginLeft: 15 }}>
-							<FormItem label="操作">
-							    <Select
+							<FormItem label="状态">
+							    {/* <Select
 									showSearch
 									value={appver.ios}
                                     onChange={v => changeIostype({ ios: v })}
@@ -500,19 +499,26 @@ const AppverUpdate = ({
                                     <Option key="" value="">查询结果</Option>
 									<Option key="1" value="1">提交审核</Option>
 									<Option key="2" value="2">正式使用</Option>
-                                </Select>
+                                </Select> */}
+
+								<RadioGroup value={appver.ios ? appver.ios + '' : '2'} onChange={e => changeIostype({ ios: e.target.value - 0 })}>
+									<Radio value="1">提交审核</Radio>
+									<Radio value="2">正式使用</Radio>
+								</RadioGroup>
 							</FormItem>
 						</Form>
 					</FormInlineLayout>
 				</TabPane>
 			</Tabs>
-
-			<TableLayout
-			    loading={ loading.effects['appver/getAppList'] || loading.effects['appver/getIos'] || loading.effects['appver/getVerList']  }
-				dataSource={dataSource}
-				allColumns={allColumns}
-				pagination={false}
-			/>
+            {
+				activeKey === '2' ? null :
+				<TableLayout
+					loading={ loading.effects['appver/getAppList'] || loading.effects['appver/getIos'] || loading.effects['appver/getVerList']  }
+					dataSource={dataSource}
+					allColumns={allColumns}
+					pagination={false}
+				/>
+			}
             {
 				activeKey === '1' &&
 				<PaginationLayout

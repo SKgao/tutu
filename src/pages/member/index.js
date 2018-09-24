@@ -171,16 +171,6 @@ const Member = ({
         })
     }
 
-    // 选择时间框
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'member/setParam',
-        	payload: {
-                startTime: t[0] ? t[0] + ':00' : '',
-                endTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
 
     // 选择下拉框
     const changeSelect = (v) => {
@@ -224,7 +214,7 @@ const Member = ({
     // 时间选择
     const datepickerChange = (d, t) => {
         dispatch({
-        	type: 'userSetting/setParam',
+        	type: 'member/setParam',
         	payload: {
                 expireStartTime: t[0] ? t[0] + ':00' : '',
                 expireEndTime: t[1] ? t[1] + ':00' : ''
