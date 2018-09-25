@@ -214,7 +214,7 @@ const Member = ({
     // 时间选择
     const datepickerChange = (d, t) => {
         dispatch({
-        	type: 'userSetting/setParam',
+        	type: 'member/setParam',
         	payload: {
                 expireStartTime: t[0] ? t[0] + ':00' : '',
                 expireEndTime: t[1] ? t[1] + ':00' : ''
@@ -225,7 +225,7 @@ const Member = ({
     // 时间选择
     const datepickerChangeReg = (d, t) => {
         dispatch({
-        	type: 'userSetting/setParam',
+        	type: 'member/setParam',
         	payload: {
                 registerStartTime: t[0] ? t[0] + ':00' : '',
                 registerEndTime: t[1] ? t[1] + ':00' : ''

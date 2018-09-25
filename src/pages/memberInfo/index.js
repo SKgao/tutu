@@ -49,8 +49,9 @@ const MemberInfo = ({
         dispatch({
     		type: 'memberInfo/setParam',
     		payload: param
+        }).then(() => {
+            dispatch({ type: 'memberInfo/getMember' })
         })
-        dispatch({ type: 'memberInfo/getMember' })
     }
 
     // 搜索
@@ -61,8 +62,9 @@ const MemberInfo = ({
 				pageSize: 10,
 				pageNum: 1
 			}
-		})
-        dispatch({ type: 'memberInfo/getMember' })
+		}).then(() => {
+            dispatch({ type: 'memberInfo/getMember' })
+        })
     }
 
     // 选择下拉框
@@ -76,7 +78,7 @@ const MemberInfo = ({
     // 输入框
     const handleInput = (e, m) => {
         dispatch({
-    		type: 'member/setParam',
+    		type: 'memberInfo/setParam',
     		payload: {
                 [m]: e.target.value
             }
@@ -86,7 +88,7 @@ const MemberInfo = ({
     // 时间选择
     const datepickerChange = (d, t) => {
         dispatch({
-        	type: 'userSetting/setParam',
+        	type: 'memberInfo/setParam',
         	payload: {
                 expireStartTime: t[0] ? t[0] + ':00' : '',
                 expireEndTime: t[1] ? t[1] + ':00' : ''
@@ -97,7 +99,7 @@ const MemberInfo = ({
     // 时间选择
     const datepickerChangeReg = (d, t) => {
         dispatch({
-        	type: 'userSetting/setParam',
+        	type: 'memberInfo/setParam',
         	payload: {
                 registerStartTime: t[0] ? t[0] + ':00' : '',
                 registerEndTime: t[1] ? t[1] + ':00' : ''
