@@ -94,14 +94,40 @@ const MemberInfo = ({
         })
     }
 
+    // 时间选择
+    const datepickerChangeReg = (d, t) => {
+        dispatch({
+        	type: 'userSetting/setParam',
+        	payload: {
+                registerStartTime: t[0] ? t[0] + ':00' : '',
+                registerEndTime: t[1] ? t[1] + ':00' : ''
+            }
+        })
+    }
+
 	return (
 		<div>
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
                     {/*时间*/}
-                    <FormItem label="时间">
+                    <FormItem label="注册时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
+                            placeholder={['开始时间', '截止时间']}
+                            showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                            }}
+                            format="YYYY-MM-DD HH:mm"
+                            onChange={datepickerChangeReg}
+                            />
+                    </FormItem>
+
+                    {/*时间*/}
+                    <FormItem label="过期时间">
+                        <RangePicker
+                            format="YYYY-MM-DD HH:mm"
+                            placeholder={['开始时间', '截止时间']}
                             showTime={{
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
@@ -114,10 +140,12 @@ const MemberInfo = ({
                     {/*会员等级*/}
                     <FormItem label="会员等级">
                         <Select
+                            mode="multiple"
                             showSearch
                             onFocus={() => dispatch({type: 'memberInfo/getMemberLevel'})}
                             placeholder="请选择会员等级"
-                            onChange={v => changeSelect({ userLevel: v })}
+                            style={{ minWidth: 150, width: '100%' }}
+                            onChange={v => changeSelect({ userLevelIds: v })}
                             >
                             {
                                 memberLevelList.map(item =>
