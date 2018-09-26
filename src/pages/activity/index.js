@@ -35,7 +35,7 @@ const Activity = ({
 					title={'修改活动名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
@@ -53,7 +53,7 @@ const Activity = ({
 					title={'修改活动内容'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
@@ -78,7 +78,7 @@ const Activity = ({
 					title={'修改活动金额'}
 					valueData={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无'}
 					defaultValue={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无' }
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
@@ -108,7 +108,7 @@ const Activity = ({
 					title={'修改活动开始时间'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
@@ -126,7 +126,7 @@ const Activity = ({
 					title={'修改活动开始时间'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
@@ -144,7 +144,7 @@ const Activity = ({
 					title={'修改活动结束时间'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'activity/updateActivity',
 							payload: {
@@ -256,7 +256,7 @@ const Activity = ({
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
 				values.status = addStatus;
-                values.activeMoney && (values.activeMoney = values.activeMoney - 0);
+                values.activeMoney && (values.activeMoney = values.activeMoney * 100);
                 values.activeExpireDays && (values.activeExpireDays = values.activeExpireDays - 0);
                 values.userLevel && (values.userLevel = values.userLevel - 0);
                 values.itemId && (values.itemId = values.itemId - 0);
@@ -277,7 +277,7 @@ const Activity = ({
 			}
 		});
     }
-    
+
     // 切换活动类型
     const changeAddstatus = (e) => {
         dispatch({
@@ -321,7 +321,7 @@ const Activity = ({
             }
         })
     }
-   
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -385,7 +385,7 @@ const Activity = ({
                             {getFieldDecorator('title', {
                                 rules: [{ required: true, message: '请输入活动标题!' }],
                             })(
-                                <Input placeholder="请输入活动标题"/>                            
+                                <Input placeholder="请输入活动标题"/>
                             )}
                         </FormItem>
 
@@ -425,7 +425,7 @@ const Activity = ({
                             label="活动持续时间"
                             {...formItemLayout}
                             >
-                            {getFieldDecorator('activeExpireDays', {                          
+                            {getFieldDecorator('activeExpireDays', {
                                 rules: [{ required: true, message: '请输入活动持续时间!' }],
                             })(
                                 <Input placeholder="活动持续时间（以天为单位）" readOnly/>
@@ -445,13 +445,13 @@ const Activity = ({
                                 </RadioGroup>
                             )}
                         </FormItem>
-                        
+
                         {   addStatus === 1 &&
                             <FormItem
                                 {...formItemLayout}
                                 label="参与活动商品"
                                 >
-                                {getFieldDecorator('activeMoney', {
+                                {getFieldDecorator('itemId', {
                                     rules: [{ required: true, message: '输入会员等级!' }],
                                 })(
                                     <Select
@@ -465,7 +465,7 @@ const Activity = ({
                                                 <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
                                             )
                                         }
-                                    </Select>                           
+                                    </Select>
                                 )}
                             </FormItem>
                         }
@@ -475,10 +475,10 @@ const Activity = ({
                                 {...formItemLayout}
                                 label="活动价格"
                                 >
-                                {getFieldDecorator('itemId', {
+                                {getFieldDecorator('activeMoney', {
                                     rules: [{ required: true, message: '请输入活动价格!' }],
                                 })(
-                                    <Input placeholder="请输入活动价格"/>                            
+                                    <Input placeholder="请输入活动价格"/>
                                 )}
                             </FormItem>
                         }
@@ -490,9 +490,9 @@ const Activity = ({
                             {getFieldDecorator('content', {
                                 rules: [{ required: false }],
                             })(
-                                <TextArea placeholder="请输入活动内容" autosize={{ minRows: 3, maxRows: 6 }} />                         
+                                <TextArea placeholder="请输入活动内容" autosize={{ minRows: 3, maxRows: 6 }} />
                             )}
-                        </FormItem>  
+                        </FormItem>
 
                         <FormItem
                             label="活动图片"
@@ -508,9 +508,9 @@ const Activity = ({
                             {getFieldDecorator('url', {
                                 rules: [{ required: false }],
                             })(
-                                <Input placeholder="请输入活动链接"/>                            
+                                <Input placeholder="请输入活动链接"/>
                             )}
-                        </FormItem>                   
+                        </FormItem>
 
                         <FormItem
                             {...formItemLayout}>
@@ -528,12 +528,12 @@ const Activity = ({
                     cancelText="取消"
                     footer={null}
                     >
-                    <Form> 
+                    <Form>
                         <a href={ activity.shareimg } >
                             <img src={ activity.shareimg } style={{ width: 260, height: 360 }}/>
                         </a>
 
-                        <FormItem>                        
+                        <FormItem>
                             <MyUpload uploadSuccess={modShareImage}></MyUpload>
                         </FormItem>
                     </Form>
@@ -569,4 +569,3 @@ Activity.propTypes = {
 };
 
 export default connect(({ activity, loading }) => ({ activity, loading }))(Form.create()(Activity));
-	

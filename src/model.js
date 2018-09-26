@@ -65,10 +65,12 @@ export default {
 			if (localStorage.getItem('secPath')) {
 				_fir = localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['']
 				_sec = [localStorage.getItem('secPath')]
-			} else if (urlArr.includes('/userSetting')) {
-				_fir = ['117']
-				_sec = ['/userSetting']
-			} else {
+			}
+			// else if (urlArr.includes('/userSetting')) {
+			// 	_fir = ['117']
+			// 	_sec = ['/userSetting']
+			// }
+			else {
                 _fir = [idArr[0] + '']
 				_sec = [urlArr[0]]
 			}
@@ -150,7 +152,7 @@ export default {
 				payload: payload
 			})
 		},
-		
+
 		// 退出登录
 		*loginout({}, { call, put }) {
 			const res = yield call(api_login.logout);
@@ -162,7 +164,7 @@ export default {
 				localStorage.removeItem('id');
 				localStorage.removeItem('firPath');
 			    localStorage.removeItem('secPath');
-				axios.defaults.headers = { 
+				axios.defaults.headers = {
 					'Content-Type': 'application/json',
 					'token': ''
 				}
