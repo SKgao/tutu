@@ -10,7 +10,7 @@ export default {
 	},
 
 	subscriptions: {
-		setup({ dispatch, history }) {	
+		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/memberLevel') {
 					dispatch({ type: 'getMemberLevel' });
@@ -26,19 +26,23 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
+						levelList: []
+					}
+				});
+				yield put({
+					type: 'save',
+					payload: {
 						levelList: (res.data) ? res.data.data : []
 					}
 				});
 			}
         },
-        
+
         *deleteMemberLevel({ payload }, { call, put }) {
 			const res = yield call(api.deleteMemberLevel, payload);
 			if (res) {
                 res && message.success(res.data.message);
-				yield put({
-					type: 'getMemberLevel'
-				});
+				yield put({ type: 'getMemberLevel' });
 			}
 		},
 
@@ -46,9 +50,7 @@ export default {
 			const res = yield call(api.addMemberLevel, payload);
 			if (res) {
                 res && message.success(res.data.message);
-				yield put({
-					type: 'getMemberLevel'
-				});
+				yield put({ type: 'getMemberLevel' });
 				yield put({
 					type: 'setParam',
 					payload: {
@@ -81,4 +83,3 @@ export default {
 		}
 	},
 };
-	
