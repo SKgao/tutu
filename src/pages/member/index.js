@@ -240,7 +240,7 @@ const Member = ({
 				activeKey={activeKey}
 				onChange={handleTabChange}
             >
-            <TabPane tab="会员列表" key="0">
+            <TabPane tab="用户列表" key="0">
                 <FormInlineLayout>
                     <Form layout="inline" style={{ marginLeft: 15 }}>
                         {/*时间*/}

@@ -144,6 +144,7 @@ const MemberInfo = ({
                         <Select
                             mode="multiple"
                             showSearch
+                            value={memberInfo.userLevelIds}
                             onFocus={() => dispatch({type: 'memberInfo/getMemberLevel'})}
                             placeholder="请选择会员等级"
                             style={{ minWidth: 150, width: '100%' }}
