@@ -29,6 +29,7 @@ export default {
 					dispatch({
 						type: 'setParam',
 						payload: {
+							activeKey: 'book',
 							startTime: '',
                             endTime: '',
 							pageSize: 10,
@@ -39,7 +40,7 @@ export default {
 					});
 					dispatch({ type: 'getBook' });
 				}
-			})	
+			})
 		},
 	},
 
@@ -95,7 +96,7 @@ export default {
 				yield put({ type: 'getBook' })
 			}
 		},
-		
+
 		*deleteGrade({ payload }, { call, put }) {
             const res = yield call(api.deleteGrade, payload);
             if (res) {
@@ -103,7 +104,7 @@ export default {
 				yield put({ type: 'getGrade' })
 			}
 		},
-		
+
 		*deleteVersion({ payload }, { call, put }) {
             const res = yield call(api.deleteVersion, payload);
             if (res) {
@@ -111,10 +112,16 @@ export default {
 				yield put({ type: 'getVersion' })
 			}
         },
-        
+
         *getGrade({ payload }, { call, put }) {
 			const res = yield call(api.getGrade, payload);
             if (res.data.code == 0) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						gradeList: []
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
@@ -125,7 +132,7 @@ export default {
             	message.error(res.data.message);
             }
         },
-        
+
         *addGrade({ payload }, { call, put }) {
             const res = yield call(api.addGrade, payload);
 			if (res) {
@@ -142,6 +149,12 @@ export default {
 		*getVersion({ payload }, { call, put }) {
             const res = yield call(api.getVersion, payload);
 			if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						versionList: []
+            		}
+            	})
 				yield put({
             		type: 'save',
             		payload: {
@@ -182,4 +195,3 @@ export default {
 		}
 	},
 };
-	

@@ -360,6 +360,12 @@ const TeachingManage = ({
 
     // 切换tabs
     const handleTabChange = (key = 'book') => {
+        dispatch({
+    		type: 'teachingmanage/setParam',
+    		payload: {
+                activeKey: key
+            }
+    	})
         if (key === 'grade') {
             dispatch({ type: 'teachingmanage/getGrade' })
         } else if (key === 'version') {
@@ -367,12 +373,6 @@ const TeachingManage = ({
         } else if (key === 'book') {
             dispatch({ type: 'teachingmanage/getBook'})
         }
-    	dispatch({
-    		type: 'teachingmanage/setParam',
-    		payload: {
-                activeKey: key
-            }
-    	})
     }
 
     // 文件上传成功

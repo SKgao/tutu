@@ -118,7 +118,7 @@ const MemberInfo = ({
                             placeholder={['开始时间', '截止时间']}
                             showTime={{
                                 hideDisabledOptions: true,
-                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                                defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                             }}
                             format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChangeReg}
@@ -132,7 +132,7 @@ const MemberInfo = ({
                             placeholder={['开始时间', '截止时间']}
                             showTime={{
                                 hideDisabledOptions: true,
-                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                                defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                             }}
                             format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
