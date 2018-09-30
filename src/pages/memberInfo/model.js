@@ -45,7 +45,11 @@ export default {
 							sex: ''
 						}
 					});
-					dispatch({ type: 'getMember' });
+
+					dispatch({ type: 'getMemberLevel' })
+					.then(() => {
+						dispatch({ type: 'getMember' });
+					})
 				}
 			})
 		},
@@ -83,10 +87,12 @@ export default {
         *getMemberLevel({ payload }, { call, put }) {
 			const res = yield call(api.getMemberLevel, payload);
 			if (res) {
+				const filterData = res.data ? res.data.data.filter(e => e.levelName !== '普通用户') : []
 				yield put({
 					type: 'save',
 					payload: {
-						memberLevelList: (res.data) ? [{userLevel: 0, levelName: '全部'}, ...res.data.data] : []
+						userLevelIds: filterData.map(e => e.userLevel - 0),
+						memberLevelList: filterData
 					}
 				});
 			}
