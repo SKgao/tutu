@@ -9,6 +9,7 @@ export default {
 		orderList: [],
 		selectList: [],
 		levelList: [],
+		courseList: [],
 		id: '',     // 活动id
 		pageSize: 10,
         pageNum: 1,
@@ -22,7 +23,8 @@ export default {
 		orderStatus: '', // 支付状态
 		payType: '',   // 支付方式
 		activityId: '',
-		itemId: '',    // 会员等级id
+		itemId: '',     // 会员等级id
+		textbookId: '', // 课程id
 	},
 
 	subscriptions: {
@@ -46,6 +48,7 @@ export default {
 							payType: '',   // 支付方式
 							activityId: '',
 							itemId: '',    // 会员等级id
+							textbookId: ''
 						}
 					});
 					dispatch({ type: 'getOrder' });
@@ -56,8 +59,8 @@ export default {
 
 	effects: {
 		*getOrder({ payload }, { call, put, select }) {
-			const { startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus, itemId } = yield select(state => state.order);
-			const res = yield call(api.getOrder, filterObj({ startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus, itemId }));
+			const { startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus, itemId, textbookId } = yield select(state => state.order);
+			const res = yield call(api.getOrder, filterObj({ startTime, endTime, pageNum, pageSize, id, tutuNumber, orderNo, payType, activityId, orderStatus, itemId, textbookId }));
 			if (res) {
 				yield put({
 					type: 'save',
@@ -88,6 +91,18 @@ export default {
 					type: 'save',
 					payload: {
 						selectList: (res.data) ? [{id: '', title: '全部'}, ...res.data.data] : []
+					}
+				});
+			}
+		},
+
+		*courseSelect({ payload }, { call, put }) {
+			const res = yield call(api.getCourse, payload);
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						courseList: (res.data) ? [{textbookId: '', textbookName: '全部'}, ...res.data.data] : []
 					}
 				});
 			}

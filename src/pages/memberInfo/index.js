@@ -151,7 +151,7 @@ const MemberInfo = ({
                             onChange={v => changeSelect({ userLevelIds: v })}
                             >
                             {
-                                memberLevelList.map(item =>
+                                memberInfo.memberLevelList.map(item =>
                                     <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
                                 )
                             }

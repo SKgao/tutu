@@ -17,7 +17,7 @@ const Order = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, tutuNumber, startTime, endTime, levelList } = order;
+    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, courseList, tutuNumber, startTime, endTime, levelList } = order;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -196,6 +196,22 @@ const Order = ({
                             {
                                 selectList.map(item =>
                                     <Option key={item.id} value={item.id}>{item.title}</Option>
+                                )
+                            }
+                        </Select>
+                    </FormItem>
+
+                    {/*精品课程*/}
+                    <FormItem label="精品课程">
+                        <Select
+                            showSearch
+                            placeholder="请选择精品课程"
+                            onFocus={() => dispatch({type: 'order/courseSelect'})}
+                            onChange={v => changeSelect({textbookId: v})}
+                            >
+                            {
+                                courseList.map(item =>
+                                    <Option key={item.textbookId} value={item.textbookId}>{item.textbookName}</Option>
                                 )
                             }
                         </Select>
