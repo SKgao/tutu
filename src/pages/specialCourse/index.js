@@ -33,7 +33,6 @@ const SpecialCourse = ({
         }, {
             title: '教材名称',
             dataIndex: 'textbookName',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改教材名称'}
@@ -51,7 +50,6 @@ const SpecialCourse = ({
         }, {
             title: '辅导老师',
             dataIndex: 'teacher',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改辅导老师'}
@@ -69,14 +67,12 @@ const SpecialCourse = ({
         }, {
             title: '详情图',
             dataIndex: 'iconDetail',
-            sorter: true,
             render: (text) => {
                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
         }, {
             title: '优惠卷图',
             dataIndex: 'iconTicket',
-            sorter: true,
             render: (text) => {
                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
@@ -133,7 +129,6 @@ const SpecialCourse = ({
         }, {
             title: '有效期开始时间',
             dataIndex: 'beginAt',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
                 title={`修改开始时间--格式如${moment().format("YYYY-MM-DD HH:mm:ss")}`}
@@ -151,7 +146,6 @@ const SpecialCourse = ({
         }, {
             title: '有效期截止时间',
             dataIndex: 'endAt',
-            sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
 					title={`修改截止时间--格式如${moment().format("YYYY-MM-DD HH:mm:ss")}`}
