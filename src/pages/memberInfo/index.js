@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import moment from 'moment';
@@ -36,13 +37,38 @@ const MemberInfo = ({
             title: '会员等级',
             dataIndex: 'userLevelName'
         }, {
+            title: '是否购买精品课程',
+            dataIndex: 'hasBuyTextbook',
+            sorter: true,
+            render: (txt) => {
+                return txt === 0 ? '未购买' : '已购买'
+            }
+        }, {
             title: '会员开始时间',
             dataIndex: 'payTime',
         }, {
             title: '会员到期时间',
             dataIndex: 'exprieTime',
+        }, {
+        	title: '操作',
+            dataIndex: 'action',
+            render: (txt, record, index) => {
+                return <span>
+                    {
+                        record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
+                    }
+                </span>
+            }
         }
     ]
+
+    // 调转到关卡页面
+    const linktoCourse= (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/specialCourse',
+            search: `userId=${record.tutuNumber}`
+        }))
+    }
 
     // 操作分页
     const handleChange = (param) => {

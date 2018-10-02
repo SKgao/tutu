@@ -10,19 +10,26 @@ export default {
         tableData: [],
         pageNum: 1,
         pageSize: 20,
-        totalCount: 0,
+		totalCount: 0,
+		type: '1', // 开课方式
         startTime: '',
         endTime: '',
         beginAt: '',
-        endAt: '',
+		endAt: '',
+		saleBeginAt: '', // 预售开始时间
+		saleEndAt: '',   // 预售结束时间
         iconDetail: '',
-        iconTicket: ''
+		iconTicket: '',
+		userId: '',   // 用户ID
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/specialCourse') {
+					let _search = location.search.slice(1)
+					let arr = (_search) ? _search.split('=') : []
+					let _userId = (arr.length) ? arr[1] - 0 : ''
 					dispatch({
 						type: 'setParam',
 						payload: {
@@ -31,13 +38,31 @@ export default {
                             totalCount: 0,
                             startTime: '',
                             endTime: '',
-                            beginAt: '',
+							beginAt: '',
+							saleBeginAt: '', // 预售开始时间
+		                    saleEndAt: '',   // 预售结束时间
                             endAt: '',
                             iconDetail: '',
                             iconTicket: ''
 						}
 					});
-					dispatch({ type: 'getCourse' })
+					if (arr.length) {
+						dispatch({
+							type: 'setParam',
+							payload: {
+								userId: _userId
+							}
+						});
+                        dispatch({ type: 'buyCourse' })
+					} else {
+						dispatch({
+							type: 'setParam',
+							payload: {
+								userId: ''
+							}
+						});
+						dispatch({ type: 'getCourse' })
+					}
 				}
 			});
 		}
@@ -47,6 +72,27 @@ export default {
 		*getCourse({ payload }, { call, put, select }) {
             const { startTime, endTime, pageNum, pageSize } = yield select(state => state.specialCourse);
             const res = yield call(api.getCourse, filterObj({ startTime, endTime, pageNum, pageSize }));
+			if (res) {
+                yield put({
+					type: 'save',
+					payload: {
+                        tableData: [],
+                        totalCount: 0
+					}
+				})
+				yield put({
+					type: 'save',
+					payload: {
+                        tableData: (res.data.data) ? res.data.data.data : [],
+                        totalCount: (res.data.data) ? res.data.data.totalCount : 0
+					}
+				})
+			}
+		},
+
+		*buyCourse({ payload }, { call, put, select }) {
+			const { userId } = yield select(state => state.specialCourse);
+            const res = yield call(api.buyCourse, userId);
 			if (res) {
                 yield put({
 					type: 'save',

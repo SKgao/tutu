@@ -5,7 +5,10 @@ import { axios } from '@/configs/request';
 
 export default {
 	// 精品课程列表
-    getCourse: data => axios.post('course/list', data),
+	getCourse: data => axios.post('course/list', data),
+
+	// 已买精品课程列表
+    buyCourse: data => axios.get('/course/course/list/' + data, data),
 
     // 精品课程列表下拉框
 	getCourseList: data => axios.post('course/list/down', data),

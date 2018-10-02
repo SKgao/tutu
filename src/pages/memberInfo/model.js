@@ -59,7 +59,6 @@ export default {
 		*getMember({ payload }, { call, put, select }) {
 			const _state = yield select(state => state.memberInfo);
 			const idArr = _state.userLevelIds.filter(e => e);
-			console.log(_state)
 			const res = yield call(api.getMember, filterObj({
 				userLevelIds: idArr.length ? idArr.map(e => e - 0) : '',
 				expireStartTime: _state.expireStartTime,

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import moment from 'moment';
@@ -36,6 +37,13 @@ const Member = ({
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
+        }, {
+            title: '是否购买精品课程',
+            dataIndex: 'hasBuyTextbook',
+            sorter: true,
+            render: (txt) => {
+                return txt === 0 ? '未购买' : '已购买'
+            }
         }, {
             title: '会员开始时间',
             dataIndex: 'payTime',
@@ -96,7 +104,10 @@ const Member = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
-                    <Button type="primary" size="small" onClick={() => handleUsing(record)}>启用</Button>
+                    {
+                        record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
+                    }
+                    <Button type="primary" size="small" style={{ marginLeft: 5 }} onClick={() => handleUsing(record)}>启用</Button>
                     <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
                 </span>
             }
@@ -125,6 +136,14 @@ const Member = ({
 
     const _tableCols = (activeKey === '0') ? columns : infoColumns
     const _tableList = (activeKey === '0') ? memberList : feedList
+
+    // 调转到关卡页面
+    const linktoCourse= (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/specialCourse',
+            search: `userId=${record.tutuNumber}`
+        }))
+    }
 
     // 操作分页
     const handleChange = (param) => {

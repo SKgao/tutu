@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
@@ -22,7 +23,7 @@ const SpecialCourse = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, beginAt, endAt, pageSize, pageNum } = specialCourse;
+    let { tableData, modalShow, beginAt, endAt, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
     let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -127,11 +128,72 @@ const SpecialCourse = ({
 				}
 			}
         }, {
-            title: '有效期开始时间',
+            title: '开课方式',
+            dataIndex: 'type',
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改用户角色'}
+					valueData={[{
+                       id: '1',
+                       name: '统一开课'
+                    }, {
+                        id: '2',
+                        name: '购买生效'
+                    }]}
+					optionKey={'id'}
+                    optionItem={'name'}
+                    valueData={text === 1 ? '统一开课' : '购买生效'}
+					defaultValue={text === 1 ? '统一开课' : '购买生效'}
+					onOk={v =>
+						dispatch({
+							type: 'specialCourse/updateCourse',
+							payload: {
+								textbookId: record.textbookId,
+								type: type - 0
+							}
+						})
+					}/>
+        }, {
+            title: '预售开始时间',
+            dataIndex: 'saleBeginAt',
+            render: (text, record) =>
+				<TablePopoverLayout
+                title={`修改预售开始时间`}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'specialCourse/updateCourse',
+							payload: {
+								textbookId: record.textbookId,
+								saleBeginAt: v
+							}
+						})
+					}/>
+        }, {
+            title: '预售开始时间',
+            dataIndex: 'saleEndAt',
+            render: (text, record) =>
+				<TablePopoverLayout
+                title={`修改预售开始时间`}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'specialCourse/updateCourse',
+							payload: {
+								textbookId: record.textbookId,
+								saleEndAt: v
+							}
+						})
+					}/>
+        }, {
+            title: '开课时间',
             dataIndex: 'beginAt',
             render: (text, record) =>
 				<TablePopoverLayout
-                title={`修改开始时间--格式如${moment().format("YYYY-MM-DD HH:mm:ss")}`}
+                title={`修改开课时间--格式如${moment().format("YYYY-MM-DD HH:mm:ss")}`}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>
@@ -144,11 +206,11 @@ const SpecialCourse = ({
 						})
 					}/>
         }, {
-            title: '有效期截止时间',
+            title: '结课时间',
             dataIndex: 'endAt',
             render: (text, record) =>
 				<TablePopoverLayout
-					title={`修改截止时间--格式如${moment().format("YYYY-MM-DD HH:mm:ss")}`}
+					title={`修改结课时间--格式如${moment().format("YYYY-MM-DD HH:mm:ss")}`}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>
@@ -254,17 +316,29 @@ const SpecialCourse = ({
                 values.orgAmt && (values.orgAmt = values.orgAmt * 100);
                 values.amt && (values.amt = values.amt * 100);
                 values.num && (values.num = values.num - 0);
+                values.type && (values.type = values.type - 0);
                 values.status && (values.status = values.status - 0);
                 values.textbookId && (values.textbookId = values.textbookId - 0);
                 values.iconDetail = iconDetail;
                 values.iconTicket = iconTicket;
                 let _begin = new Date(beginAt).getTime()
                 let _end = new Date(endAt).getTime()
+                let _begin2 = new Date(saleBeginAt).getTime()
+                let _end2 = new Date(saleEndAt).getTime()
                 if (_begin > _end) {
                     message.warning('开始时间不能大于结束时间')
+                } else if (_begin2 > _end2) {
+                    message.warning('预售开始时间不能大于预售结束时间')
                 } else {
-                    values.beginAt = beginAt
-                    values.endAt = endAt
+                    if (type === '1') {
+                        values.beginAt = beginAt
+                        values.endAt = endAt
+                    } else {
+                        values.beginAt = ''
+                        values.endAt = ''
+                    }
+                    values.saleBeginAt = saleBeginAt
+                    values.saleEndAt = saleEndAt
                     dispatch({
                         type: 'specialCourse/addCourse',
                         payload: filterObj(values)
@@ -276,6 +350,7 @@ const SpecialCourse = ({
 
     // 设置表单时间
     const onChangeDate = (a, b, c) => {
+        console.log(c, b)
         dispatch({
     		type: 'specialCourse/setParam',
     		payload: {
@@ -314,6 +389,9 @@ const SpecialCourse = ({
         })
     }
 
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -325,6 +403,12 @@ const SpecialCourse = ({
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加精品课程</Button>
                     </FormItem>
+
+                    {
+                        userId && <FormItem>
+                            <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
+                        </FormItem>
+                    }
 
                 </Form>
 
@@ -360,33 +444,33 @@ const SpecialCourse = ({
                         </FormItem>
 
                         <FormItem
-                            label="开始时间"
+                            label="预售开始时间"
                             {...formItemLayout}
                             >
-                            {getFieldDecorator('beginAt', {
-                                rules: [{ required: true, message: '请选择开始时间!' }],
+                            {getFieldDecorator('saleBeginAt', {
+                                rules: [{ required: true, message: '请选择预售开始时间!' }],
                             })(
                                 <DatePicker
                                     showTime
                                     format="YYYY-MM-DD HH:mm:ss"
-                                    placeholder="请选择开始时间"
-                                    onChange={ (a, b) => onChangeDate(a, b, 'beginAt') }
+                                    placeholder="请选择预售开始时间"
+                                    onChange={ (a, b) => onChangeDate(a, b, 'saleBeginAt') }
                                     />
                             )}
                         </FormItem>
 
                         <FormItem
-                            label="截止时间"
+                            label="预售截止时间"
                             {...formItemLayout}
                             >
-                            {getFieldDecorator('endAt', {
-                                rules: [{ required: true, message: '请选择截止时间!' }],
+                            {getFieldDecorator('saleEndAt', {
+                                rules: [{ required: true, message: '请选择预售截止时间!' }],
                             })(
                                 <DatePicker
                                     showTime
                                     format="YYYY-MM-DD HH:mm:ss"
-                                    placeholder="请选择截止时间"
-                                    onChange={ (a, b) => onChangeDate(a, b, 'endAt') }
+                                    placeholder="请选择预售截止时间"
+                                    onChange={ (a, b) => onChangeDate(a, b, 'saleEndAt') }
                                     />
                             )}
                         </FormItem>
@@ -415,6 +499,58 @@ const SpecialCourse = ({
                                 </RadioGroup>
                             )}
                         </FormItem>
+
+                        <FormItem
+                            {...formItemLayout}
+                            label="课程状态"
+                            >
+                            {getFieldDecorator('type', {
+                                initialValue: type
+                            })(
+                                <RadioGroup onChange={ (e) => onChangeDate('', e.target.value, 'type') }>
+                                    <Radio value="1" key="1">统一开课</Radio>
+                                    <Radio value="2" key="2">购买生效</Radio>
+                                </RadioGroup>
+                            )}
+                        </FormItem>
+
+                        {
+                            type ===  '1' &&
+                            <FormItem
+                                label="开课时间"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('beginAt', {
+                                    rules: [{ required: true, message: '请选择开课时间!' }],
+                                })(
+                                    <DatePicker
+                                        showTime
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择开课时间"
+                                        onChange={ (a, b) => onChangeDate(a, b, 'beginAt') }
+                                        />
+                                )}
+                            </FormItem>
+                        }
+
+                        {
+                            type ===  '1' &&
+                            <FormItem
+                                label="结课时间"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('endAt', {
+                                    rules: [{ required: true, message: '请选择结课时间!' }],
+                                })(
+                                    <DatePicker
+                                        showTime
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择结课时间"
+                                        onChange={ (a, b) => onChangeDate(a, b, 'endAt') }
+                                        />
+                                )}
+                            </FormItem>
+                        }
 
                         <FormItem
                             label="原始金额"
@@ -488,7 +624,7 @@ const SpecialCourse = ({
                 scrollX={true}
                 dataSource={tableData}
                 allColumns={columns}
-                loading={ loading.effects['specialCourse/getCourse'] }
+                loading={ loading.effects['specialCourse/getCourse'] || loading.effects['specialCourse/getCourse'] }
                 />
 
             <PaginationLayout
