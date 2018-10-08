@@ -172,11 +172,11 @@ const SpecialCourse = ({
 						})
 					}/>
         }, {
-            title: '预售开始时间',
+            title: '预售截止时间',
             dataIndex: 'saleEndAt',
             render: (text, record) =>
 				<TablePopoverLayout
-                title={`修改预售开始时间`}
+                title={`修改预售截止时间`}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>

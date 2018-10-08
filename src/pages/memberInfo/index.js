@@ -138,7 +138,7 @@ const MemberInfo = ({
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
                     {/*时间*/}
-                    <FormItem label="注册时间">
+                    <FormItem label="开始时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
                             placeholder={['开始时间', '截止时间']}
