@@ -114,6 +114,23 @@ const SpecialCourse = ({
 						})
 					}/>
         }, {
+            title: '课程数量',
+            dataIndex: 'num',
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改课程数量'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'specialCourse/updateCourse',
+							payload: {
+								textbookId: record.textbookId,
+								num: v - 0
+							}
+						})
+					}/>
+        }, {
             title: '课程状态',
             dataIndex: 'status',
             sorter: true,
@@ -223,6 +240,22 @@ const SpecialCourse = ({
 						})
 					}/>
         }, {
+        	title: '修改详情图',
+        	dataIndex: 'updateicon1',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeIcon(url, record, 'iconDetail')
+                }}></MyUpload>
+            }
+        },{
+        	title: '修改优惠卷图',
+        	dataIndex: 'updateicon2',
+            render: (text, record, index) => {
+                return <MyUpload uploadTxt={'选择图片'} uploadSuccess={(url) => {
+                    changeIcon(url, record, 'iconTicket')
+                }}></MyUpload>
+            }
+        },{
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
@@ -240,6 +273,17 @@ const SpecialCourse = ({
             }
         }
     ]
+
+    // 修改图片
+    const changeIcon = (url, record, filed) => {
+        dispatch({
+    		type: 'specialCourse/updateCourse',
+    		payload: {
+                textbookId: record.textbookId,
+                [filed]: url
+            }
+    	})
+    }
 
     // 删除活动
     const handleDelete = (record) => {

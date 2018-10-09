@@ -50,6 +50,9 @@ const MemberInfo = ({
             title: '会员到期时间',
             dataIndex: 'exprieTime',
         }, {
+            title: '注册时间',
+            dataIndex: 'createdAt'
+        }, {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
@@ -138,7 +141,7 @@ const MemberInfo = ({
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
                     {/*时间*/}
-                    <FormItem label="开始时间">
+                    <FormItem label="注册时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
                             placeholder={['开始时间', '截止时间']}
@@ -152,7 +155,7 @@ const MemberInfo = ({
                     </FormItem>
 
                     {/*时间*/}
-                    <FormItem label="过期时间">
+                    <FormItem label="会员到期时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
                             placeholder={['开始时间', '截止时间']}
