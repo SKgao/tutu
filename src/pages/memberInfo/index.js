@@ -126,6 +126,17 @@ const MemberInfo = ({
     }
 
     // 时间选择
+    const datepickerChange2 = (d, t) => {
+        dispatch({
+        	type: 'memberInfo/setParam',
+        	payload: {
+                payStartTime: t[0] ? t[0] + ':00' : '',
+                payEndTime: t[1] ? t[1] + ':00' : ''
+            }
+        })
+    }
+
+    // 时间选择
     const datepickerChangeReg = (d, t) => {
         dispatch({
         	type: 'memberInfo/setParam',
@@ -140,7 +151,6 @@ const MemberInfo = ({
 		<div>
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
-                    {/*时间*/}
                     <FormItem label="注册时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"
@@ -154,7 +164,19 @@ const MemberInfo = ({
                             />
                     </FormItem>
 
-                    {/*时间*/}
+                    <FormItem label="会员开始时间">
+                        <RangePicker
+                            format="YYYY-MM-DD HH:mm"
+                            placeholder={['开始时间', '截止时间']}
+                            showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
+                            }}
+                            format="YYYY-MM-DD HH:mm"
+                            onChange={datepickerChange2}
+                            />
+                    </FormItem>
+
                     <FormItem label="会员到期时间">
                         <RangePicker
                             format="YYYY-MM-DD HH:mm"

@@ -14,6 +14,8 @@ export default {
         totalCount: 0,
         expireStartTime: '', // 会员到期起始时间
 		expireEndTime : '',  // 会员到期截止时间
+		payStartTime: '',  // 会员开始起始时间
+		payEndTime: '',    // 会员开始截止时间
 		registerStartTime: '', // 会员注册起始时间
 		registerEndTime: '',   // 会员注册截止时间
 		userLevel: '', // 用户等级
@@ -41,6 +43,8 @@ export default {
 							userLevelIds: [],
 							expireStartTime: '', // 会员起始时间
 							expireEndTime : '',  // 会员截止时间
+							payStartTime: '',  // 会员开始起始时间
+		                    payEndTime: '',    // 会员开始截止时间
 							registerStartTime: '', // 会员注册起始时间
 		                    registerEndTime: '',   // 会员注册截止时间
 							bookVersionId: '',
@@ -61,6 +65,8 @@ export default {
 				userLevelIds: idArr.length ? idArr.map(e => e - 0) : '',
 				expireStartTime: _state.expireStartTime,
 				expireEndTime: _state.expireEndTime,
+				payStartTime: _state.payStartTime,
+				payEndTime: _state.payEndTime,
 				registerStartTime: _state.registerStartTime,
 				registerEndTime: _state.registerEndTime,
 				pageNum: _state.pageNum,
