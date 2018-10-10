@@ -37,7 +37,7 @@ const UnitPart = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'partPass/updatePass',
+							type: 'unitPart/updatePart',
 							payload: {
 								id: record.id,
 								title: v
@@ -68,7 +68,7 @@ const UnitPart = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'partPass/updatePass',
+							type: 'unitPart/updatePart',
 							payload: {
 								id: record.id,
 								tips: v

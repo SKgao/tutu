@@ -104,8 +104,8 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-                        tableData: (res.data.data) ? res.data.data.data : [],
-                        totalCount: (res.data.data) ? res.data.data.totalCount : 0
+                        tableData: (res.data) ? res.data.data : [],
+                        totalCount: (res.data) ? res.data.totalCount : 0
 					}
 				})
 			}
