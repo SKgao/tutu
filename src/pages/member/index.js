@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import PaginationLayout from '@/components/PaginationLayout';
-import TablePopoverLayout from '@/components/TablePopoverLayout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs } from 'antd';
-import activity from '../activity';
+import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -39,6 +37,13 @@ const Member = ({
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
+        }, {
+            title: '是否购买精品课程',
+            dataIndex: 'hasBuyTextbook',
+            sorter: true,
+            render: (txt) => {
+                return txt === 0 ? '未购买' : '已购买'
+            }
         }, {
             title: '会员开始时间',
             dataIndex: 'payTime',
@@ -99,7 +104,10 @@ const Member = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
-                    <Button type="primary" size="small" onClick={() => handleUsing(record)}>启用</Button>
+                    {
+                        record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
+                    }
+                    <Button type="primary" size="small" style={{ marginLeft: 5 }} onClick={() => handleUsing(record)}>启用</Button>
                     <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
                 </span>
             }
@@ -128,6 +136,14 @@ const Member = ({
 
     const _tableCols = (activeKey === '0') ? columns : infoColumns
     const _tableList = (activeKey === '0') ? memberList : feedList
+
+    // 调转到关卡页面
+    const linktoCourse= (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/specialCourse',
+            search: `userId=${record.tutuNumber}`
+        }))
+    }
 
     // 操作分页
     const handleChange = (param) => {
@@ -174,16 +190,6 @@ const Member = ({
         })
     }
 
-    // 选择时间框
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'member/setParam',
-        	payload: {
-                startTime: t[0] ? t[0] + ':00' : '',
-                endTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
 
     // 选择下拉框
     const changeSelect = (v) => {
@@ -222,7 +228,40 @@ const Member = ({
         } else if (key === '1') {
             dispatch({ type: 'member/getFeedList' })
         }
-	}
+    }
+
+    // 时间选择
+    const datepickerChange = (d, t) => {
+        dispatch({
+        	type: 'member/setParam',
+        	payload: {
+                expireStartTime: t[0] ? t[0] + ':00' : '',
+                expireEndTime: t[1] ? t[1] + ':00' : ''
+            }
+        })
+    }
+
+    // 时间选择
+    const datepickerChange2 = (d, t) => {
+        dispatch({
+        	type: 'member/setParam',
+        	payload: {
+                payStartTime: t[0] ? t[0] + ':00' : '',
+                payEndTime: t[1] ? t[1] + ':00' : ''
+            }
+        })
+    }
+
+    // 时间选择
+    const datepickerChangeReg = (d, t) => {
+        dispatch({
+        	type: 'member/setParam',
+        	payload: {
+                registerStartTime: t[0] ? t[0] + ':00' : '',
+                registerEndTime: t[1] ? t[1] + ':00' : ''
+            }
+        })
+    }
 
 	return (
 		<div>
@@ -231,21 +270,65 @@ const Member = ({
 				activeKey={activeKey}
 				onChange={handleTabChange}
             >
-            <TabPane tab="会员列表" key="0">
+            <TabPane tab="用户列表" key="0">
                 <FormInlineLayout>
                     <Form layout="inline" style={{ marginLeft: 15 }}>
-                        {/*时间*/}
-                        {/* <FormItem label="时间">
+                        <FormItem label="注册时间">
                             <RangePicker
                                 format="YYYY-MM-DD HH:mm"
+                                placeholder={['开始时间', '截止时间']}
                                 showTime={{
-                                    huserLeveleDisabledOptions: true,
-                                    defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                                    hideDisabledOptions: true,
+                                    defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
+                                }}
+                                format="YYYY-MM-DD HH:mm"
+                                onChange={datepickerChangeReg}
+                                />
+                        </FormItem>
+
+                        <FormItem label="会员开始时间">
+                            <RangePicker
+                                format="YYYY-MM-DD HH:mm"
+                                placeholder={['开始时间', '截止时间']}
+                                showTime={{
+                                    hideDisabledOptions: true,
+                                    defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
+                                }}
+                                format="YYYY-MM-DD HH:mm"
+                                onChange={datepickerChange2}
+                                />
+                        </FormItem>
+
+                        <FormItem label="会员到期时间">
+                            <RangePicker
+                                format="YYYY-MM-DD HH:mm"
+                                placeholder={['开始时间', '截止时间']}
+                                showTime={{
+                                    hideDisabledOptions: true,
+                                    defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                 }}
                                 format="YYYY-MM-DD HH:mm"
                                 onChange={datepickerChange}
                                 />
-                        </FormItem> */}
+                        </FormItem>
+
+                        {/*会员等级*/}
+                        <FormItem label="会员等级">
+                            <Select
+                                mode="multiple"
+                                showSearch
+                                onFocus={() => dispatch({type: 'member/getMemberLevel'})}
+                                placeholder="请选择会员等级"
+                                style={{ minWidth: 150, width: '100%' }}
+                                onChange={v => changeSelect({ userLevelIds: v })}
+                                >
+                                {
+                                    memberLevelList.map(item =>
+                                        <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
+                                    )
+                                }
+                            </Select>
+                        </FormItem>
 
                         {/*图图号*/}
                         <FormItem label="图图号">
@@ -255,22 +338,6 @@ const Member = ({
                         {/*手机号*/}
                         <FormItem label="手机号">
                             <Input placeholder="输入手机号" value={member.mobile} onChange={(e) => handleInput(e, 'mobile')}/>
-                        </FormItem>
-
-                        {/*会员等级*/}
-                        <FormItem label="会员等级">
-                            <Select
-                                showSearch
-                                onFocus={() => dispatch({type: 'member/getMemberLevel'})}
-                                placeholder="请选择会员等级"
-                                onChange={v => changeSelect({ userLevel: v })}
-                                >
-                                {
-                                    memberLevelList.map(item =>
-                                        <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
-                                    )
-                                }
-                            </Select>
                         </FormItem>
 
                         {/*性别*/}
@@ -347,18 +414,28 @@ const Member = ({
                 loading={ loading.effects['member/getMember'] }
                 scrollX={true}
                 />
-            <PaginationLayout
-                total={totalCount}
-                onChange={(page, pageSize) => handleChange({
-                    pageNum: page,
-                    pageSize
-                })}
-                onShowSizeChange={(current, pageSize) => handleChange({
-                    pageNum: 1,
-                    pageSize
-                })}
-                current={pageNum}
-                pageSize={pageSize} />
+
+            <div className="main-pagination">
+                {
+                    totalCount > 0 ? <div className="pagination-info">总人数 <span className="mr10">{totalCount}</span> 第 <span>{pageNum}</span> / {Math.ceil(totalCount/pageSize)} 页</div> : null
+                }
+                <Pagination
+                    showSizeChanger
+                    showQuickJumper
+                    hideOnSinglePage
+                    pageSizeOptions={['10', '20', '50', '100']}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    total={totalCount}
+                    current={pageNum}
+                    pageSize={pageSize} />
+            </div>
 		</div>
 	)
 };

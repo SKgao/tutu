@@ -31,12 +31,30 @@ const Authmenu = ({
 				title={'修改菜单名称'}
 				valueData={text || '0'}
 				defaultValue={text || '0'}
-				onOk={v => 
+				onOk={v =>
 					dispatch({
 						type: 'authmenu/updateMenu',
 						payload: {
 							id: record.id,
 							parentId: v - 0
+						}
+					})
+				}/>
+        }, {
+        	title: '菜单排序id',
+        	dataIndex: 'sortValue',
+			sorter: true,
+			render: (text, record) =>
+				<TablePopoverLayout
+				title={'修改菜单排序'}
+				valueData={text || '0'}
+				defaultValue={text || '0'}
+				onOk={v =>
+					dispatch({
+						type: 'authmenu/updateMenu',
+						payload: {
+							id: record.id,
+							sortValue: v - 0
 						}
 					})
 				}/>
@@ -60,7 +78,7 @@ const Authmenu = ({
 					optionKey={'id'}
 					optionItem={'name'}
 					defaultValue={text || 0}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'authmenu/updateMenu',
 							payload: {
@@ -77,7 +95,7 @@ const Authmenu = ({
 					title={'修改菜单名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'authmenu/updateMenu',
 							payload: {
@@ -94,7 +112,7 @@ const Authmenu = ({
 					title={'修改菜单路径'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'authmenu/updateMenu',
 							payload: {
@@ -110,7 +128,7 @@ const Authmenu = ({
 			render: (txt) => {
 				switch (txt) {
 					case 1:
-						return <Badge status="processing" text="正常"/>;	
+						return <Badge status="processing" text="正常"/>;
 					case 2:
 						return <Badge status="warning" text="不可用"/>;
 					default:
@@ -125,7 +143,7 @@ const Authmenu = ({
 					title={'修改url'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'authmenu/updateMenu',
 							payload: {
@@ -142,7 +160,7 @@ const Authmenu = ({
 					title={'修改icon'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'authmenu/updateMenu',
 							payload: {
@@ -169,7 +187,7 @@ const Authmenu = ({
             }
         }
     ]
-    
+
     /**
      * 删除菜单
      * @param  {object} 列数据
@@ -188,7 +206,7 @@ const Authmenu = ({
     		payload: filterObj(menuinfo)
     	})
     }
-    
+
     // 展示modal
     const changeModalState = (show) => {
         dispatch({
@@ -198,7 +216,7 @@ const Authmenu = ({
 			}
         })
     }
-	
+
 	// 输入框收入
 	const handleInput = (e) => {
 		dispatch({
@@ -233,7 +251,7 @@ const Authmenu = ({
 	return (
 		<div>
 			<FormInlineLayout>
-			    <Form layout="inline" style={{ marginLeft: 15 }}>				
+			    <Form layout="inline" style={{ marginLeft: 15 }}>
 					{/*菜单名*/}
                     <FormItem label="菜单名">
                         <Input placeholder="输入菜单名" value={menuName} onChange={(e) => handleInput(e)}/>
@@ -257,7 +275,7 @@ const Authmenu = ({
                 onCancel= { () => changeModalState(false) }
                 footer={null}
                 >
-                <VaildForm 
+                <VaildForm
 					submitForm={submitForm}
 					resetForm={() => changeModalState(false)}
 					>

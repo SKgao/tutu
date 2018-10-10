@@ -31,7 +31,7 @@ const PartPass = ({
 					title={'修改关卡标题'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'partPass/updatePass',
 							payload: {
@@ -67,7 +67,7 @@ const PartPass = ({
 					title={'修改关卡顺序'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'partPass/updatePass',
 							payload: {
@@ -102,7 +102,7 @@ const PartPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.id}`       
+            search: `customsPassId=${record.id}`
         }));
 
         // dispatch({
@@ -115,7 +115,7 @@ const PartPass = ({
         // localStorage.setItem('firPath', ['114'])
         // localStorage.setItem('secPath', ['/subjects'])
     }
-    
+
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -137,7 +137,7 @@ const PartPass = ({
             }
     	})
     }
-    
+
     // 展示modal
     const changeModalState = (show) => {
         dispatch({
@@ -187,7 +187,7 @@ const PartPass = ({
 
     // 返回
     const goBack = () => dispatch(routerRedux.goBack(-1))
-   
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -229,7 +229,7 @@ const PartPass = ({
                         >
                         {getFieldDecorator('icon', {
                             rules: [{
-                                message: '请上传关卡图片!', 
+                                message: '请上传关卡图片!',
                                 whitespace: true
                             }],
                         })(
@@ -242,9 +242,10 @@ const PartPass = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('partsId', {
+                            initialValue: partPass.partsId,
                             rules: [{ required: true, message: '请输入partsId!', whitespace: true }],
                         })(
-                            <Input placeholder="请输入partsId"/>
+                            <Input/>
                         )}
                     </FormItem>
 
@@ -293,7 +294,7 @@ const PartPass = ({
                 allColumns={columns}
                 />
             {
-                partPass.totalCount && 
+                partPass.totalCount &&
                 <PaginationLayout
                     total={partPass.totalCount}
                     onChange={(page, pageSize) => handleChange({
@@ -316,4 +317,3 @@ PartPass.propTypes = {
 };
 
 export default connect(({ partPass }) => ({ partPass }))(Form.create()(PartPass));
-	

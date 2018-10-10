@@ -98,6 +98,7 @@ export default {
 		},
 
 		*setauthRole({ payload }, { call, put }) {
+			//payload.menuIds.push(1, 111, 112, 113, 118 , 121, 133, 115, 139, 138, 137);
 			const pay = {
 				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0

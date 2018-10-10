@@ -7,7 +7,8 @@ export default {
 
 	state: {
         appList: [], // app列表
-        verList: [], // 版本列表
+		verList: [], // 版本列表
+		iosList: [], // ios列表
 		appname: '', // app类型
 		activeKey: '0',
 		startTime: '',
@@ -16,7 +17,8 @@ export default {
 		modalShow: false,
 		pageSize: 10,
 		pageNum: 1,
-		totalCount: 0
+		totalCount: 0,
+		ios: ''
 	},
 
 	subscriptions: {
@@ -31,7 +33,8 @@ export default {
 							totalCount: 0,
 							startTime: '',
 							endTime: '',
-							appTypeId: ''
+							appTypeId: '',
+							ios: ''
 						}
 					});
 					dispatch({ type: 'getAppList' });
@@ -135,6 +138,18 @@ export default {
 					payload: {
 						modalShow: false
 					}
+				})
+			}
+		},
+
+		*getIos({ payload = {} }, { call, put }) {
+            const res = yield call(api.getIos, filterObj(payload));
+		    if (res) {
+				const res = yield call(api.getIos, payload);
+				payload.ios && message.success(res.data.message);
+				yield put({
+					type: 'save',
+					ios: res.data.data
 				})
 			}
 		},

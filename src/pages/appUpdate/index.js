@@ -23,7 +23,7 @@ const AppverUpdate = ({
 	...props
 }) => {
 	let { dispatch, form } = props;
-	let { appList, verList, activeKey, startTime, endTime, appname, modalShow, appTypeId, pageNum, pageSize, totalCount } = appver;
+	let { appList, verList, iosList, activeKey, startTime, endTime, appname, modalShow, appTypeId, pageNum, pageSize, totalCount } = appver;
 	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
 	let appColumns = [
@@ -115,9 +115,28 @@ const AppverUpdate = ({
 		}
 	];
 
+	let iosColumns = [{
+		title: 'App名称',
+		dataIndex: 'name'
+	}, {
+		title: '状态',
+		dataIndex: 'status',
+		sorter: true,
+		render: (txt) => {
+			switch (txt) {
+				case 1:
+					return <Badge status="processing" text="正常"/>;
+				case 2:
+					return <Badge status="warning" text="不可用"/>;
+				default:
+					return <Badge status="warning" text="删除"/>;
+			}
+		}
+	}]
+
 	// 表格列配置
-	let allColumns = (activeKey === '0') ? appColumns : verColumns;
-	let dataSource = (activeKey === '0') ? appList : verList;
+	let allColumns = (activeKey === '0') ? appColumns : (activeKey === '1') ? verColumns : iosColumns;
+	let dataSource = (activeKey === '0') ? appList : (activeKey === '1') ? verList : iosList;
 
     /**
      * 删除App、版本类型
@@ -178,14 +197,14 @@ const AppverUpdate = ({
 			}
 		})
 		if (key === '0') {
-            dispatch({
-				type: 'appver/getAppList'
-			})
+            dispatch({ type: 'appver/getAppList' })
 		} else if (key === '1') {
 			dispatch({
 				type: 'appver/getVerList',
 				payload: filterObj({ appTypeId, startTime, endTime, pageNum, pageSize })
 			})
+		} else if (key === '2') {
+			dispatch({ type: 'appver/getIos' })
 		}
 	}
 
@@ -243,6 +262,16 @@ const AppverUpdate = ({
 			payload: {
 				appTypeId: val.appname
 			}
+		})
+	}
+
+	// 筛选ios操作
+	const changeIostype = (val) => {
+		dispatch({
+			type: 'appver/setParam',
+			payload: val
+		}).then(() => {
+            dispatch({ type: 'appver/getIos', payload: val })
 		})
 	}
 
@@ -308,6 +337,7 @@ const AppverUpdate = ({
 			}
 		})
 	}
+
 
 	return (
 		<div>
@@ -456,14 +486,39 @@ const AppverUpdate = ({
 						</Form>
 					</Modal>
 				</TabPane>
-			</Tabs>
 
-			<TableLayout
-			    loading={ loading.effects['appver/getAppList'] }
-				dataSource={dataSource}
-				allColumns={allColumns}
-				pagination={false}
-			/>
+				<TabPane tab="IOS审核" key="2">
+					<FormInlineLayout>
+						<Form layout="inline" style={{ marginLeft: 15 }}>
+							<FormItem label="状态">
+							    {/* <Select
+									showSearch
+									value={appver.ios}
+                                    onChange={v => changeIostype({ ios: v })}
+                                    >
+                                    <Option key="" value="">查询结果</Option>
+									<Option key="1" value="1">提交审核</Option>
+									<Option key="2" value="2">正式使用</Option>
+                                </Select> */}
+
+								<RadioGroup value={appver.ios ? appver.ios + '' : '2'} onChange={e => changeIostype({ ios: e.target.value - 0 })}>
+									<Radio value="1">提交审核</Radio>
+									<Radio value="2">正式使用</Radio>
+								</RadioGroup>
+							</FormItem>
+						</Form>
+					</FormInlineLayout>
+				</TabPane>
+			</Tabs>
+            {
+				activeKey === '2' ? null :
+				<TableLayout
+					loading={ loading.effects['appver/getAppList'] || loading.effects['appver/getIos'] || loading.effects['appver/getVerList']  }
+					dataSource={dataSource}
+					allColumns={allColumns}
+					pagination={false}
+				/>
+			}
             {
 				activeKey === '1' &&
 				<PaginationLayout

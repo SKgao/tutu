@@ -35,9 +35,9 @@ const UnitPart = ({
 					title={'修改part名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
-							type: 'partPass/updatePass',
+							type: 'unitPart/updatePart',
 							payload: {
 								id: record.id,
 								title: v
@@ -66,9 +66,9 @@ const UnitPart = ({
 					title={'修改part描述'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
-							type: 'partPass/updatePass',
+							type: 'unitPart/updatePart',
 							payload: {
 								id: record.id,
 								tips: v
@@ -90,7 +90,7 @@ const UnitPart = ({
         }
     ]
 
-    
+
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -120,7 +120,7 @@ const UnitPart = ({
             }
     	})
     }
-    
+
     // 展示modal
     const changeModalState = (show) => {
         dispatch({
@@ -153,7 +153,7 @@ const UnitPart = ({
             })
         });
     }
-    
+
     // 操作分页
     const handleChange = (param) => {
         dispatch({
@@ -171,7 +171,7 @@ const UnitPart = ({
 
     // 返回
     const goBack = () => dispatch(routerRedux.goBack(-1))
-   
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -213,7 +213,7 @@ const UnitPart = ({
                         >
                         {getFieldDecorator('icon', {
                             rules: [{
-                                message: '请上传part图片!', 
+                                message: '请上传part图片!',
                                 whitespace: true
                             }],
                         })(
@@ -226,9 +226,10 @@ const UnitPart = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('unitsId', {
+                            initialValue: unitPart.unitId,
                             rules: [{ required: true, message: '请输入单元id!', whitespace: true }],
                         })(
-                            <Input placeholder="请输入单元id"/>
+                            <Input/>
                         )}
                     </FormItem>
 
@@ -277,4 +278,3 @@ UnitPart.propTypes = {
 };
 
 export default connect(({ unitPart }) => ({ unitPart }))(Form.create()(UnitPart));
-	
