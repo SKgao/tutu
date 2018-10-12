@@ -109,18 +109,17 @@ export default {
 				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0
 			}
-			console.log(pay)
-			// const res = yield call(api.setauthRole, pay);
-			// if (res) {
-			// 	message.success(res.data.message);
-			// 	yield put({ type: 'app/fetch' });
-			// 	yield put({
-			// 		type: 'save',
-			// 		payload: {
-			// 			modal2Show: false
-			// 		}
-			// 	});
-			// }
+			const res = yield call(api.setauthRole, pay);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'app/fetch' });
+				yield put({
+					type: 'save',
+					payload: {
+						modal2Show: false
+					}
+				});
+			}
 		},
 
 		*menusRole({ payload }, { call }) {
