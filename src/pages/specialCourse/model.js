@@ -1,5 +1,6 @@
 import api from './service';
 import api_authmenu from '@/pages/authmenu/service';
+import api_teachingManage from '@/pages/teachingManage/book/service';
 import { filterObj } from '@/utils/tools';
 import { message } from 'antd';
 
@@ -7,7 +8,8 @@ export default {
 	namespace: 'specialCourse',
 
 	state: {
-        tableData: [],
+		tableData: [],
+		bookList: [],
         pageNum: 1,
         pageSize: 20,
 		totalCount: 0,
@@ -110,6 +112,21 @@ export default {
 				})
 			}
 		},
+
+		*getBooklist({ payload }, { call, put, select }) {
+			const res = yield call(api_teachingManage.getBook, {
+                pageNum: 1,
+                pageSize: 100
+			});
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						bookList: (res.data.data) ? res.data.data.data : []
+					}
+				})
+			}
+        },
 
 		*addCourse({ payload }, { call, put }) {
 			const res = yield call(api.addCourse, payload);

@@ -23,7 +23,7 @@ const SpecialCourse = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, beginAt, endAt, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
+    let { tableData, modalShow, bookList, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
     let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -466,13 +466,23 @@ const SpecialCourse = ({
                     >
                     <Form>
                         <FormItem
-                            label="教程id"
                             {...formItemLayout}
+                            label="课程id"
                             >
                             {getFieldDecorator('textbookId', {
-                                rules: [{ required: true, message: '请输入教程id!' }],
+                                rules: [{ required: true, message: '请选择课程id!' }],
                             })(
-                                <Input placeholder="请输入教程id"/>
+                                <Select
+                                    showSearch
+                                    onFocus={() => dispatch({type: 'specialCourse/getBooklist'})}
+                                    placeholder="请选择课程"
+                                    >
+                                    {
+                                        bookList.map(item =>
+                                            <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                                        )
+                                    }
+                                </Select>
                             )}
                         </FormItem>
 

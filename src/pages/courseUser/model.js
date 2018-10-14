@@ -1,5 +1,6 @@
 import api from './service';
 import { message } from 'antd';
+import api_teachingManage from '@/pages/teachingManage/book/service';
 import { filterObj } from '@/utils/tools';
 
 export default {
@@ -10,7 +11,8 @@ export default {
         bookList: [],
         pageSize: 10,
         pageNum: 1,
-        totalCount: 0,
+		totalCount: 0,
+		modalShow: false,
 		sex: '',  // 性别
         tutuNumber: '', // 图图号
         realName: '',
@@ -67,22 +69,28 @@ export default {
 			const res = yield call(api.addMember, payload);
 			if (res) {
 				message.success(res.data.message);
+				yield put({
+					type: 'save',
+					payload: {
+						modalShow: false
+					}
+				});
 				yield put({ type: 'getMember'})
 			}
         },
 
         *getBooklist({ payload }, { call, put, select }) {
-			const res = yield call(api.getBooklist, filterObj({
-				pageNum: 1,
-				pageSize: 1000
-			}));
+			const res = yield call(api_teachingManage.getBook, {
+                pageNum: 1,
+                pageSize: 100
+			});
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
 						bookList: (res.data.data) ? res.data.data.data : []
 					}
-				});
+				})
 			}
         },
 

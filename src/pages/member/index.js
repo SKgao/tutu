@@ -410,9 +410,9 @@ const Member = ({
                                 <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                             </FormItem>
 
-                            <FormItem>
+                            {/* <FormItem>
                                 <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加用户</Button>
-                            </FormItem>
+                            </FormItem> */}
 
                         </Form>
                     </FormInlineLayout>

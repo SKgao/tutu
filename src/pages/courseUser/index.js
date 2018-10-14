@@ -188,8 +188,8 @@ const CourseUser = ({
                         onChange={v => changeSelect({ textbookId: v })}
                         >
                         {
-                            [{textbookId: '', textbookName: '全部'}, ...bookList].map(item =>
-                                <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
+                            [{id: '', name: '全部'}, ...bookList].map(item =>
+                                <Option key={item.id} value={item.id}>{item.name + ''}</Option>
                             )
                         }
                     </Select>
@@ -300,8 +300,8 @@ const CourseUser = ({
                                 placeholder="请选择精品课程"
                                 >
                                 {
-                                    bookList.map(item =>
-                                        <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
+                                    [{id: '', name: '全部'}, ...bookList].map(item =>
+                                        <Option key={item.id} value={item.id}>{item.name + ''}</Option>
                                     )
                                 }
                             </Select>
