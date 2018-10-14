@@ -5,7 +5,7 @@ import { axios } from '@/configs/request';
 
 export default {
 	// 会员列表
-    getMember: data => axios.post('member/list', data),
+    getMember: data => axios.post('member/all/list', data),
 
     // 精品课程列表
 	getBooklist: data => axios.post('course/list', data),

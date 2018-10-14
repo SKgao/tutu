@@ -11,13 +11,13 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const Order = ({
-    order,
+const CouOrder = ({
+    couOrder,
     loading,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, courseList, tutuNumber, startTime, endTime, levelList } = order;
+    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, courseList, tutuNumber, startTime, endTime, levelList } = couOrder;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -74,21 +74,21 @@ const Order = ({
     // 操作分页
     const handleChange = (param) => {
         dispatch({
-    		type: 'order/setParam',
+    		type: 'couOrder/setParam',
     		payload: param
         })
-        dispatch({ type: 'order/getOrder' })
+        dispatch({ type: 'couOrder/getOrder' })
     }
 
     // 搜索
     const handleSearch = (param) => {
-        dispatch({ type: 'order/getOrder' })
+        dispatch({ type: 'couOrder/getOrder' })
     }
 
     // 选择时间框
     const datepickerChange = (d, t) => {
         dispatch({
-        	type: 'order/setParam',
+        	type: 'couOrder/setParam',
         	payload: {
                 startTime: t[0] + ':00',
                 endTime: t[1] + ':00'
@@ -99,7 +99,7 @@ const Order = ({
     // 输入框
     const handleInput = (e, m) => {
         dispatch({
-    		type: 'order/setParam',
+    		type: 'couOrder/setParam',
     		payload: {
                 [m]: e.target.value
             }
@@ -109,7 +109,7 @@ const Order = ({
     // 选择下拉框
     const changeSelect = (v) => {
     	dispatch({
-    		type: 'order/setParam',
+    		type: 'couOrder/setParam',
     		payload: v
     	})
     }
@@ -141,22 +141,6 @@ const Order = ({
                         <Input placeholder="输入订单号" value={orderNo} onChange={(e) => handleInput(e, 'orderNo')}/>
                     </FormItem>
 
-                    {/*会员等级*/}
-                    <FormItem label="会员等级">
-                        <Select
-                            showSearch
-                            onFocus={() => dispatch({type: 'order/getMemberLevel'})}
-                            placeholder="请选择会员等级"
-                            onChange={v => changeSelect({ itemId: v })}
-                            >
-                            {
-                                [{userLevel: '', levelName: '全部'}, ...levelList].map(item =>
-                                    <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
-                                )
-                            }
-                        </Select>
-                    </FormItem>
-
                     {/*支付类型*/}
                     <FormItem label="支付类型">
                         <Select
@@ -185,28 +169,12 @@ const Order = ({
                         </Select>
                     </FormItem>
 
-                    {/*活动筛选*/}
-                    <FormItem label="活动筛选">
-                        <Select
-                            showSearch
-                            placeholder="请选择活动"
-                            onFocus={() => dispatch({type: 'order/activeSelect'})}
-                            onChange={v => changeSelect({activityId: v})}
-                            >
-                            {
-                                selectList.map(item =>
-                                    <Option key={item.id} value={item.id}>{item.title}</Option>
-                                )
-                            }
-                        </Select>
-                    </FormItem>
-
                     {/*精品课程*/}
                     <FormItem label="精品课程">
                         <Select
                             showSearch
                             placeholder="请选择精品课程"
-                            onFocus={() => dispatch({type: 'order/courseSelect'})}
+                            onFocus={() => dispatch({type: 'couOrder/courseSelect'})}
                             onChange={v => changeSelect({textbookId: v})}
                             >
                             {
@@ -228,7 +196,7 @@ const Order = ({
                 pagination={false}
                 dataSource={orderList}
                 allColumns={columns}
-                loading={ loading.effects['order/getOrder'] }
+                loading={ loading.effects['couOrder/getOrder'] }
                 scrollX={true}
                 />
             <PaginationLayout
@@ -247,8 +215,8 @@ const Order = ({
 	)
 };
 
-Order.propTypes = {
-    order: PropTypes.object
+CouOrder.propTypes = {
+    couOrder: PropTypes.object
 };
 
-export default connect(({ order, loading }) => ({ order, loading }))(Form.create()(Order));
+export default connect(({ couOrder, loading }) => ({ couOrder, loading }))(Form.create()(CouOrder));
