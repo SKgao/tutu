@@ -54,6 +54,7 @@ export default {
 						}
 					});
 					dispatch({ type: 'getMember' });
+					dispatch({ type: 'getMemberLevel' });
 				}
 			})
 		},
@@ -141,6 +142,14 @@ export default {
 
 		*addMember({ payload }, { call, put }) {
 			const res = yield call(api.addMember, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getMember'})
+			}
+		},
+
+		*vipadd({ payload }, { call, put }) {
+			const res = yield call(api.vipadd, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getMember'})

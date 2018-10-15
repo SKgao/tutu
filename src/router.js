@@ -101,13 +101,13 @@ const Routers = ({
 		},
 		{
 			path: '/couOrder',
-			component: () => import(/* webpackChunkName: "courseOrder" */ './pages/courseOrder/index'),
-			models: () => [import(/* webpackChunkName: "courseOrder" */ './pages/courseOrder/model')]
+			component: () => import(/* webpackChunkName: "courseOrder" */ './pages/courseOrder/index'),
+			models: () => [import(/* webpackChunkName: "courseOrder" */ './pages/courseOrder/model')]
 		},
 		{
 			path: '/couUser',
-			component: () => import(/* webpackChunkName: "courseUser" */ './pages/courseUser/index'),
-			models: () => [import(/* webpackChunkName: "courseUser" */ './pages/courseUser/model')]
+			component: () => import(/* webpackChunkName: "courseUser" */ './pages/courseUser/index'),
+			models: () => [import(/* webpackChunkName: "courseUser" */ './pages/courseUser/model')]
 		}
 	]
 

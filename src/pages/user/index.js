@@ -43,7 +43,7 @@ const UserSetting = ({
 					title={'修改手机号'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'userSetting/updateUser',
 							payload: {
@@ -60,7 +60,7 @@ const UserSetting = ({
 					title={'修改邮箱'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'userSetting/updateUser',
 							payload: {
@@ -77,7 +77,7 @@ const UserSetting = ({
 					title={'修改姓名'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'userSetting/updateUser',
 							payload: {
@@ -92,10 +92,18 @@ const UserSetting = ({
         	sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改性别'}
-					valueData={ (text == 1) ? '男' : (text == 2) ? '女' : '未知' }
+                    title={'修改性别'}
+                    optionKey={'id'}
+					optionItem={'name'}
+					valueData={[{
+                        id: 1,
+                        name: '男'
+                    }, {
+                        id: 2,
+                        name: '女'
+                    }]}
 					defaultValue={ (text == 1) ? '男' : (text == 2) ? '女' : '未知' }
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'userSetting/updateUser',
 							payload: {
@@ -116,7 +124,7 @@ const UserSetting = ({
 					optionKey={'id'}
 					optionItem={'name'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'userSetting/updateUser',
 							payload: {
@@ -144,7 +152,7 @@ const UserSetting = ({
 						return <Badge status="error" text="已删除"/>;
 				}
 			}
-        }, 
+        },
         {
         	title: '上传头像',
         	dataIndex: 'updateicon',
@@ -153,17 +161,17 @@ const UserSetting = ({
                     changeIcon(url, record)
                 }}></MyUpload>
             }
-        }, 
+        },
         {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.status !== 1 && 
-                        <Button 
-                           type="primary" 
-                           size="small" 
+                        record.status !== 1 &&
+                        <Button
+                           type="primary"
+                           size="small"
                            onClick={() => handleUsing(record)}>
                            { record.status === 2 ? '启用' : '恢复' }
                         </Button>
@@ -171,7 +179,7 @@ const UserSetting = ({
 					{
                         record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
                     }
-                    
+
                     <Button size="small" style={{ marginLeft: 5 }} onClick={() => {
                         dispatch({
                             type: 'userSetting/setParam',
@@ -200,7 +208,7 @@ const UserSetting = ({
             }
     	})
     }
-    
+
     /**
      * 删除用户
      * @param  {object} 列数据
@@ -243,7 +251,7 @@ const UserSetting = ({
             }
     	})
     }
-    
+
     // 选择时间框
     const datepickerChange = (d, t) => {
         dispatch({
@@ -269,7 +277,7 @@ const UserSetting = ({
     		payload: { account, startTime, endTime, pageNum: 1, pageSize: 10 }
     	})
     }
-    
+
     // 展示modal
     const changeModalState = (modal, show) => {
         dispatch({
@@ -300,7 +308,7 @@ const UserSetting = ({
     		type: 'userSetting/setParam',
     		payload: param
         })
-        dispatch({ 
+        dispatch({
             type: 'userSetting/getUser',
             payload: { account, startTime, endTime, ...param }
         })
@@ -316,7 +324,7 @@ const UserSetting = ({
 			}
 		})
     }
-    
+
     // 修改密码
 	const handlePassword = (e) => {
 		e.preventDefault();
@@ -324,7 +332,7 @@ const UserSetting = ({
 			if (!err) {
 				if (values.password2 !== values.password) {
                     message.warning('两次密码输入不一样！')
-                } else {    
+                } else {
                     dispatch({
                         type: 'userSetting/updateUser',
                         payload: {
@@ -380,7 +388,7 @@ const UserSetting = ({
                 cancelText="取消"
                 footer={null}
                 >
-                <VaildForm 
+                <VaildForm
                     submitForm={submitForm}
                     getRoleList={getRoleList}
                     roleList={roleList}
@@ -458,4 +466,3 @@ UserSetting.propTypes = {
 };
 
 export default connect(({ userSetting, loading }) => ({ userSetting, loading }))(Form.create()(UserSetting));
-	

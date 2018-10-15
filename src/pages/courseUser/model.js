@@ -69,18 +69,12 @@ export default {
 			const res = yield call(api.addMember, payload);
 			if (res) {
 				message.success(res.data.message);
-				yield put({
-					type: 'save',
-					payload: {
-						modalShow: false
-					}
-				});
-				yield put({ type: 'getMember'})
+				yield put({ type: 'getUser'})
 			}
         },
 
         *getBooklist({ payload }, { call, put, select }) {
-			const res = yield call(api_teachingManage.getBook, {
+			const res = yield call(api.getBooklist, {
                 pageNum: 1,
                 pageSize: 100
 			});

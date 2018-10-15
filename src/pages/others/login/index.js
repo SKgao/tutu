@@ -31,8 +31,8 @@ const Login = ({
 	return (
 		<div className="form">
 		    <div className="logo">
-			    <img src="../../../assets/tutu_logo.png"/>
-				<span>图图英语</span>
+			    <img src="//test.web.admin.tutukids.com/static/assets/logo.png"/>
+				{/* <span>图图英语</span> */}
 			</div>
 			<form>
 				<FormItem hasFeedback>

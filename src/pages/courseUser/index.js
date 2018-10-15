@@ -48,6 +48,11 @@ const CourseUser = ({
             sorter: true,
             render: (text) => <span>{ text === 1 ? '男' :  '女' }</span>
         }, {
+            title: '付款金额',
+            dataIndex: 'payAmt',
+            sorter: true,
+            render: (text) => (Number(text) / 100).toFixed(2) + '元'
+        }, {
             title: '购买时间',
             dataIndex: 'buyAt'
         }, {
@@ -160,6 +165,8 @@ const CourseUser = ({
                 dispatch({
                     type: 'courseUser/addMember',
                     payload: filterObj(values)
+                }).then(() => {
+                    handleReset()
                 })
 			}
 		});
@@ -188,8 +195,8 @@ const CourseUser = ({
                         onChange={v => changeSelect({ textbookId: v })}
                         >
                         {
-                            [{id: '', name: '全部'}, ...bookList].map(item =>
-                                <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                            [{textbookId: '', textbookName: '全部'}, ...bookList].map(item =>
+                                <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
                             )
                         }
                     </Select>
@@ -256,7 +263,7 @@ const CourseUser = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('mobile', {
-                            rules: [{ required: true, message: '请输入手机号!' }],
+                            rules: [{ required: true, message: '手机号格式有误!', pattern: /^[1][3,4,5,7,8][0-9]{9}$/ }],
                         })(
                             <Input placeholder="请输入手机号"/>
                         )}
@@ -300,8 +307,8 @@ const CourseUser = ({
                                 placeholder="请选择精品课程"
                                 >
                                 {
-                                    [{id: '', name: '全部'}, ...bookList].map(item =>
-                                        <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                                    bookList.map(item =>
+                                        <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
                                     )
                                 }
                             </Select>

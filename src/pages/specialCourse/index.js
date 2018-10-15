@@ -160,7 +160,6 @@ const SpecialCourse = ({
                     }]}
 					optionKey={'id'}
                     optionItem={'name'}
-                    valueData={text === 1 ? '统一开课' : '购买生效'}
 					defaultValue={text === 1 ? '统一开课' : '购买生效'}
 					onOk={v =>
 						dispatch({

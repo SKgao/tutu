@@ -95,6 +95,16 @@ const ValidForm = ({
         })
     }
 
+    // 输入内容
+    const handleContent = e => {
+        dispatch({
+            type: 'sourcematerial/setParam',
+            payload: {
+                content: e.target.value
+            }
+        })
+    }
+
     return (
         <div>
             <Form onSubmit={handleSubmit}>
@@ -130,7 +140,7 @@ const ValidForm = ({
                         initialValue: sourcematerial.content,
                         rules: [{ required: true, message: '请输入素材内容!', whitespace: true }],
                     })(
-                        <Input placeholder="请上传素材图片、音频" readOnly/>
+                        <Input placeholder="请上传素材图片、音频" onChange={e => handleContent(e)}/>
                     )}
                 </FormItem>
 

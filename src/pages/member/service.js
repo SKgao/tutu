@@ -26,5 +26,8 @@ export default {
     forbiddenMember: data => axios.get('member/forbidden/' + data.id, data),
 
     // 会员反馈信息
-    getFeedList: data => axios.post('member/feed/list', data)
+    getFeedList: data => axios.post('member/feed/list', data),
+
+    // 开通vip
+    vipadd: data => axios.post('/member/vip/add', data),
 }

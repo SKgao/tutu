@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
+import TablePopoverLayout from '@/components/TablePopoverLayout';
 import TableLayout from '@/components/TableLayout';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
@@ -40,6 +41,25 @@ const Member = ({
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
+        }, {
+            title: '开通会员',
+            dataIndex: 'vipadd',
+            render: (text, record) =>
+				<TablePopoverLayout
+                    title={'开通会员'}
+                    optionKey={'userLevel'}
+					optionItem={'levelName'}
+                    valueData={memberLevelList.slice(1)}
+					defaultValue={ record.userLevelName ? record.userLevelName : '无' }
+					onOk={v =>
+						dispatch({
+							type: 'member/vipadd',
+							payload: {
+								userId: record.userId - 0,
+								userLevel: v - 0
+							}
+						})
+					}/>
         }, {
             title: '是否购买精品课程',
             dataIndex: 'hasBuyTextbook',
