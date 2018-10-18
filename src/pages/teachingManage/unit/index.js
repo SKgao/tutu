@@ -50,6 +50,24 @@ const BookUnit = ({
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
         }, {
+        	title: '单元排序',
+            dataIndex: 'sort',
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改单元排序'}
+					valueData={text + '' || '无'}
+					defaultValue={text + '' || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'bookUnit/updateUnit',
+							payload: {
+								id: record.id,
+								sort: v
+							}
+						})
+					}/>
+        }, {
         	title: '上传封面图',
         	dataIndex: 'updateicon',
             render: (text, record, index) => {

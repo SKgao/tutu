@@ -160,7 +160,7 @@ export default {
 		},
 
 		*updateCourse({ payload }, { call, put, select }) {
-            const res = yield call(api.updateCourse, payload);
+            const res = yield call(api.updateCourse, filterObj(payload));
 			if (res) {
                 message.success(res.data.message);
                 yield put({ type: 'getCourse' });

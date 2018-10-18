@@ -150,12 +150,12 @@ const SpecialCourse = ({
             sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改用户角色'}
+					title={'修改开课方式'}
 					valueData={[{
-                       id: '1',
+                       id: 1,
                        name: '统一开课'
                     }, {
-                        id: '2',
+                        id: 2,
                         name: '购买生效'
                     }]}
 					optionKey={'id'}
@@ -166,7 +166,9 @@ const SpecialCourse = ({
 							type: 'specialCourse/updateCourse',
 							payload: {
 								textbookId: record.textbookId,
-								type: type - 0
+                                type: v - 0,
+                                beginAt: (v === 1) ? record.beginAt : '',
+                                endAt: (v === 1) ? record.endAt : ''
 							}
 						})
 					}/>
