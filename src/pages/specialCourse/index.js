@@ -167,8 +167,8 @@ const SpecialCourse = ({
 							payload: {
 								textbookId: record.textbookId,
                                 type: v - 0,
-                                beginAt: (v === 1) ? record.beginAt : '',
-                                endAt: (v === 1) ? record.endAt : ''
+                                beginAt: (v == 1) ? record.beginAt : '',
+                                endAt: (v == 1) ? record.endAt : ''
 							}
 						})
 					}/>

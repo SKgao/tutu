@@ -159,11 +159,9 @@ const UnitPart = ({
         dispatch({
     		type: 'unitPart/setParam',
     		payload: param
+        }).then(() => {
+            dispatch({ type: 'unitPart/getPart' })
         })
-        dispatch({
-    		type: 'unitPart/getPart',
-    		payload: param
-    	})
     }
 
     // 文件上传成功
