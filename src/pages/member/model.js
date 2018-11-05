@@ -6,8 +6,9 @@ export default {
 	namespace: 'member',
 
 	state: {
-        memberList: [],
+        bookList: [],
 		memberLevelList: [],
+		bookList: [],
 		feedList: [],    // 反馈列表
         pageSize: 10,
         pageNum: 1,
@@ -24,6 +25,7 @@ export default {
 		sex: '',  // 性别
 		tutuNumber: '', // 图图号
 		mobile: '',     // 手机号
+		modalShow: false,
 		hasSetPassword: '',   // 是否设置密码
 		activeKey: '0',       // 默认选中tabs
 	},
@@ -52,6 +54,7 @@ export default {
 						}
 					});
 					dispatch({ type: 'getMember' });
+					dispatch({ type: 'getMemberLevel' });
 				}
 			})
 		},
@@ -86,6 +89,21 @@ export default {
 					}
 				});
 			}
+		},
+
+		*getBooklist({ payload }, { call, put, select }) {
+			const res = yield call(api.getBooklist, filterObj({
+				pageNum: 1,
+				pageSize: 1000
+			}));
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						bookList: (res.data.data) ? res.data.data.data : []
+					}
+				});
+			}
         },
 
         *getMemberLevel({ payload }, { call, put }) {
@@ -114,9 +132,28 @@ export default {
 			}
 		},
 
-		*updateUserLevel({ payload }, { call }) {
+		*updateUserLevel({ payload }, { call, put }) {
 			const res = yield call(api.updateUserLevel, payload);
-			res && message.success(res.data.message);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getMember'})
+			}
+		},
+
+		*addMember({ payload }, { call, put }) {
+			const res = yield call(api.addMember, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getMember'})
+			}
+		},
+
+		*vipadd({ payload }, { call, put }) {
+			const res = yield call(api.vipadd, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getMember'})
+			}
 		},
 
 		*startMember({ payload }, { call }) {

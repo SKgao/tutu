@@ -23,7 +23,7 @@ const SpecialCourse = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, beginAt, endAt, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
+    let { tableData, modalShow, bookList, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
     let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -150,24 +150,25 @@ const SpecialCourse = ({
             sorter: true,
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改用户角色'}
+					title={'修改开课方式'}
 					valueData={[{
-                       id: '1',
+                       id: 1,
                        name: '统一开课'
                     }, {
-                        id: '2',
+                        id: 2,
                         name: '购买生效'
                     }]}
 					optionKey={'id'}
                     optionItem={'name'}
-                    valueData={text === 1 ? '统一开课' : '购买生效'}
 					defaultValue={text === 1 ? '统一开课' : '购买生效'}
 					onOk={v =>
 						dispatch({
 							type: 'specialCourse/updateCourse',
 							payload: {
 								textbookId: record.textbookId,
-								type: type - 0
+                                type: v - 0,
+                                beginAt: (v == 1) ? record.beginAt : '',
+                                endAt: (v == 1) ? record.endAt : ''
 							}
 						})
 					}/>
@@ -466,13 +467,23 @@ const SpecialCourse = ({
                     >
                     <Form>
                         <FormItem
-                            label="教程id"
                             {...formItemLayout}
+                            label="课程id"
                             >
                             {getFieldDecorator('textbookId', {
-                                rules: [{ required: true, message: '请输入教程id!' }],
+                                rules: [{ required: true, message: '请选择课程id!' }],
                             })(
-                                <Input placeholder="请输入教程id"/>
+                                <Select
+                                    showSearch
+                                    onFocus={() => dispatch({type: 'specialCourse/getBooklist'})}
+                                    placeholder="请选择课程"
+                                    >
+                                    {
+                                        bookList.map(item =>
+                                            <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                                        )
+                                    }
+                                </Select>
                             )}
                         </FormItem>
 

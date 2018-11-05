@@ -98,6 +98,16 @@ const Routers = ({
 			path: '/specialCourse',
 			component: () => import(/* webpackChunkName: "specialCourse" */ './pages/specialCourse/index'),
 			models: () => [import(/* webpackChunkName: "specialCourse" */ './pages/specialCourse/model')]
+		},
+		{
+			path: '/couOrder',
+			component: () => import(/* webpackChunkName: "courseOrder" */ './pages/courseOrder/index'),
+			models: () => [import(/* webpackChunkName: "courseOrder" */ './pages/courseOrder/model')]
+		},
+		{
+			path: '/couUser',
+			component: () => import(/* webpackChunkName: "courseUser" */ './pages/courseUser/index'),
+			models: () => [import(/* webpackChunkName: "courseUser" */ './pages/courseUser/model')]
 		}
 	]
 

@@ -2,13 +2,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
+import TablePopoverLayout from '@/components/TablePopoverLayout';
 import TableLayout from '@/components/TableLayout';
+import { filterObj } from '@/utils/tools';
+import { formItemLayout } from '@/configs/layout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination } from 'antd';
+import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination, Radio} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
 
 const Member = ({
@@ -17,8 +21,8 @@ const Member = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey} = member;
-    let { getFieldDecorator, getFieldValue } = form;
+    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, bookList} = member;
+    let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
         {
@@ -37,6 +41,25 @@ const Member = ({
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
+        }, {
+            title: '开通会员',
+            dataIndex: 'vipadd',
+            render: (text, record) =>
+				<TablePopoverLayout
+                    title={'开通会员'}
+                    optionKey={'userLevel'}
+					optionItem={'levelName'}
+                    valueData={memberLevelList.slice(1)}
+					defaultValue={ record.userLevelName ? record.userLevelName : '无' }
+					onOk={v =>
+						dispatch({
+							type: 'member/vipadd',
+							payload: {
+								userId: record.userId - 0,
+								userLevel: v - 0
+							}
+						})
+					}/>
         }, {
             title: '是否购买精品课程',
             dataIndex: 'hasBuyTextbook',
@@ -263,6 +286,43 @@ const Member = ({
         })
     }
 
+    // 展示modal
+    const changeModalState = (flag, show) => {
+        dispatch({
+        	type: 'member/setParam',
+        	payload: {
+                [flag]: show
+            }
+        })
+    }
+
+    // 添加用户信息
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		validateFieldsAndScroll((err, values) => {
+			if (!err) {
+                values.sex && (values.sex = values.sex - 0);
+                values.textbookId && (values.textbookId = values.textbookId - 0);
+                values.payAmt && (values.payAmt = values.payAmt * 100);
+                dispatch({
+                    type: 'member/addMember',
+                    payload: filterObj(values)
+                })
+			}
+		});
+    }
+
+    // 表单取消
+    const handleReset  = () => {
+        resetFields()
+        dispatch({
+    		type: 'member/setParam',
+    		payload: {
+                modalShow: false
+    		}
+    	})
+    }
+
 	return (
 		<div>
             <Tabs
@@ -270,142 +330,233 @@ const Member = ({
 				activeKey={activeKey}
 				onChange={handleTabChange}
             >
-            <TabPane tab="用户列表" key="0">
-                <FormInlineLayout>
-                    <Form layout="inline" style={{ marginLeft: 15 }}>
-                        <FormItem label="注册时间">
-                            <RangePicker
-                                format="YYYY-MM-DD HH:mm"
-                                placeholder={['开始时间', '截止时间']}
-                                showTime={{
-                                    hideDisabledOptions: true,
-                                    defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
-                                }}
-                                format="YYYY-MM-DD HH:mm"
-                                onChange={datepickerChangeReg}
-                                />
-                        </FormItem>
+                <TabPane tab="用户列表" key="0">
+                    <FormInlineLayout>
+                        <Form layout="inline" style={{ marginLeft: 15 }}>
+                            <FormItem label="注册时间">
+                                <RangePicker
+                                    format="YYYY-MM-DD HH:mm"
+                                    placeholder={['开始时间', '截止时间']}
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm"
+                                    onChange={datepickerChangeReg}
+                                    />
+                            </FormItem>
 
-                        <FormItem label="会员开始时间">
-                            <RangePicker
-                                format="YYYY-MM-DD HH:mm"
-                                placeholder={['开始时间', '截止时间']}
-                                showTime={{
-                                    hideDisabledOptions: true,
-                                    defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
-                                }}
-                                format="YYYY-MM-DD HH:mm"
-                                onChange={datepickerChange2}
-                                />
-                        </FormItem>
+                            <FormItem label="会员开始时间">
+                                <RangePicker
+                                    format="YYYY-MM-DD HH:mm"
+                                    placeholder={['开始时间', '截止时间']}
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm"
+                                    onChange={datepickerChange2}
+                                    />
+                            </FormItem>
 
-                        <FormItem label="会员到期时间">
-                            <RangePicker
-                                format="YYYY-MM-DD HH:mm"
-                                placeholder={['开始时间', '截止时间']}
-                                showTime={{
-                                    hideDisabledOptions: true,
-                                    defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
-                                }}
-                                format="YYYY-MM-DD HH:mm"
-                                onChange={datepickerChange}
-                                />
-                        </FormItem>
+                            <FormItem label="会员到期时间">
+                                <RangePicker
+                                    format="YYYY-MM-DD HH:mm"
+                                    placeholder={['开始时间', '截止时间']}
+                                    showTime={{
+                                        hideDisabledOptions: true,
+                                        defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm"
+                                    onChange={datepickerChange}
+                                    />
+                            </FormItem>
 
-                        {/*会员等级*/}
-                        <FormItem label="会员等级">
+                            {/*会员等级*/}
+                            <FormItem label="会员等级">
+                                <Select
+                                    mode="multiple"
+                                    showSearch
+                                    onFocus={() => dispatch({type: 'member/getMemberLevel'})}
+                                    placeholder="请选择会员等级"
+                                    style={{ minWidth: 150, width: '100%' }}
+                                    onChange={v => changeSelect({ userLevelIds: v })}
+                                    >
+                                    {
+                                        memberLevelList.map(item =>
+                                            <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
+                                        )
+                                    }
+                                </Select>
+                            </FormItem>
+
+                            {/*图图号*/}
+                            <FormItem label="图图号">
+                                <Input placeholder="输入图图号" value={member.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
+                            </FormItem>
+
+                            {/*手机号*/}
+                            <FormItem label="手机号">
+                                <Input placeholder="输入手机号" value={member.mobile} onChange={(e) => handleInput(e, 'mobile')}/>
+                            </FormItem>
+
+                            {/*性别*/}
+                            <FormItem label="性别">
+                                <Select
+                                    showSearch
+                                    placeholder="请选择性别"
+                                    onChange={v => changeSelect({ sex: v })}
+                                    >
+                                    <Option key={0} value={''}>全部</Option>
+                                    <Option key={1} value={1}>男</Option>
+                                    <Option key={2} value={2}>女</Option>
+                                </Select>
+                            </FormItem>
+
+                            {/*是否设置密码*/}
+                            <FormItem label="是否设置密码">
+                                <Select
+                                    showSearch
+                                    placeholder="请选择是否设置密码"
+                                    onChange={v => changeSelect({ hasSetPassword: v })}
+                                    >
+                                    <Option key={0} value={''}>全部</Option>
+                                    <Option key={1} value={1}>是</Option>
+                                    <Option key={2} value={2}>否</Option>
+                                </Select>
+                            </FormItem>
+
+                            <FormItem>
+                                <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
+                            </FormItem>
+
+                            {/* <FormItem>
+                                <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加用户</Button>
+                            </FormItem> */}
+
+                        </Form>
+                    </FormInlineLayout>
+                </TabPane>
+
+                <TabPane tab="反馈信息" key="1">
+                    {/*时间*/}
+                    <FormInlineLayout>
+                        <Form layout="inline" style={{ marginLeft: 15 }}>
+                            <FormItem label="时间">
+                                <RangePicker
+                                    format="YYYY-MM-DD HH:mm"
+                                    showTime={{
+                                        huserLeveleDisabledOptions: true,
+                                        defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
+                                    }}
+                                    format="YYYY-MM-DD HH:mm"
+                                    onChange={datepickerChange}
+                                    />
+                            </FormItem>
+
+                            {/*图图号*/}
+                            <FormItem label="图图号">
+                                <Input placeholder="输入图图号" onChange={(e) => handleInput(e, 'tutuNumber')}/>
+                            </FormItem>
+
+                            {/*手机号*/}
+                            <FormItem label="手机号">
+                                <Input placeholder="输入手机号" onChange={(e) => handleInput(e, 'mobile')}/>
+                            </FormItem>
+
+                            <FormItem>
+                                <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
+                            </FormItem>
+                        </Form>
+                    </FormInlineLayout>
+                </TabPane>
+
+            </Tabs>
+
+            <Modal
+                title="新增用户"
+                visible={modalShow}
+                onCancel= { () => changeModalState('modalShow', false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <Form>
+                    <FormItem
+                        label="真实姓名"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('realName', {
+                            rules: [{ required: true, message: '请输入真实姓名!' }],
+                        })(
+                            <Input placeholder="请输入真实姓名"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="手机号"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('mobile', {
+                            rules: [{ required: true, message: '请输入手机号!' }],
+                        })(
+                            <Input placeholder="请输入手机号"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}
+                        label="性别"
+                        >
+                        {getFieldDecorator('sex', {
+                            initialValue: '1'
+                        })(
+                            <RadioGroup>
+                                <Radio value='1'>男</Radio>
+                                <Radio value='2'>女</Radio>
+                            </RadioGroup>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="付款金额"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('payAmt', {
+                            rules: [{ required: true, message: '请输入付款金额!' }],
+                        })(
+                            <Input placeholder="请输入付款金额"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        {...formItemLayout}
+                        label="精品课程"
+                        >
+                        {getFieldDecorator('textbookId', {
+                            rules: [{ required: true, message: '请选择精品课程!' }],
+                        })(
                             <Select
-                                mode="multiple"
                                 showSearch
-                                onFocus={() => dispatch({type: 'member/getMemberLevel'})}
-                                placeholder="请选择会员等级"
-                                style={{ minWidth: 150, width: '100%' }}
-                                onChange={v => changeSelect({ userLevelIds: v })}
+                                onFocus={() => dispatch({type: 'member/getBooklist'})}
+                                placeholder="请选择精品课程"
                                 >
                                 {
-                                    memberLevelList.map(item =>
-                                        <Option key={item.userLevel} value={item.userLevel}>{item.levelName}</Option>
+                                    bookList.map(item =>
+                                        <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
                                     )
                                 }
                             </Select>
-                        </FormItem>
+                        )}
+                    </FormItem>
 
-                        {/*图图号*/}
-                        <FormItem label="图图号">
-                            <Input placeholder="输入图图号" value={member.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
-                        </FormItem>
-
-                        {/*手机号*/}
-                        <FormItem label="手机号">
-                            <Input placeholder="输入手机号" value={member.mobile} onChange={(e) => handleInput(e, 'mobile')}/>
-                        </FormItem>
-
-                        {/*性别*/}
-                        <FormItem label="性别">
-                            <Select
-                                showSearch
-                                placeholder="请选择性别"
-                                onChange={v => changeSelect({ sex: v })}
-                                >
-                                <Option key={0} value={''}>全部</Option>
-                                <Option key={1} value={1}>男</Option>
-                                <Option key={2} value={2}>女</Option>
-                            </Select>
-                        </FormItem>
-
-                        {/*是否设置密码*/}
-                        <FormItem label="是否设置密码">
-                            <Select
-                                showSearch
-                                placeholder="请选择是否设置密码"
-                                onChange={v => changeSelect({ hasSetPassword: v })}
-                                >
-                                <Option key={0} value={''}>全部</Option>
-                                <Option key={1} value={1}>是</Option>
-                                <Option key={2} value={2}>否</Option>
-                            </Select>
-                        </FormItem>
-
-                        <FormItem>
-                            <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
-                        </FormItem>
-
-                    </Form>
-                </FormInlineLayout>
-            </TabPane>
-            <TabPane tab="反馈信息" key="1">
-                {/*时间*/}
-                <FormInlineLayout>
-                    <Form layout="inline" style={{ marginLeft: 15 }}>
-                        <FormItem label="时间">
-                            <RangePicker
-                                format="YYYY-MM-DD HH:mm"
-                                showTime={{
-                                    huserLeveleDisabledOptions: true,
-                                    defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
-                                }}
-                                format="YYYY-MM-DD HH:mm"
-                                onChange={datepickerChange}
-                                />
-                        </FormItem>
-
-                        {/*图图号*/}
-                        <FormItem label="图图号">
-                            <Input placeholder="输入图图号" onChange={(e) => handleInput(e, 'tutuNumber')}/>
-                        </FormItem>
-
-                        {/*手机号*/}
-                        <FormItem label="手机号">
-                            <Input placeholder="输入手机号" onChange={(e) => handleInput(e, 'mobile')}/>
-                        </FormItem>
-
-                        <FormItem>
-                            <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
-                        </FormItem>
-                    </Form>
-                </FormInlineLayout>
-            </TabPane>
-            </Tabs>
+                    <FormItem
+                        {...formItemLayout}>
+                        <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
+                        <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
+                    </FormItem>
+                </Form>
+            </Modal>
 
             <TableLayout
                 pagination={false}

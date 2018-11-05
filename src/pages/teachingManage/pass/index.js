@@ -19,7 +19,7 @@ const PartPass = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, subjectList, pageNum, pageSize} = partPass;
+    let { tableData, modalShow, subjectList, pageNum, pageSize, partsId} = partPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -175,11 +175,12 @@ const PartPass = ({
         dispatch({
     		type: 'partPass/setParam',
     		payload: param
-        })
-        dispatch({
-    		type: 'partPass/getPass',
-    		payload: param
-    	})
+        }).then(() => {
+            dispatch({
+                type: 'partPass/getPass',
+                payload: {partsId, ...param}
+            })
+        });
     }
 
     // 文件上传成功

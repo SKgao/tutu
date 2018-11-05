@@ -1,5 +1,6 @@
 import api from './service';
 import api_authmenu from '@/pages/authmenu/service';
+import { getField, flatten } from '@/utils/tools';
 import { message } from 'antd';
 
 export default {
@@ -15,6 +16,7 @@ export default {
 		roleid: '',    // 角色id
 		menuIds: [],   // 授权菜单
 		defaultCheckedKeys: [],  // 权限树默认选中
+		halfCheckedKeys: []
 	},
 
 	subscriptions: {
@@ -48,10 +50,15 @@ export default {
 		// 获取当前角色菜单
 		*getMenus({ payload }, { call, put, select }) {
 			const res = yield call(api.getMenus, payload);
+			const data = (res.data) ? res.data.data : [];
+			const _id1 = data.map(e => e.id);
+			const _id2 = flatten(getField(data, 'id'));
+			const _id = Array.from(new Set(_id1.concat(_id2)));
 			yield put({
 				type: 'save',
 				payload: {
-					defaultCheckedKeys: (res.data) ? res.data.data.map(e => e.id + '') : [],
+					defaultCheckedKeys: _id.map(e => e + ''),
+					halfCheckedKeys: _id1.map(e => e + ''),
 					modal2Show: true
 				}
 			});
@@ -98,14 +105,12 @@ export default {
 		},
 
 		*setauthRole({ payload }, { call, put }) {
-			//payload.menuIds.push(1, 111, 112, 113, 118 , 121, 133, 115, 139, 138, 137);
 			const pay = {
 				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0
 			}
 			const res = yield call(api.setauthRole, pay);
 			if (res) {
-				yield put({ type: 'app/fetch' });
 				message.success(res.data.message);
 				yield put({ type: 'app/fetch' });
 				yield put({

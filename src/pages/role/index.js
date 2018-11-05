@@ -13,7 +13,7 @@ const RoleSetting = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, modal2Show, account, siderList, defaultCheckedKeys } = roleSetting;
+    let { tableData, modalShow, modal2Show, account, siderList, defaultCheckedKeys, halfCheckedKeys } = roleSetting;
     let { getFieldDecorator, getFieldValue } = form;
 
     const columns = [
@@ -52,10 +52,13 @@ const RoleSetting = ({
 
     // 点击权限数
     const checkTree = (checkedKeys, e) => {
+        const _checked = Array.from(new Set(checkedKeys.concat(e.halfCheckedKeys)));
+        console.log(_checked)
         dispatch({
         	type: 'roleSetting/setParam',
         	payload: {
-                defaultCheckedKeys: checkedKeys
+                defaultCheckedKeys: checkedKeys,
+                halfCheckedKeys: Array.from(new Set(halfCheckedKeys.concat(e.halfCheckedKeys)))
             }
         })
     }
@@ -67,7 +70,8 @@ const RoleSetting = ({
         	payload: {
                 roleid: record.id,
                 rolename: record.name,
-                defaultCheckedKeys: []
+                defaultCheckedKeys: [],
+                halfCheckedKeys: []
             }
         })
         dispatch({
@@ -98,7 +102,7 @@ const RoleSetting = ({
             dispatch({
             	type: 'roleSetting/setauthRole',
             	payload: {
-            		menuIds: defaultCheckedKeys,
+            		menuIds: Array.from(new Set(halfCheckedKeys.concat(defaultCheckedKeys))),
             		roleId: roleSetting.roleid
             	}
             })

@@ -34,7 +34,7 @@ const BookUnit = ({
 					title={'修改单元名'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'bookUnit/updateUnit',
 							payload: {
@@ -49,6 +49,24 @@ const BookUnit = ({
             render: (text, record, index) => {
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
+        }, {
+        	title: '单元排序',
+            dataIndex: 'sort',
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改单元排序'}
+					valueData={text + '' || '无'}
+					defaultValue={text + '' || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'bookUnit/updateUnit',
+							payload: {
+								id: record.id,
+								sort: v
+							}
+						})
+					}/>
         }, {
         	title: '上传封面图',
         	dataIndex: 'updateicon',
@@ -74,8 +92,8 @@ const BookUnit = ({
             }
         }
     ]
-    
-    
+
+
     /**
      * 删除角色
      * @param  {object} 列数据
@@ -110,7 +128,7 @@ const BookUnit = ({
     const handleSearch = () => {
      	dispatch({ type: 'bookUnit/getUnit' })
     }
-    
+
     // 展示modal
     const changeModalState = (show) => {
         dispatch({
@@ -177,7 +195,7 @@ const BookUnit = ({
 
     // 返回
     const goBack = () => dispatch(routerRedux.goBack(-1))
-   
+
 	return (
 		<div>
 			<FormInlineLayout>
@@ -194,7 +212,7 @@ const BookUnit = ({
                             onChange={datepickerChange}
                             />
                     </FormItem>
-                    
+
                     {/*教材*/}
                     <FormItem label="教材">
                         <Select
@@ -253,7 +271,7 @@ const BookUnit = ({
                         >
                         {getFieldDecorator('icon', {
                             rules: [{
-                                message: '请上传单元封面图!', 
+                                message: '请上传单元封面图!',
                                 whitespace: true
                             }],
                         })(
@@ -316,4 +334,3 @@ BookUnit.propTypes = {
 };
 
 export default connect(({ bookUnit }) => ({ bookUnit }))(Form.create()(BookUnit));
-	

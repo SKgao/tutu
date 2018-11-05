@@ -12,7 +12,7 @@ body {
 	margin: -150px 0 0 -180px;
 	width: 360px;
 	height: 300px;
-	padding: 30px;
+	padding: 20px 30px;
 	background-color: rgba(255, 255, 255, .9);
 	box-shadow: 0 0 100px rgba(0, 0, 0, .5);
 	border-radius: 5px;
@@ -24,8 +24,9 @@ body {
 		justify-content: center;
 		align-items: center;
 		> img {
-			width: 72px;
+			width: 125px;
 			margin-right: 8px;
+			//background: url(./../../../assets/tutu_logo.png) no-repeat center;
 		}
 		> span {
 			vertical-align: text-bottom;
