@@ -22,7 +22,7 @@ const Member = ({
 }) => {
     let { dispatch, form } = props;
     let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, bookList} = member;
-    let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
         {
@@ -41,25 +41,6 @@ const Member = ({
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
-        }, {
-            title: '开通会员',
-            dataIndex: 'vipadd',
-            render: (text, record) =>
-				<TablePopoverLayout
-                    title={'开通会员'}
-                    optionKey={'userLevel'}
-					optionItem={'levelName'}
-                    valueData={memberLevelList.slice(1)}
-					defaultValue={ record.userLevelName ? record.userLevelName : '无' }
-					onOk={v =>
-						dispatch({
-							type: 'member/vipadd',
-							payload: {
-								userId: record.userId - 0,
-								userLevel: v - 0
-							}
-						})
-					}/>
         }, {
             title: '是否购买精品课程',
             dataIndex: 'hasBuyTextbook',
@@ -130,6 +111,7 @@ const Member = ({
                     {
                         record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
                     }
+                    <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleAddvip(record)}>开通会员</Button>
                     <Button type="primary" size="small" style={{ marginLeft: 5 }} onClick={() => handleUsing(record)}>启用</Button>
                     <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
                 </span>
@@ -166,6 +148,17 @@ const Member = ({
             pathname: '/specialCourse',
             search: `userId=${record.tutuNumber}`
         }))
+    }
+
+    // 开通会员
+    const handleAddvip= (record) => {
+        dispatch({
+            type: 'member/vipadd',
+            payload: {
+                userId: record.userId - 0,
+                userLevel: ''
+            }
+        })
     }
 
     // 操作分页

@@ -4,9 +4,12 @@ import qs from 'qs';
 import { message } from 'antd';
 
 const DEFAULT_TIMEOUT = 60000;
+// 正式接口
+// const REQ_URL = '//api.admin.tutukids.com/'
+// 测试接口
+const REQ_URL = '//test.api.admin.tutukids.com/'
 
-//axios.defaults.baseURL = '//test.api.admin.tutukids.com/';
-axios.defaults.baseURL = '//api.admin.tutukids.com'
+axios.defaults.baseURL = REQ_URL;
 //axios.defaults.withCredentials = true;
 axios.defaults.timeout = DEFAULT_TIMEOUT;
 
@@ -21,8 +24,6 @@ axios.interceptors.response.use(res => {
 	let msg = res.data.message
 	switch (code) {
 		case 45:
-			window.location.href = '#/login'
-			return false;
 		case 46:
 			window.location.href = '#/login'
 			return false;
@@ -43,9 +44,7 @@ axios.interceptors.response.use(res => {
 // }
 
 // admin端
-//export const BASIC_URL = '//test.api.admin.tutukids.com/'
-
-export const BASIC_URL = '//api.admin.tutukids.com'
+export const BASIC_URL = REQ_URL
 
 /**
  * jsonp方法

@@ -40,7 +40,7 @@ export default {
 	},
 
 	effects: {
-		  
+
 		*getPart({ payload }, { call, put, select }) {
 			const { pageNum, pageSize, startTime, endTime, unitId } = yield select(state => state.unitPart);
 			const _pay = (payload) ? payload : { pageNum, pageSize, startTime, endTime, unitId };
@@ -70,7 +70,7 @@ export default {
 				yield put({ type: 'getPart' });
 			}
 		},
-		
+
 		*updatePart({ payload }, { call, put, select }) {
 			const res = yield call(api.updatePart, payload);
 			if (res) {
@@ -106,4 +106,3 @@ export default {
 		}
 	},
 };
-	
