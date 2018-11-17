@@ -153,10 +153,11 @@ const Member = ({
     // 开通会员
     const handleAddvip= (record) => {
         dispatch({
-            type: 'member/vipadd',
-            payload: {
-                userId: record.userId - 0,
-                userLevel: ''
+    		type: 'member/setParam',
+    		payload: {
+                modalShow: true,
+                userid: record.tutuNumber,
+                realName: record.realName
             }
         })
     }
@@ -289,20 +290,19 @@ const Member = ({
         })
     }
 
-    // 添加用户信息
+    // 开通会员
 	const handleSubmit = (e) => {
-		e.preventDefault();
-		validateFieldsAndScroll((err, values) => {
-			if (!err) {
-                values.sex && (values.sex = values.sex - 0);
-                values.textbookId && (values.textbookId = values.textbookId - 0);
-                values.payAmt && (values.payAmt = values.payAmt * 100);
-                dispatch({
-                    type: 'member/addMember',
-                    payload: filterObj(values)
-                })
-			}
-		});
+        e.preventDefault();
+		dispatch({
+            type: 'member/vipadd',
+            payload: {
+                userId: member.userid - 0,
+                userLevel: member.addvips - 0
+            }
+        })
+        .then(() => {
+            this.handleReset()
+        })
     }
 
     // 表单取消
@@ -467,7 +467,7 @@ const Member = ({
             </Tabs>
 
             <Modal
-                title="新增用户"
+                title={ `给 ${member.realName} 开通会员` }
                 visible={modalShow}
                 onCancel= { () => changeModalState('modalShow', false) }
                 okText="确认"
@@ -476,67 +476,22 @@ const Member = ({
                 >
                 <Form>
                     <FormItem
-                        label="真实姓名"
                         {...formItemLayout}
-                        >
-                        {getFieldDecorator('realName', {
-                            rules: [{ required: true, message: '请输入真实姓名!' }],
-                        })(
-                            <Input placeholder="请输入真实姓名"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label="手机号"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('mobile', {
-                            rules: [{ required: true, message: '请输入手机号!' }],
-                        })(
-                            <Input placeholder="请输入手机号"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        {...formItemLayout}
-                        label="性别"
-                        >
-                        {getFieldDecorator('sex', {
-                            initialValue: '1'
-                        })(
-                            <RadioGroup>
-                                <Radio value='1'>男</Radio>
-                                <Radio value='2'>女</Radio>
-                            </RadioGroup>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label="付款金额"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('payAmt', {
-                            rules: [{ required: true, message: '请输入付款金额!' }],
-                        })(
-                            <Input placeholder="请输入付款金额"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        {...formItemLayout}
-                        label="精品课程"
+                        label="会员等级"
                         >
                         {getFieldDecorator('textbookId', {
-                            rules: [{ required: true, message: '请选择精品课程!' }],
+                            rules: [{ required: true, message: '请选择会员类型!' }],
                         })(
                             <Select
                                 showSearch
-                                onFocus={() => dispatch({type: 'member/getBooklist'})}
-                                placeholder="请选择精品课程"
+                                onFocus={() => dispatch({type: 'member/getMemberLevel'})}
+                                placeholder="请选择会员等级"
+                                style={{ minWidth: 150, width: '100%' }}
+                                onChange={v => changeSelect({ addvips: v })}
                                 >
                                 {
-                                    bookList.map(item =>
-                                        <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
+                                    memberLevelList.slice(1).map(item =>
+                                        <Option key={item.userLevel} value={item.userLevel}>{item.levelName + ''}</Option>
                                     )
                                 }
                             </Select>
@@ -545,7 +500,7 @@ const Member = ({
 
                     <FormItem
                         {...formItemLayout}>
-                        <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
+                        <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 50 }}>确认开通</Button>
                         <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
                     </FormItem>
                 </Form>
