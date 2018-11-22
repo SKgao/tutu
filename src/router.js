@@ -108,6 +108,11 @@ const Routers = ({
 			path: '/couUser',
 			component: () => import(/* webpackChunkName: "courseUser" */ './pages/courseUser/index'),
 			models: () => [import(/* webpackChunkName: "courseUser" */ './pages/courseUser/model')]
+		},
+		{
+			path: '/courseBag',
+			component: () => import(/* webpackChunkName: "courseBag" */ './pages/courseBag/index'),
+			models: () => [import(/* webpackChunkName: "courseBag" */ './pages/courseBag/model')]
 		}
 	]
 

@@ -5,14 +5,11 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
-import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination, Radio} from 'antd';
+import { Form, Input, Button, Modal, Select, Pagination, Radio} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
-const { RangePicker } = DatePicker;
 
 const CourseUser = ({
     courseUser,
@@ -21,7 +18,7 @@ const CourseUser = ({
 }) => {
     let { dispatch, form } = props;
     let { tableList, pageNum, pageSize, totalCount, modalShow, bookList} = courseUser;
-    let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const allColumns = [
         {

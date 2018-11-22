@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
 
@@ -24,7 +23,7 @@ const TeachingManage = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId, pageNum, pageSize, totalCount } = teachingmanage;
+    let { bookList, gradeList, versionList, modalShow, activeKey, bookVersionName, gradeName} = teachingmanage;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue } = form;
 
     // 表格配置
