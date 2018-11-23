@@ -51,7 +51,7 @@ const CourseBag = ({
 				switch (txt) {
 					case 1:
 						return <Badge status="processing" text="启用"/>;
-					case 2:
+					default:
                         return <Badge status="warning" text="禁用"/>;
 				}
 			}
@@ -63,15 +63,17 @@ const CourseBag = ({
                     changeIcon(url, record)
                 }}></MyUpload>
             }
-        }, {
+        },
+        {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, row, index) => {
                 return <span>
-                    <Button>
-                        type={row.status == 1 ? 'primary' : 'danger'}
+                    <Button
+                        type={row.status === 1 ? 'primary' : 'danger'}
                         size="small" style={{ marginLeft: 5 }}
-                        onClick={() => handleChangeStatus(row)}>{row.status ==1 ? '禁用' : '启用'}
+                        onClick={() => handleChangeStatus(row)}>
+                        {row.status === 1 ? '禁用' : '启用'}
                     </Button>
                     <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleDelete(row)}>删除</Button>
                 </span>
@@ -88,18 +90,13 @@ const CourseBag = ({
         dispatch({ type: 'courseBag/getBagList' })
     }
 
-    // 搜索
-    const handleSearch = (param) => {
-        dispatch({ type: 'courseBag/getBagList' })
-    }
-
     // 改变状态
     const handleChangeStatus = (row) => {
         dispatch({
             type: 'courseBag/changeStatus',
             payload: {
                 id: row.id - 0,
-                status: row.status == 1 ? 2 : 1
+                status: row.status - 0
             }
         })
     }
@@ -155,7 +152,7 @@ const CourseBag = ({
     const handleReset  = () => {
         resetFields()
         dispatch({
-    		type: 'courseUser/setParam',
+    		type: 'courseBag/setParam',
     		payload: {
                 modalShow: false
     		}
@@ -165,7 +162,7 @@ const CourseBag = ({
     // 文件上传成功
     const uploadSuccess = (url, filed) => {
         dispatch({
-    		type: 'courseUser/setParam',
+    		type: 'courseBag/setParam',
     		payload: {
     			[filed]: url
     		}

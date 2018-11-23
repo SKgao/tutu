@@ -11,7 +11,7 @@ export default {
 	changeStatus: data => axios.post('bag/changeStatus', data),
 
 	// 删除课程包
-	deleteBag: data => axios.get('bag/delete' + data, data),
+	deleteBag: data => axios.get('bag/delete/' + data, data),
 
 	// 精品课程包列表
     getBag: data => axios.get('bag/list', data),
@@ -19,3 +19,4 @@ export default {
     // 课程包修改
     updateBag: data => axios.post('bag/update', data),
 }
+//http://test.img.tutukids.com/group1/M00/00/01/rBELkVv3XhyARF-bAAEGq1C5Q9k145.jpg
