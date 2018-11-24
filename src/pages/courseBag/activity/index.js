@@ -15,14 +15,14 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
-const SpecialCourse = ({
-    specialCourse,
+const BagActivity = ({
+    bagActivity,
     loading,
     ...props
 }) => {
-    let { dispatch, form } = props;
-    let { tableData, modalShow, bookList, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
-    let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+	let { dispatch, form } = props;
+	let { tableList, modalShow, bookList, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = bagActivity;
+	let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
         {
@@ -39,7 +39,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								textbookName: v
@@ -56,7 +56,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								teacher: v
@@ -86,7 +86,7 @@ const SpecialCourse = ({
 					defaultValue={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无' }
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								orgAmt: Number(v.replace(/元/g, '')) * 100
@@ -104,7 +104,7 @@ const SpecialCourse = ({
 					defaultValue={ (text || text == 0) ? (Number(text) / 100).toFixed(2) + '元' : '无' }
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								amt: Number(v.replace(/元/g, '')) * 100
@@ -121,7 +121,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								num: v - 0
@@ -161,7 +161,7 @@ const SpecialCourse = ({
 					defaultValue={text === 1 ? '统一开课' : '购买生效'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
                                 type: v - 0,
@@ -180,7 +180,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								saleBeginAt: v
@@ -197,7 +197,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								saleEndAt: v
@@ -214,7 +214,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								beginAt: v
@@ -231,7 +231,7 @@ const SpecialCourse = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'specialCourse/updateCourse',
+							type: 'bagActivity/updateActivity',
 							payload: {
 								textbookId: record.textbookId,
 								endAt: v
@@ -246,7 +246,7 @@ const SpecialCourse = ({
                     changeIcon(url, record, 'iconDetail')
                 }}></MyUpload>
             }
-        },{
+        }, {
         	title: '修改优惠卷图',
         	dataIndex: 'updateicon2',
             render: (text, record, index) => {
@@ -254,108 +254,35 @@ const SpecialCourse = ({
                     changeIcon(url, record, 'iconTicket')
                 }}></MyUpload>
             }
-        },{
-        	title: '操作',
-            dataIndex: 'action',
-            render: (txt, record, index) => {
-                return <span>
-                    {
-                        (!record.status || record.status === 2 ) && <Button type="primary" size="small" onClick={() => changeStatus(record, 1)}>上架</Button>
-					}
-					{/* {
-                        record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => changeStatus(record, 2)}>下架</Button>
-					} */}
-                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
-                    </Popconfirm>
-                </span>
-            }
         }
     ]
+
+    // 操作分页
+    const handleChange = (param) => {
+        dispatch({
+    		type: 'bagActivity/setParam',
+    		payload: param
+        })
+        dispatch({ type: 'bagActivity/getActivity' })
+    }
 
     // 修改图片
     const changeIcon = (url, record, filed) => {
         dispatch({
-    		type: 'specialCourse/updateCourse',
+    		type: 'bagActivity/updateActivity',
     		payload: {
                 textbookId: record.textbookId,
                 [filed]: url
             }
     	})
-    }
+	}
 
-    // 删除活动
-    const handleDelete = (record) => {
-        dispatch({
-    		type: 'specialCourse/deleteCourse',
-    		payload: {
-                textbookId: record.textbookId
-            }
-    	})
-    }
-
-    // 上、下架
-    const changeStatus = (record, status) => {
-        dispatch({
-    		type: 'specialCourse/changeCourse',
-    		payload: {
-                type: (status === 1) ? 'up' : 'down',
-                textbookId: record.textbookId - 0,
-            }
-    	})
-    }
-
-    // 选择时间框
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'specialCourse/setParam',
-        	payload: {
-                startTime: t[0] ? t[0] + ':00' : '',
-                endTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
-
-    // 搜索
-    const handleSearch = (param) => {
-        dispatch({
-			type: 'specialCourse/setParam',
-			payload: {
-				pageSize: 10,
-				pageNum: 1
-			}
-		})
-        dispatch({ type: 'specialCourse/getCourse' })
-    }
-
-    // 展示modal
-    const changeModalState = (flag, show) => {
-        dispatch({
-        	type: 'specialCourse/setParam',
-        	payload: {
-                [flag]: show
-            }
-        })
-    }
-
-    // 表单取消
-    const handleReset  = () => {
-        resetFields()
-        dispatch({
-    		type: 'specialCourse/setParam',
-    		payload: {
-                modalShow: false,
-                addStatus: 1
-    		}
-    	})
-    }
-
-    // 添加版本信息
+	// 添加版本信息
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { beginAt, endAt, iconDetail, iconTicket } = specialCourse;
+                const { beginAt, endAt, iconDetail, iconTicket } = bagActivity;
                 values.orgAmt && (values.orgAmt = values.orgAmt * 100);
                 values.amt && (values.amt = values.amt * 100);
                 values.num && (values.num = values.num - 0);
@@ -383,51 +310,54 @@ const SpecialCourse = ({
                     values.saleBeginAt = saleBeginAt
                     values.saleEndAt = saleEndAt
                     dispatch({
-                        type: 'specialCourse/addCourse',
+                        type: 'bagActivity/addActivity',
                         payload: filterObj(values)
                     })
                 }
 			}
 		});
+	}
+
+	// 展示modal
+    const changeModalState = (flag, show) => {
+        dispatch({
+        	type: 'bagActivity/setParam',
+        	payload: {
+                [flag]: show
+            }
+        })
     }
 
-    // 设置表单时间
+    // 表单取消
+    const handleReset  = () => {
+        resetFields()
+        dispatch({
+    		type: 'bagActivity/setParam',
+    		payload: {
+                modalShow: false,
+                addStatus: 1
+    		}
+    	})
+	}
+
+	// 设置表单时间
     const onChangeDate = (a, b, c) => {
         dispatch({
-    		type: 'specialCourse/setParam',
+    		type: 'bagActivity/setParam',
     		payload: {
     			[c]: b
     		}
         })
     }
 
-    // 操作分页
-    const handleChange = (param) => {
-        dispatch({
-    		type: 'specialCourse/setParam',
-    		payload: param
-        })
-        dispatch({ type: 'specialCourse/getCourse' })
-    }
-
-    // 文件上传成功
+	// 文件上传成功
     const uploadSuccess = (url, filed) => {
         //setFieldsValue({[filed]: url})
         dispatch({
-    		type: 'specialCourse/setParam',
+    		type: 'bagActivity/setParam',
     		payload: {
     			[filed]: url
     		}
-        })
-    }
-
-    // 修改封面图片
-    const modShareImage = (url) => {
-        dispatch({
-    		type: 'specialCourse/setParam',
-    		payload: {
-                shareimg: url
-            }
         })
     }
 
@@ -443,19 +373,19 @@ const SpecialCourse = ({
                     </FormItem> */}
 
                     <FormItem>
-                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加精品课程</Button>
+                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加课程活动</Button>
                     </FormItem>
 
-                    {
-                        userId && <FormItem>
-                            <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
-                        </FormItem>
-                    }
+
+                    <FormItem>
+                        <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
+                    </FormItem>
+
 
                 </Form>
 
                 <Modal
-                    title="新增精品课程"
+                    title="新增精品课程活动"
                     visible={modalShow}
                     onCancel= { () => changeModalState('modalShow', false) }
                     okText="确认"
@@ -472,7 +402,7 @@ const SpecialCourse = ({
                             })(
                                 <Select
                                     showSearch
-                                    onFocus={() => dispatch({type: 'specialCourse/getBooklist'})}
+                                    onFocus={() => dispatch({type: 'bagActivity/getBooklist'})}
                                     placeholder="请选择课程"
                                     >
                                     {
@@ -673,14 +603,13 @@ const SpecialCourse = ({
 
             <TableLayout
                 pagination={false}
-                scrollX={true}
-                dataSource={tableData}
+                dataSource={tableList}
                 allColumns={columns}
-                loading={ loading.effects['specialCourse/getCourse'] || loading.effects['specialCourse/getCourse'] }
+                loading={ loading.effects['courseList/getCourseList'] }
+                scrollX={true}
                 />
-
             <PaginationLayout
-                total={specialCourse.totalCount}
+                total={bagActivity.totalCount}
                 onChange={(page, pageSize) => handleChange({
                     pageNum: page,
                     pageSize
@@ -695,8 +624,8 @@ const SpecialCourse = ({
 	)
 };
 
-SpecialCourse.propTypes = {
-    specialCourse: PropTypes.object
+BagActivity.propTypes = {
+    bagActivity: PropTypes.object
 };
 
-export default connect(({ specialCourse, loading }) => ({ specialCourse, loading }))(Form.create()(SpecialCourse));
+export default connect(({ bagActivity, loading }) => ({ bagActivity, loading }))(Form.create()(BagActivity));

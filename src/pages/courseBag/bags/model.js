@@ -1,6 +1,5 @@
 import api from './service';
 import { message } from 'antd';
-import { filterObj } from '@/utils/tools';
 
 export default {
 	namespace: 'courseBag',
@@ -18,7 +17,7 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
-				if (location.pathname === '/courseBag') {
+				if (location.pathname === '/courseBag/bags') {
 					dispatch({
 						type: 'setParam',
 						payload: {

@@ -1,5 +1,5 @@
 import api from './service';
-import { filterObj } from '@/utils/tools';
+import { filterObj, getUrlParams } from '@/utils/tools';
 import { message } from 'antd';
 
 export default {
@@ -19,9 +19,7 @@ export default {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/teachingManage/part') {
-					let _search = location.search.slice(1)
-					let arr = (_search) ? _search.split('=') : []
-					let _unitId = (arr.length) ? arr[1] - 0 : ''
+					let _unitId = getUrlParams(location.search, 'unitsId')
 					let param = {
 						startTime: '',
 						endTime: '',

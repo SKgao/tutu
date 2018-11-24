@@ -1,5 +1,4 @@
 import api from './service';
-import api_authmenu from '@/pages/authmenu/service';
 import api_teachingManage from '@/pages/teachingManage/book/service';
 import { filterObj } from '@/utils/tools';
 import { message } from 'antd';

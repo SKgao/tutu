@@ -5,10 +5,10 @@ import { axios } from '@/configs/request';
 
 export default {
 	// 添加课程包
-	addBag: data => axios.post('bag/add', data),
+	addBag: data => axios.post(`bag/add?title=${data.title}&icon=${data.icon}`, data),
 
 	// 改变课程包状态
-	changeStatus: data => axios.post('bag/changeStatus', data),
+	changeStatus: data => axios.post(`bag/changeStatus?id=${data.id}&status=${data.status}`, data),
 
 	// 删除课程包
 	deleteBag: data => axios.get('bag/delete/' + data, data),
@@ -17,6 +17,6 @@ export default {
     getBag: data => axios.get('bag/list', data),
 
     // 课程包修改
-    updateBag: data => axios.post('bag/update', data),
+    updateBag: data => axios.post(`bag/update?id=${data.id}&title=${data.title}&icon=${data.icon}`, data),
 }
 //http://test.img.tutukids.com/group1/M00/00/01/rBELkVv3XhyARF-bAAEGq1C5Q9k145.jpg

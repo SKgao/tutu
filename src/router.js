@@ -110,9 +110,19 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "courseUser" */ './pages/courseUser/model')]
 		},
 		{
-			path: '/courseBag',
-			component: () => import(/* webpackChunkName: "courseBag" */ './pages/courseBag/index'),
-			models: () => [import(/* webpackChunkName: "courseBag" */ './pages/courseBag/model')]
+			path: '/courseBag/bags',
+			component: () => import(/* webpackChunkName: "courseBag/bags" */ './pages/courseBag/bags/index'),
+			models: () => [import(/* webpackChunkName: "courseBag/bags" */ './pages/courseBag//bags/model')]
+		},
+		{
+			path: '/courseBag/activity',
+			component: () => import(/* webpackChunkName: "courseBag/activity" */ './pages/courseBag/activity/index'),
+			models: () => [import(/* webpackChunkName: "courseBag/activity" */ './pages/courseBag//activity/model')]
+		},
+		{
+			path: '/courseBag/course',
+			component: () => import(/* webpackChunkName: "courseBag/course" */ './pages/courseBag/course/index'),
+			models: () => [import(/* webpackChunkName: "courseBag/course" */ './pages/courseBag//course/model')]
 		}
 	]
 
