@@ -21,7 +21,7 @@ const BagActivity = ({
     ...props
 }) => {
 	let { dispatch, form } = props;
-	let { tableList, modalShow, bookList, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = bagActivity;
+	let { tableList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
 	let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -286,6 +286,7 @@ const BagActivity = ({
                 values.orgAmt && (values.orgAmt = values.orgAmt * 100);
                 values.amt && (values.amt = values.amt * 100);
                 values.num && (values.num = values.num - 0);
+                values.id && (values.id = values.id - 0);
                 values.type && (values.type = values.type - 0);
                 values.status && (values.status = values.status - 0);
                 values.textbookId && (values.textbookId = values.textbookId - 0);
@@ -394,23 +395,14 @@ const BagActivity = ({
                     >
                     <Form>
                         <FormItem
-                            {...formItemLayout}
                             label="课程id"
+                            {...formItemLayout}
                             >
-                            {getFieldDecorator('textbookId', {
-                                rules: [{ required: true, message: '请选择课程id!' }],
+                            {getFieldDecorator('id', {
+                                initialValue: bagActivity.id,
+                                rules: [{ required: true, message: '请输入课程id!' }],
                             })(
-                                <Select
-                                    showSearch
-                                    onFocus={() => dispatch({type: 'bagActivity/getBooklist'})}
-                                    placeholder="请选择课程"
-                                    >
-                                    {
-                                        bookList.map(item =>
-                                            <Option key={item.id} value={item.id}>{item.name + ''}</Option>
-                                        )
-                                    }
-                                </Select>
+                                <Input disabled/>
                             )}
                         </FormItem>
 

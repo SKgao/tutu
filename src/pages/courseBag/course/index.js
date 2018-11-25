@@ -131,7 +131,7 @@ const CourseList = ({
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
                 values.icon = icon
-                console.log('values::', values)
+                values.bagId && (values.bagId = values.bagId - 0)
                 dispatch({
                     type: 'courseList/addCourse',
                     payload: filterObj(values)
@@ -196,7 +196,7 @@ const CourseList = ({
                             initialValue: courseList.id,
                             rules: [{ required: true, message: '请输入课程包id!' }],
                         })(
-                            <Input readOnly/>
+                            <Input disabled/>
                         )}
                     </FormItem>
 

@@ -35,7 +35,8 @@ const CourseBag = ({
                             type: 'courseBag/updateBag',
                             payload: {
                                 id: record.id - 0,
-                                title: v
+                                title: v,
+                                icon: record.icon
                             }
                         })
                     }/>
@@ -139,6 +140,7 @@ const CourseBag = ({
     		type: 'courseBag/updateBag',
     		payload: {
                 id: record.id - 0,
+                title: record.title,
                 icon: url
             }
     	})

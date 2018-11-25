@@ -53,7 +53,6 @@ const RoleSetting = ({
     // 点击权限数
     const checkTree = (checkedKeys, e) => {
         const _checked = Array.from(new Set(checkedKeys.concat(e.halfCheckedKeys)));
-        console.log(_checked)
         dispatch({
         	type: 'roleSetting/setParam',
         	payload: {
