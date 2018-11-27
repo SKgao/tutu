@@ -80,7 +80,7 @@ module.exports = {
 	getUrlParams: (str, name) => {
         let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); //定义正则表达式
 		let r = str.substr(1).match(reg);
-		if (r != null) return unescape(r[2]);
+		if (r != null) return r[2];
 		return null;
 	},
 

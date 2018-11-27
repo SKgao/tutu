@@ -19,14 +19,13 @@ export default {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/courseBag/course') {
-                    let _id = getUrlParams(location.search, 'id')
 					dispatch({
 						type: 'setParam',
 						payload: {
 							pageSize: 10,
 							pageNum: 1,
                             totalCount: 0,
-                            id: _id - 0
+                            id: getUrlParams(location.search, 'id') - 0
 						}
 					});
 					dispatch({ type: 'getCourseList' });

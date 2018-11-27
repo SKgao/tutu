@@ -1,12 +1,14 @@
 import api from './service';
 import { message } from 'antd';
+import { getUrlParams } from '@/utils/tools';
 
 export default {
 	namespace: 'session',
 
 	state: {
         sessionList: [], // 大关卡
-        customList: [],  // 小关卡
+		customList: [],  // 小关卡
+		textbookId: '',
         modalShow: false,
         totalCount: 0,
 		pageSize: 10,
@@ -16,13 +18,14 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
-				if (location.pathname === '/session') {
+				if (location.pathname === '/teachingManage/session') {
 					dispatch({
 						type: 'setParam',
 						payload: {
 							pageSize: 10,
 							pageNum: 1,
-							totalCount: 0
+							totalCount: 0,
+							textbookId: getUrlParams(location.search, 'textbookId') - 0
 						}
 					});
 					dispatch({ type: 'getSessionList' });
@@ -32,9 +35,17 @@ export default {
 	},
 
 	effects: {
-		*getSessionList({ payload }, { put, call }) {
-            const res = yield call(api.getBag);
+		*getSessionList({ payload }, { put, call, select }) {
+			const textbookId = yield select(state => state.session.textbookId);
+            const res = yield call(api.getSession, textbookId);
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						sessionList: [],
+						totalCount: 0
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
@@ -45,7 +56,7 @@ export default {
         },
 
         *getCustomList({ payload }, { put, call }) {
-            const res = yield call(api.getBag);
+            const res = yield call(api.customList);
             if (res) {
             	yield put({
             		type: 'save',
@@ -66,7 +77,7 @@ export default {
 		},
 
 		*changeStatus({ payload }, { call, put }) {
-			const res = yield call(api.changeStatus, payload);
+			const res = yield call(api.sessionStatus, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getSessionList' });

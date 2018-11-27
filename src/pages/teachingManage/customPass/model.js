@@ -1,5 +1,6 @@
 import api from './service';
 import { message } from 'antd';
+import { getUrlParams } from '@/utils/tools';
 
 export default {
 	namespace: 'customPass',
@@ -9,6 +10,9 @@ export default {
 		subjectList: [], // 题型列表
 		modalShow: false,
 		textbookId: '',
+		sessionId: '',  // 大关卡id
+		sessionTit: '', // 大关卡名称
+		toSubject: '',
         totalCount: 0,
 		pageSize: 10,
 		pageNum: 1
@@ -17,13 +21,17 @@ export default {
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
-				if (location.pathname === '/customPass') {
+				if (location.pathname === '/teachingManage/customPass') {
 					dispatch({
 						type: 'setParam',
 						payload: {
 							pageSize: 10,
 							pageNum: 1,
-							totalCount: 0
+							totalCount: 0,
+							toSubject: getUrlParams(location.search, 'toSubject') || '',
+							textbookId: getUrlParams(location.search, 'textbookId') - 0,
+							sessionId: getUrlParams(location.search, 'sessionId') || '',
+							sessionTit: decodeURI(getUrlParams(location.search, 'sessionTit')) || ''
 						}
 					});
 					dispatch({ type: 'getPassList' });
@@ -34,9 +42,16 @@ export default {
 
 	effects: {
 		*getPassList({ payload }, { put, call, select }) {
-			const { pageSize, pageNum, totalCount, textbookId } = yield select(state => state.customPass);
-            const res = yield call(api.getPass, { pageSize, pageNum, totalCount, textbookId });
+			const { pageSize, pageNum, textbookId } = yield select(state => state.customPass);
+            const res = yield call(api.getPass, { pageSize, pageNum, textbookId });
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						passList: [],
+						totalCount: 0
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
@@ -80,6 +95,13 @@ export default {
 		    if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getPassList' })
+			}
+		},
+
+		*sessionBind({ payload }, { call, put }) {
+            const res = yield call(api.sessionBind, payload);
+		    if (res) {
+				message.success(res.data.message);
 			}
         },
 

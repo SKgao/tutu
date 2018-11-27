@@ -19,16 +19,18 @@ const CustomPass = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, subjectList, pageNum, pageSize, textbookId} = customPass;
+    let { passList, modalShow, subjectList, pageNum, pageSize, textbookId, sessionId, sessionTit, toSubject} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
+
+    console.log('sessionTit:::', sessionTit)
 
     const columns = [
         {
-            title: '关卡标题',
+            title: '小关卡标题',
             dataIndex: 'title',
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改关卡标题'}
+					title={'修改小关卡标题'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>
@@ -41,11 +43,11 @@ const CustomPass = ({
 						})
 					}/>
         }, {
-            title: '关卡过渡标题',
+            title: '小关卡过渡标题',
             dataIndex: 'tmpTitle',
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改关卡标题'}
+					title={'修改小关卡过渡标题'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>
@@ -58,31 +60,17 @@ const CustomPass = ({
 						})
 					}/>
         }, {
-        	title: '图片',
+        	title: '小关卡图标',
         	dataIndex: 'icon',
             render: (text, record, index) => {
                 return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
-            }
-        }, {
-            title: '教材id',
-            dataIndex: 'textbookId'
-        }, {
-            title: '创建时间',
-            dataIndex: 'createdAt'
-        }, {
-        	title: '修改图片',
-        	dataIndex: 'updateicon',
-            render: (text, record, index) => {
-                return <MyUpload uploadSuccess={(url) => {
-                    changeIcon(url, record)
-                }}></MyUpload>
             }
         }, {
         	title: '闯关人数',
         	dataIndex: 'customerNumber',
             sorter: true
         }, {
-        	title: '关卡顺序',
+        	title: '小关卡顺序',
         	dataIndex: 'sort',
             sorter: true,
             render: (text, record) =>
@@ -107,15 +95,31 @@ const CustomPass = ({
         	title: '创建时间',
         	dataIndex: 'createdAt'
         }, {
+        	title: '修改小关卡图标',
+        	dataIndex: 'updateicon',
+            render: (text, record, index) => {
+                return <MyUpload uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
+        }, {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
+                    {
+                        sessionId && sessionTit &&
+                        <Button type="primary" size="small" onClick={() => bindToSession(record)}>{`绑定到${sessionTit}`}</Button>
+                    }
+
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
-                    <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
+                    {
+                        toSubject &&
+                        <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
+                    }
                 </span>
             }
         }
@@ -130,7 +134,7 @@ const CustomPass = ({
     }
 
     /**
-     * 删除角色
+     * 删除小关卡
      * @param  {object} 列数据
      */
     const handleDelete = (param) => {
@@ -140,7 +144,22 @@ const CustomPass = ({
     	})
     }
 
-    // 修改素材
+    /**
+     * 绑定到大关卡
+     * @param  {object} 列数据
+     */
+    const bindToSession = (param) => {
+        dispatch({
+    		type: 'customPass/sessionBind',
+    		payload: {
+                textbookId: textbookId - 0,
+                sessionId: sessionId - 0,
+                customPassId: param.id - 0
+            }
+    	})
+    }
+
+    // 修改图片
     const changeIcon = (url, record) => {
         dispatch({
     		type: 'customPass/updatePass',
@@ -172,14 +191,16 @@ const CustomPass = ({
     	})
     }
 
-    // 添加单元
+    // 添加小关卡
     const handleSubmit = (e) => {
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
-            !err && dispatch({
-                type: 'customPass/addPass',
-                payload: filterObj(values)
-            })
+            if (!err) {
+                dispatch({
+                    type: 'customPass/addPass',
+                    payload: filterObj(values)
+                })
+            }
         });
     }
 
@@ -214,7 +235,7 @@ const CustomPass = ({
             </FormInlineLayout>
 
             <Modal
-                title="新增关卡"
+                title="新增小关卡"
                 visible={modalShow}
                 onOk={ () => changeModalState(false) }
                 onCancel= { () => changeModalState(false) }
@@ -224,29 +245,41 @@ const CustomPass = ({
                 >
                 <Form>
                     <FormItem
-                        label="关卡标题"
+                        label="教材id"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('textbookId', {
+                            initialValue: textbookId,
+                            rules: [{ required: true, message: '请输入教材id!' }],
+                        })(
+                            <Input disabled/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label="小关卡标题"
                         {...formItemLayout}
                         >
                         {getFieldDecorator('title', {
-                            rules: [{ required: true, message: '请输入关卡标题!', whitespace: true }],
+                            rules: [{ required: true, message: '请输入小关卡标题!', whitespace: true }],
                         })(
-                            <Input placeholder="请输入关卡标题"/>
+                            <Input placeholder="请输入小关卡标题"/>
                         )}
                     </FormItem>
 
                     <FormItem
-                        label="关卡过渡标题"
+                        label="小关卡过渡标题"
                         {...formItemLayout}
                         >
                         {getFieldDecorator('tmpTitle ', {
-                            rules: [{ required: true, message: '请输入关卡过渡标题!', whitespace: true }],
+                            rules: [{ required: true, message: '请输入小关卡过渡标题!', whitespace: true }],
                         })(
-                            <Input placeholder="请输入关卡过渡标题"/>
+                            <Input placeholder="请输入小关卡过渡标题"/>
                         )}
                     </FormItem>
 
                     <FormItem
-                        label="关卡图片"
+                        label="小关卡图片"
                         {...formItemLayout}
                         >
                         {getFieldDecorator('icon', {
@@ -289,11 +322,12 @@ const CustomPass = ({
             </Modal>
 
             <TableLayout
-                dataSource={tableData}
+                dataSource={passList}
                 allColumns={columns}
+                scrollX={true}
                 />
             {
-                customPass.totalCount &&
+                !!customPass.totalCount &&
                 <PaginationLayout
                     total={customPass.totalCount}
                     onChange={(page, pageSize) => handleChange({
