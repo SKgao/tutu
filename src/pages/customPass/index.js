@@ -14,12 +14,12 @@ import { Form, Input, Button, Popconfirm, Modal, Icon, Select} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const PartPass = ({
-    partPass,
+const CustomPass = ({
+    customPass,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableData, modalShow, subjectList, pageNum, pageSize, partsId} = partPass;
+    let { tableData, modalShow, subjectList, pageNum, pageSize, textbookId} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -33,10 +33,27 @@ const PartPass = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'partPass/updatePass',
+							type: 'customPass/updatePass',
 							payload: {
 								id: record.id,
 								title: v
+							}
+						})
+					}/>
+        }, {
+            title: '关卡过渡标题',
+            dataIndex: 'tmpTitle',
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改关卡标题'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'customPass/updatePass',
+							payload: {
+								id: record.id,
+								tmpTitle: v
 							}
 						})
 					}/>
@@ -46,6 +63,12 @@ const PartPass = ({
             render: (text, record, index) => {
                 return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
+        }, {
+            title: '教材id',
+            dataIndex: 'textbookId'
+        }, {
+            title: '创建时间',
+            dataIndex: 'createdAt'
         }, {
         	title: '修改图片',
         	dataIndex: 'updateicon',
@@ -69,7 +92,7 @@ const PartPass = ({
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
-							type: 'partPass/updatePass',
+							type: 'customPass/updatePass',
 							payload: {
 								id: record.id,
 								sort: v
@@ -104,16 +127,6 @@ const PartPass = ({
             pathname: '/subjects',
             search: `customsPassId=${record.id}`
         }));
-
-        // dispatch({
-        //     type: 'app/setPath',
-        //     payload: {
-        //         firPath: ['114'],
-        //         secPath: ['/subjects']
-        //     }
-        // })
-        // localStorage.setItem('firPath', ['114'])
-        // localStorage.setItem('secPath', ['/subjects'])
     }
 
     /**
@@ -122,7 +135,7 @@ const PartPass = ({
      */
     const handleDelete = (param) => {
         dispatch({
-    		type: 'partPass/deletePass',
+    		type: 'customPass/deletePass',
     		payload: param.id
     	})
     }
@@ -130,7 +143,7 @@ const PartPass = ({
     // 修改素材
     const changeIcon = (url, record) => {
         dispatch({
-    		type: 'partPass/updatePass',
+    		type: 'customPass/updatePass',
     		payload: {
                 id: record.id,
                 icon: url
@@ -141,7 +154,7 @@ const PartPass = ({
     // 展示modal
     const changeModalState = (show) => {
         dispatch({
-        	type: 'partPass/setParam',
+        	type: 'customPass/setParam',
         	payload: {
                 modalShow: show
             }
@@ -152,7 +165,7 @@ const PartPass = ({
     const handleReset  = () => {
         resetFields()
         dispatch({
-    		type: 'partPass/setParam',
+    		type: 'customPass/setParam',
     		payload: {
     			modalShow: false
     		}
@@ -164,7 +177,7 @@ const PartPass = ({
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
             !err && dispatch({
-                type: 'partPass/addPass',
+                type: 'customPass/addPass',
                 payload: filterObj(values)
             })
         });
@@ -173,13 +186,10 @@ const PartPass = ({
     // 操作分页
     const handleChange = (param) => {
         dispatch({
-    		type: 'partPass/setParam',
+    		type: 'customPass/setParam',
     		payload: param
         }).then(() => {
-            dispatch({
-                type: 'partPass/getPass',
-                payload: {partsId, ...param}
-            })
+            dispatch({ type: 'customPass/getPassList' })
         });
     }
 
@@ -194,7 +204,7 @@ const PartPass = ({
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
-                        <Button type="primary" onClick={() => changeModalState(true)}>添加关卡</Button>
+                        <Button type="primary" onClick={() => changeModalState(true)}>添加小关卡</Button>
                     </FormItem>
 
                     <FormItem>
@@ -225,6 +235,17 @@ const PartPass = ({
                     </FormItem>
 
                     <FormItem
+                        label="关卡过渡标题"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('tmpTitle ', {
+                            rules: [{ required: true, message: '请输入关卡过渡标题!', whitespace: true }],
+                        })(
+                            <Input placeholder="请输入关卡过渡标题"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
                         label="关卡图片"
                         {...formItemLayout}
                         >
@@ -239,29 +260,6 @@ const PartPass = ({
                     </FormItem>
 
                     <FormItem
-                        label="partsId"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('partsId', {
-                            initialValue: partPass.partsId,
-                            rules: [{ required: true, message: '请输入partsId!', whitespace: true }],
-                        })(
-                            <Input/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label="关卡顺序"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('sort', {
-                            rules: [{ required: true, message: '请输入关卡顺序!', whitespace: true }],
-                        })(
-                            <Input placeholder="请输入关卡顺序"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
                         label="题型"
                         hasFeedback
                         {...formItemLayout}
@@ -271,7 +269,7 @@ const PartPass = ({
                         })(
                             <Select
                                 showSearch
-                                onFocus={() => dispatch({type: 'partPass/getSubject'})}
+                                onFocus={() => dispatch({type: 'customPass/getSubject'})}
                                 >
                                 {
                                     subjectList.map(item =>
@@ -295,9 +293,9 @@ const PartPass = ({
                 allColumns={columns}
                 />
             {
-                partPass.totalCount &&
+                customPass.totalCount &&
                 <PaginationLayout
-                    total={partPass.totalCount}
+                    total={customPass.totalCount}
                     onChange={(page, pageSize) => handleChange({
                         pageNum: page,
                         pageSize
@@ -313,8 +311,8 @@ const PartPass = ({
 	)
 };
 
-PartPass.propTypes = {
-    partPass: PropTypes.object
+CustomPass.propTypes = {
+    customPass: PropTypes.object
 };
 
-export default connect(({ partPass }) => ({ partPass }))(Form.create()(PartPass));
+export default connect(({ customPass }) => ({ customPass }))(Form.create()(CustomPass));

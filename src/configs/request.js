@@ -7,7 +7,8 @@ const DEFAULT_TIMEOUT = 60000;
 // 正式接口
 // const REQ_URL = '//api.admin.tutukids.com/'
 // 测试接口
-const REQ_URL = '//test.api.admin.tutukids.com/'
+// const REQ_URL = '//test.api.admin.tutukids.com/'
+const REQ_URL =	'//124.160.63.242:9003/'
 
 axios.defaults.baseURL = REQ_URL;
 //axios.defaults.withCredentials = true;
