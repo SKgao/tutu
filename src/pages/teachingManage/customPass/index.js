@@ -22,8 +22,6 @@ const CustomPass = ({
     let { passList, modalShow, subjectList, pageNum, pageSize, textbookId, sessionId, sessionTit, toSubject} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
-    console.log('sessionTit:::', sessionTit)
-
     const columns = [
         {
             title: '小关卡标题',

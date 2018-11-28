@@ -9,7 +9,10 @@ export default {
         sessionList: [], // 大关卡
 		customList: [],  // 小关卡
 		textbookId: '',
-        modalShow: false,
+		expandedRowKeys: '', // 默认展开的行
+		sessionTitle: '',  // 大关卡名称
+		modalShow: false,
+		modalShow2: false,
         totalCount: 0,
 		pageSize: 10,
 		pageNum: 1
@@ -56,8 +59,14 @@ export default {
         },
 
         *getCustomList({ payload }, { put, call }) {
-            const res = yield call(api.customList);
+            const res = yield call(api.customList, payload);
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						customList: []
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {

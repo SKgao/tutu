@@ -36,13 +36,13 @@ class TableLayout extends Component {
 		} else {
 			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1) || (showColumns && showColumns.indexOf(item.dataIndex) === -1);
 			return hideColumn ? null : <Column
-			   key={item.dataIndex} 
+			   key={item.dataIndex}
 			   sorter={item.sorter ? (a, b) => a[item.dataIndex] - b[item.dataIndex] : false}
-			   {...item} 
+			   {...item}
 			/>
 		}
 	}
-	
+
 	// 筛选树
 	renderTree = item => {
 		if (item.children && item.children.length) {
@@ -104,7 +104,7 @@ class TableLayout extends Component {
 
 						<div className="table-toolbar-action fr">
 							<Popover placement="bottom"
-								title={'筛选要展示的列'} 
+								title={'筛选要展示的列'}
 								content={
 									<Tree
 										checkable
@@ -115,7 +115,7 @@ class TableLayout extends Component {
 											allColumns.map(item => this.renderTree(item))
 										}
 									</Tree>
-								} 
+								}
 								trigger="click">
 								<a className="table-toolbar-title">
 									显示列 <Icon type="down" />
@@ -143,7 +143,7 @@ class TableLayout extends Component {
 						delay: 100
 					}}
 					scroll={{
-						x: scrollX || false, 
+						x: scrollX || false,
 						y: scrollY || false
 					}}
 					>
@@ -167,7 +167,6 @@ TableLayout.propTypes = {
 	treeOnCheck: PropTypes.func, // 过滤列回调
 	getContentWidth: PropTypes.func,
 	scrollY: PropTypes.number,
-	scrollY: PropTypes.bool,
 	loading: PropTypes.bool,
 	rowSelection: PropTypes.object,
 	expandedRowRender: PropTypes.func,

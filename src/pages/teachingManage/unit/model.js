@@ -22,13 +22,12 @@ export default {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/teachingManage/unit') {
-					let _bookId = getUrlParams(location.search, 'textBookId')
 					let param = {
 						startTime: '',
 						endTime: '',
 						pageSize: 10,
 						pageNum: 1,
-						textBookId: _bookId
+						textBookId: getUrlParams(location.search, 'textBookId')
 					}
 					dispatch({
 						type: 'setParam',

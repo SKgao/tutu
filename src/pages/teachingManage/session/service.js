@@ -23,11 +23,11 @@ export default {
     sessionUnbind: data => axios.get(`session/unbind/${data}`, data),
 
     // 大关卡--改变小关卡顺序
-    sessionSort: data => axios.post('session/change/sort', data),
+    sessionSort: data => axios.post(`session/change/sort?id=${data.id}&sort=${data.sort}`, data),
 
     // 大关卡--改变状态
     sessionStatus: data => axios.post(`session/changeStatus?id=${data.id}&status=${data.status}`, data),
 
     // 大关卡下--小关卡列表
-    customList: data => axios.post('session/custom/list', data),
+    customList: data => axios.post(`session/custom/list?textbookId=${data.textbookId}&sessionId=${data.sessionId}`, data),
 }

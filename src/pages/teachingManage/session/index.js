@@ -10,16 +10,15 @@ import MyUpload from '@/components/UploadComponent';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, Select, Badge, message} from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, message, Table} from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 const Session = ({
     session,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { sessionList, modalShow, pageNum, pageSize, textbookId} = session;
+    let { sessionList, customList, modalShow, modalShow2, pageNum, pageSize, textbookId, sessionTitle} = session;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -64,8 +63,8 @@ const Session = ({
             render: (text, record) =>
 				<TablePopoverLayout
 					title={'修改大关卡顺序'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
+					valueData={text + '' || '无'}
+					defaultValue={text + '' || '无'}
 					onOk={v =>
 						dispatch({
 							type: 'session/updateSession',
@@ -89,7 +88,7 @@ const Session = ({
             render: (txt, record, index) => {
                 return <span>
                     <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>绑定小关卡</a>
-                    <a onClick={() => linktoCustomPass(record)} style={{ marginLeft: 10 }}>查看小关卡</a>
+                    <a onClick={() => checkCustomList(record)} style={{ marginLeft: 10 }}>已绑定小关卡</a>
                 </span>
             }
         }, {
@@ -116,13 +115,40 @@ const Session = ({
         }
     ]
 
-    // 调转到小关卡
-    const linktoCustomPass = (record) => {
-        dispatch(routerRedux.push({
-            pathname: '/teachingManage/customPass',
-            search: `textbookId=${textbookId}`
-        }));
-    }
+    const sourceCol = [
+        {
+            title: '小关卡标题',
+            dataIndex: 'customTitle',
+            render: (text) => <span>{ text + '' }</span>
+        }, {
+            title: '小关卡图标',
+            dataIndex: 'icon',
+            render: (text) => {
+                return (!text) ? '无' : <img alt="" src={ text } style={{ width: 30, height: 40 }}/>
+            }
+        }, {
+            title: '小关卡排序',
+            dataIndex: 'sort',
+            render: (text, record) =>
+                <TablePopoverLayout
+                    title={'修改小关卡顺序'}
+                    valueData={text + '' || '无'}
+                    defaultValue={text + '' || '无'}
+                    onOk={v =>
+                        dispatch({
+                            type: 'session/sessionSort',
+                            payload: {
+                                id: record.id - 0,
+                                sort: v - 0
+                            }
+                        })
+                    }/>
+        },
+    ]
+
+    // key
+    columns.map(e => e.key = `${e.dataIndex}_`)
+    sourceCol.map(e => e.key = `_${e.dataIndex}`)
 
     // 绑定小关卡
     const bindPass = (record) => {
@@ -131,6 +157,25 @@ const Session = ({
             pathname: '/teachingManage/customPass',
             search: `textbookId=${textbookId}&sessionTit=${title}&sessionId=${record.id}`
         }));
+    }
+
+    // 已绑定小关卡
+    const checkCustomList = (record) => {
+        dispatch({
+    		type: 'session/setParam',
+    		payload: {
+                modalShow2: true,
+                sessionTitle: record.title
+    		}
+    	}).then(() => {
+            dispatch({
+                type: 'session/getCustomList',
+                payload: {
+                    textbookId,
+                    sessionId: record.id
+                }
+            })
+        })
     }
 
     /**
@@ -178,11 +223,11 @@ const Session = ({
     }
 
     // 展示modal
-    const changeModalState = (show) => {
+    const changeModalState = (field, show) => {
         dispatch({
         	type: 'session/setParam',
         	payload: {
-                modalShow: show
+                [field]: show
             }
         })
     }
@@ -227,7 +272,7 @@ const Session = ({
     		payload: param
         }).then(() => {
             dispatch({ type: 'session/getSessionList' })
-        });
+        })
     }
 
     // 文件上传成功
@@ -241,7 +286,7 @@ const Session = ({
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
-                        <Button type="primary" onClick={() => changeModalState(true)}>添加大关卡</Button>
+                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加大关卡</Button>
                     </FormItem>
 
                     <FormItem>
@@ -253,8 +298,8 @@ const Session = ({
             <Modal
                 title="新增关卡"
                 visible={modalShow}
-                onOk={ () => changeModalState(false) }
-                onCancel= { () => changeModalState(false) }
+                onOk={ () => changeModalState('modalShow',false) }
+                onCancel= { () => changeModalState('modalShow',false) }
                 okText="确认"
                 cancelText="取消"
                 footer={null}
@@ -316,10 +361,47 @@ const Session = ({
                 </Form>
             </Modal>
 
-            <TableLayout
-                dataSource={sessionList}
-                allColumns={columns}
+            <Modal
+                title={`${sessionTitle}--已绑定小关卡`}
+                visible={modalShow2}
+                onOk={ () => changeModalState('modalShow2', false) }
+                onCancel= { () => changeModalState('modalShow2', false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <Table
+                    columns={sourceCol}
+                    dataSource={customList}
+                    pagination={false}
                 />
+            </Modal>
+
+            <Table
+                dataSource={sessionList}
+                columns={columns}
+                pagination={false}
+                // onExpand={(expanded, record) => {
+                //     if (expanded) {
+                //         dispatch({
+                //             type: 'session/getCustomList',
+                //             payload: {
+                //                 textbookId: textbookId,
+                //                 sessionId: record.id - 0
+                //             }
+                //         })
+                //     }
+                //     dispatch({
+                //         type: 'session/setParam',
+                //         payload: {
+                //             textbookId: textbookId,
+                //             sessionId: record.id - 0
+                //         }
+                //     })
+                // }}
+                // expandedRowRender={(record, index) => expandedRowRender(record, index)}
+                // expandRowByClick={false}
+            />
             {
                 !!session.totalCount &&
                 <PaginationLayout

@@ -23,7 +23,7 @@ const UnitPart = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { partList, modalShow, pageNum, pageSize} = unitPart;
+    let { partList, modalShow, pageNum, pageSize, textBookId} = unitPart;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -48,7 +48,7 @@ const UnitPart = ({
             title: '图片',
             dataIndex: 'icon',
             render: (text) => {
-                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
              }
         }, {
         	title: '修改图片',
@@ -84,7 +84,7 @@ const UnitPart = ({
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
-                    <Button type="primary" size="small" onClick={() => linktoPass(record)} style={{ marginLeft: 10 }}>查看关卡</Button>
+                    <Button type="primary" size="small" onClick={() => linktoSession(record)} style={{ marginLeft: 10 }}>查看关卡</Button>
                 </span>
             }
         }
@@ -92,7 +92,7 @@ const UnitPart = ({
 
 
     /**
-     * 删除角色
+     * 删除part
      * @param  {object} 列数据
      */
     const handleDelete = (param) => {
@@ -102,11 +102,11 @@ const UnitPart = ({
     	})
     }
 
-    // 调转到关卡页面
-    const linktoPass = (record) => {
+    // 调转到大关卡页面
+    const linktoSession = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/teachingManage/pass',
-            search: `partsId=${record.id}`
+            pathname: '/teachingManage/session',
+            search: `partsId=${record.id}&textbookId=${textBookId}`
         }));
     }
 
@@ -142,7 +142,7 @@ const UnitPart = ({
     	})
     }
 
-    // 添加单元
+    // 添加part
     const handleSubmit = (e) => {
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {

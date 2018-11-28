@@ -20,5 +20,6 @@ export default {
     getSubject: data => axios.get('pass/subject', data),
 
     // 大关卡--绑定小关卡
-    sessionBind: data => axios.post(`session/bind?textbookId=${data.textbookId}&sessionId=${data.sessionId}&customPassId=${data.customPassId}`, data),
+    sessionBind: data => axios.post(
+        `session/bind?textbookId=${data.textbookId}&sessionId=${data.sessionId}&customPassId=${data.customPassId}`, data),
 }

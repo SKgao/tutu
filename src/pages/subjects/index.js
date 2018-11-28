@@ -26,7 +26,7 @@ const Subject = ({
 }) => {
     let { dispatch, form } = props;
     let { modalShow, modal2Show, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
-    let { getFieldDecorator, setFieldsValue, resetFields } = form;
+    let { getFieldDecorator, resetFields } = form;
 
     // 题目列表
     const subjectCol = [
@@ -133,8 +133,8 @@ const Subject = ({
                 key: '_icon',
                 render: (text) => {
                     return (!text) ? <span>无</span> :
-                        <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
-                            <img src={ text } style={{ width: 30, height: 40 }}/>
+                        <Popconfirm icon={<img alt="" src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
+                            <img alt="" src={ text } style={{ width: 30, height: 40 }}/>
                         </Popconfirm>
                 }
             }, {

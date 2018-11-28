@@ -5,12 +5,12 @@ import { message } from 'antd';
 
 const DEFAULT_TIMEOUT = 60000;
 // 正式接口
-// const REQ_URL = '//api.admin.tutukids.com/'
+// const BASIC_URL = '//api.admin.tutukids.com/'
 // 测试接口
-// const REQ_URL = '//test.api.admin.tutukids.com/'
-const REQ_URL =	'//124.160.63.242:9003/'
+// const BASIC_URL = '//test.api.admin.tutukids.com/'
+const BASIC_URL = '//124.160.63.242:9003/'
 
-axios.defaults.baseURL = REQ_URL;
+axios.defaults.baseURL = BASIC_URL;
 //axios.defaults.withCredentials = true;
 axios.defaults.timeout = DEFAULT_TIMEOUT;
 
@@ -31,7 +31,7 @@ axios.interceptors.response.use(res => {
 		case 0:
 			return res;
 		default:
-		    code !== 45 && code !== 46 && message.error(msg);
+		    message.error(msg);
 			return false;
 	}
 });
@@ -43,9 +43,6 @@ axios.interceptors.response.use(res => {
 // axios.defaults.paramsSerializer = function (params) {
 // 	return qs.stringify(params);
 // }
-
-// admin端
-export const BASIC_URL = REQ_URL
 
 /**
  * jsonp方法

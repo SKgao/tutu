@@ -9,6 +9,7 @@ export default {
 		partList: [],
 		startTime: '',
 		endTime: '',
+		textBookId: '',
 		unitId: 0,
 		pageSize: 10,
         pageNum: 1,
@@ -19,13 +20,13 @@ export default {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/teachingManage/part') {
-					let _unitId = getUrlParams(location.search, 'unitsId')
 					let param = {
 						startTime: '',
 						endTime: '',
 						pageSize: 10,
 						pageNum: 1,
-						unitId: _unitId
+						unitId: getUrlParams(location.search, 'unitId'),
+						textBookId: getUrlParams(location.search, 'textBookId') || ''
 					}
 					dispatch({
 						type: 'setParam',
