@@ -9,6 +9,7 @@ export default {
         sessionList: [], // 大关卡
 		customList: [],  // 小关卡
 		textbookId: '',
+		partsId: '',
 		expandedRowKeys: '', // 默认展开的行
 		sessionTitle: '',  // 大关卡名称
 		modalShow: false,
@@ -28,6 +29,7 @@ export default {
 							pageSize: 10,
 							pageNum: 1,
 							totalCount: 0,
+							partsId: getUrlParams(location.search, 'partsId') || 0,
 							textbookId: getUrlParams(location.search, 'textbookId') - 0
 						}
 					});

@@ -18,7 +18,7 @@ const Session = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { sessionList, customList, modalShow, modalShow2, pageNum, pageSize, textbookId, sessionTitle} = session;
+    let { sessionList, customList, modalShow, modalShow2, pageNum, pageSize, textbookId, sessionTitle, partsId} = session;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -87,7 +87,7 @@ const Session = ({
             dataIndex: 'link',
             render: (txt, record, index) => {
                 return <span>
-                    <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>绑定小关卡</a>
+                    <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>查看小关卡</a>
                     <a onClick={() => checkCustomList(record)} style={{ marginLeft: 10 }}>已绑定小关卡</a>
                 </span>
             }
@@ -107,7 +107,7 @@ const Session = ({
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
-                    <Popconfirm title="是否解除绑定关卡?" onConfirm={() => handleUnbind(row)}>
+                    <Popconfirm title="是否解除绑定小关卡?" onConfirm={() => handleUnbind(row)}>
                         <Button size="small" style={{ marginLeft: 10 }}>解绑</Button>
                     </Popconfirm>
                 </span>
@@ -153,9 +153,11 @@ const Session = ({
     // 绑定小关卡
     const bindPass = (record) => {
         const title = encodeURI(record.title)
+        let search = `textbookId=${textbookId}&sessionTit=${title}&sessionId=${record.id}`
+        search = (partsId) ? `${search}&partsId=${partsId}` : search
         dispatch(routerRedux.push({
             pathname: '/teachingManage/customPass',
-            search: `textbookId=${textbookId}&sessionTit=${title}&sessionId=${record.id}`
+            search: search
         }));
     }
 

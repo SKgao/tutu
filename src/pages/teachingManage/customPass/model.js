@@ -12,7 +12,7 @@ export default {
 		textbookId: '',
 		sessionId: '',  // 大关卡id
 		sessionTit: '', // 大关卡名称
-		toSubject: '',
+		partsId: '',    // partid
         totalCount: 0,
 		pageSize: 10,
 		pageNum: 1
@@ -28,7 +28,7 @@ export default {
 							pageSize: 10,
 							pageNum: 1,
 							totalCount: 0,
-							toSubject: getUrlParams(location.search, 'toSubject') || '',
+							partsId: getUrlParams(location.search, 'partsId') || '',
 							textbookId: getUrlParams(location.search, 'textbookId') - 0,
 							sessionId: getUrlParams(location.search, 'sessionId') || '',
 							sessionTit: decodeURI(getUrlParams(location.search, 'sessionTit')) || ''

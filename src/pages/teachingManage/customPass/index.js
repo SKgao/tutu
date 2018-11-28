@@ -19,7 +19,7 @@ const CustomPass = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { passList, modalShow, subjectList, pageNum, pageSize, textbookId, sessionId, sessionTit, toSubject} = customPass;
+    let { passList, modalShow, subjectList, pageNum, pageSize, textbookId, sessionId, sessionTit, partsId} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -114,10 +114,7 @@ const CustomPass = ({
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
-                    {
-                        toSubject &&
-                        <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
-                    }
+                    <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
                 </span>
             }
         }
@@ -127,7 +124,7 @@ const CustomPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.id}`
+            search: `textBookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}`
         }));
     }
 
