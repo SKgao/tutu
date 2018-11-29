@@ -10,19 +10,23 @@ import MyUpload from '@/components/UploadComponent';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, Select} from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, message} from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 const CustomPass = ({
     customPass,
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { passList, modalShow, subjectList, pageNum, pageSize, textbookId, sessionId, sessionTit, partsId} = customPass;
+    let { passList, modalShow, pageNum, pageSize, textbookId, sessionId, sessionTit, partsId} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
+        {
+        	title: '小关卡id',
+        	dataIndex: 'id',
+            sorter: true
+        },
         {
             title: '小关卡标题',
             dataIndex: 'title',
@@ -191,10 +195,19 @@ const CustomPass = ({
         e.preventDefault();
         validateFieldsAndScroll((err, values) => {
             if (!err) {
-                dispatch({
-                    type: 'customPass/addPass',
-                    payload: filterObj(values)
-                })
+                values.id && (values.id = values.id - 0)
+                values.textbookId && (values.textbookId = values.textbookId - 0)
+                const idArr = passList.map(e => e.id)
+                if (idArr.includes(values.id)) {
+                    message.warning('小关卡id已存在！')
+                } else {
+                    dispatch({
+                        type: 'customPass/addPass',
+                        payload: filterObj(values)
+                    }).then(() => {
+                        handleReset()
+                    })
+                }
             }
         });
     }
@@ -252,6 +265,17 @@ const CustomPass = ({
                     </FormItem>
 
                     <FormItem
+                        label="小关卡id"
+                        {...formItemLayout}
+                        >
+                        {getFieldDecorator('id', {
+                            rules: [{ required: true, message: '请输入小关卡id!' }],
+                        })(
+                            <Input placeholder="请输入小关卡id"/>
+                        )}
+                    </FormItem>
+
+                    <FormItem
                         label="小关卡标题"
                         {...formItemLayout}
                         >
@@ -263,7 +287,7 @@ const CustomPass = ({
                     </FormItem>
 
                     <FormItem
-                        label="小关卡过渡标题"
+                        label="过渡标题"
                         {...formItemLayout}
                         >
                         {getFieldDecorator('tmpTitle ', {
@@ -284,27 +308,6 @@ const CustomPass = ({
                             }],
                         })(
                             <MyUpload uploadSuccess={uploadSuccess}></MyUpload>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label="题型"
-                        hasFeedback
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('subject', {
-                            rules: [{ required: true, message: '请选择题型!' }],
-                        })(
-                            <Select
-                                showSearch
-                                onFocus={() => dispatch({type: 'customPass/getSubject'})}
-                                >
-                                {
-                                    subjectList.map(item =>
-                                        <Option key={item.id} value={item.id}>{item.name}</Option>
-                                    )
-                                }
-                            </Select>
                         )}
                     </FormItem>
 

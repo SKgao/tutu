@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
-import TableLayout from '@/components/TableLayout';
+//import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
@@ -23,7 +23,12 @@ const Session = ({
 
     const columns = [
         {
-            title: '大关卡标题',
+        	title: '大关卡id',
+        	dataIndex: 'id',
+            sorter: true
+        },
+        {
+            title: '大关卡标题222',
             dataIndex: 'title',
             render: (text, record) =>
 				<TablePopoverLayout
