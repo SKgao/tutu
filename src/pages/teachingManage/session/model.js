@@ -7,7 +7,8 @@ export default {
 
 	state: {
         sessionList: [], // 大关卡
-		customList: [],  // 小关卡
+		customList: [],  // 已绑定小关卡
+		passList: [],    // 所有的小关卡
 		textbookId: '',
 		partsId: '',
 		expandedRowKeys: '', // 默认展开的行
@@ -34,6 +35,7 @@ export default {
 						}
 					});
 					dispatch({ type: 'getSessionList' });
+					dispatch({ type: 'getPassList' });
 				}
 			});
 		}
@@ -73,6 +75,26 @@ export default {
             		type: 'save',
             		payload: {
 						customList: (res.data) ? res.data.data : []
+            		}
+            	})
+            }
+		},
+
+		*getPassList({ payload }, { put, call, select }) {
+			const { pageSize, pageNum, textbookId } = yield select(state => state.session);
+            const res = yield call(api.getPass, { pageSize, pageNum, textbookId });
+            if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						passList: [],
+						totalCount: 0
+            		}
+            	})
+            	yield put({
+            		type: 'save',
+            		payload: {
+						passList: (res.data) ? res.data.data : []
             		}
             	})
             }

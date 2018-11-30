@@ -68,10 +68,6 @@ const CustomPass = ({
                 return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
         }, {
-        	title: '闯关人数',
-        	dataIndex: 'customerNumber',
-            sorter: true
-        }, {
         	title: '小关卡顺序',
         	dataIndex: 'sort',
             sorter: true,
@@ -89,10 +85,6 @@ const CustomPass = ({
 							}
 						})
 					}/>
-        }, {
-        	title: '平均分',
-        	dataIndex: 'totalScore',
-            sorter: true
         }, {
         	title: '创建时间',
         	dataIndex: 'createdAt'

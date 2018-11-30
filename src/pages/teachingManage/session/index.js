@@ -18,7 +18,7 @@ const Session = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { sessionList, customList, modalShow, modalShow2, pageNum, pageSize, textbookId, sessionTitle, partsId} = session;
+    let { sessionList, customList, passList, modalShow, modalShow2, pageNum, pageSize, textbookId, sessionTitle, partsId} = session;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -92,7 +92,16 @@ const Session = ({
             dataIndex: 'link',
             render: (txt, record, index) => {
                 return <span>
-                    <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>查看小关卡</a>
+                    {/* <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>绑定小关卡</a> */}
+                    <TablePopoverLayout
+                        title={'绑定小关卡'}
+                        optionKey={'id'}
+                        optionItem={'title'}
+                        valueData={passList}
+                        defaultValue={'绑定小关卡'}
+                        onOk={v => {
+                            bindToSession(record.id, v)
+                        }}/>
                     <a onClick={() => checkCustomList(record)} style={{ marginLeft: 10 }}>已绑定小关卡</a>
                 </span>
             }
@@ -110,10 +119,6 @@ const Session = ({
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(row)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
-                    </Popconfirm>
-
-                    <Popconfirm title="是否解除绑定小关卡?" onConfirm={() => handleUnbind(row)}>
-                        <Button size="small" style={{ marginLeft: 10 }}>解绑</Button>
                     </Popconfirm>
                 </span>
             }
@@ -148,7 +153,19 @@ const Session = ({
                             }
                         })
                     }/>
-        },
+        }, {
+        	title: '操作',
+            dataIndex: 'action',
+            render: (txt, row, index) => {
+                return <span>
+                    <Button type="danger" size="small" style={{ marginLeft: 10 }} onClick={() => bindToSession(row.sessionId, row.customPassId)}>绑定</Button>
+
+                    <Popconfirm title="是否解除绑定小关卡?" onConfirm={() => handleUnbind(row)}>
+                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>解绑</Button>
+                    </Popconfirm>
+                </span>
+            }
+        }
     ]
 
     // key
@@ -164,6 +181,21 @@ const Session = ({
             pathname: '/teachingManage/customPass',
             search: search
         }));
+    }
+
+    /**
+     * 绑定到大关卡
+     * @param  {object} 列数据
+     */
+    const bindToSession = (sessionId, customPassId) => {
+        dispatch({
+    		type: 'session/sessionBind',
+    		payload: {
+                textbookId: textbookId - 0,
+                sessionId: sessionId - 0,
+                customPassId: customPassId - 0
+            }
+    	})
     }
 
     // 已绑定小关卡
@@ -303,10 +335,10 @@ const Session = ({
             </FormInlineLayout>
 
             <Modal
-                title="新增关卡"
+                title="新增大关卡"
                 visible={modalShow}
-                onOk={ () => changeModalState('modalShow',false) }
-                onCancel= { () => changeModalState('modalShow',false) }
+                onOk={ () => changeModalState('modalShow', false) }
+                onCancel= { () => changeModalState('modalShow', false) }
                 okText="确认"
                 cancelText="取消"
                 footer={null}

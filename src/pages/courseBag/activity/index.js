@@ -398,22 +398,11 @@ const BagActivity = ({
                             label="课程id"
                             {...formItemLayout}
                             >
-                            {getFieldDecorator('id', {
+                            {getFieldDecorator('textbookId', {
                                 initialValue: bagActivity.id,
                                 rules: [{ required: true, message: '请输入课程id!' }],
                             })(
                                 <Input disabled/>
-                            )}
-                        </FormItem>
-
-                        <FormItem
-                            label="教程名称"
-                            {...formItemLayout}
-                            >
-                            {getFieldDecorator('textbookName', {
-                                rules: [{ required: true, message: '请输入教程名称!' }],
-                            })(
-                                <Input placeholder="请输入教程名称"/>
                             )}
                         </FormItem>
 

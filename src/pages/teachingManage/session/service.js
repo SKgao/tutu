@@ -17,7 +17,7 @@ export default {
     updateSession: data => axios.post('session/update', data),
 
     // 大关卡--绑定小关卡
-    sessionBind: data => axios.post('session/bind', data),
+    sessionBind: data => axios.post(`session/bind?textbookId=${data.textbookId}&sessionId=${data.sessionId}&customPassId=${data.customPassId}`, data),
 
     // 大关卡--解绑小关卡
     sessionUnbind: data => axios.get(`session/unbind/${data}`, data),
@@ -30,4 +30,7 @@ export default {
 
     // 大关卡下--小关卡列表
     customList: data => axios.post(`session/custom/list?textbookId=${data.textbookId}&sessionId=${data.sessionId}`, data),
+
+    // 教材下--小关卡列表
+    getPass: data => axios.get(`pass/list/${data.textbookId}`, data),
 }
