@@ -120,7 +120,7 @@ const BookUnit = ({
     const linktoPart = (record) => {
         dispatch(routerRedux.push({
             pathname: '/teachingManage/part',
-            search: `unitsId=${record.id}`
+            search: `unitId=${record.id}&textBookId=${textBookId}`
         }));
     }
 

@@ -115,7 +115,7 @@ export default {
 
         *getGrade({ payload }, { call, put }) {
 			const res = yield call(api.getGrade, payload);
-            if (res.data.code == 0) {
+            if (res) {
 				yield put({
             		type: 'save',
             		payload: {

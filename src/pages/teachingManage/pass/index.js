@@ -44,7 +44,7 @@ const PartPass = ({
         	title: '图片',
         	dataIndex: 'icon',
             render: (text, record, index) => {
-                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
         }, {
         	title: '修改图片',

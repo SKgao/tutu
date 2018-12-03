@@ -3,7 +3,7 @@ const add0 = s => s > 9 ? s : '0' + s;
 
 /**
  * 展开数组
- * @param  {Array} 
+ * @param  {Array}
  * @return {Array}     [description]
  */
 const _flatten = (arr) => {
@@ -72,10 +72,21 @@ module.exports = {
         let reg = /\d(?=(?:\d{3})+(?:\.\d+|$))/g;
         return (str + '').replace(reg, '$&,');
 	},
-	
+
+	/**
+	 * 获取URL参数
+	 * @param  {String}
+	 */
+	getUrlParams: (str, name) => {
+        let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); //定义正则表达式
+		let r = str.substr(1).match(reg);
+		if (r != null) return r[2];
+		return null;
+	},
+
 	// 展开数组
 	flatten: _flatten,
-	
+
 	// 获取字段
 	getField: _getField
 }

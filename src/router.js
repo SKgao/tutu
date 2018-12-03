@@ -50,9 +50,14 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "teachingManage/part" */ './pages/teachingManage/part/model')]
 		},
 		{
-			path: '/teachingManage/pass',
-			component: () => import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/index'),
-			models: () => [import(/* webpackChunkName: "teachingManage/pass" */ './pages/teachingManage/pass/model')]
+			path: '/teachingManage/session',
+			component: () => import(/* webpackChunkName: "teachingManage/session" */ './pages/teachingManage/session/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/session" */ './pages/teachingManage/session/model')]
+		},
+		{
+			path: '/teachingManage/customPass',
+			component: () => import(/* webpackChunkName: "teachingManage/customPass" */ './pages/teachingManage/customPass/index'),
+			models: () => [import(/* webpackChunkName: "teachingManage/customPass" */ './pages/teachingManage/customPass/model')]
 		},
 		{
 			path: '/appverUpdate',
@@ -108,6 +113,21 @@ const Routers = ({
 			path: '/couUser',
 			component: () => import(/* webpackChunkName: "courseUser" */ './pages/courseUser/index'),
 			models: () => [import(/* webpackChunkName: "courseUser" */ './pages/courseUser/model')]
+		},
+		{
+			path: '/courseBag/bags',
+			component: () => import(/* webpackChunkName: "courseBag/bags" */ './pages/courseBag/bags/index'),
+			models: () => [import(/* webpackChunkName: "courseBag/bags" */ './pages/courseBag//bags/model')]
+		},
+		{
+			path: '/courseBag/activity',
+			component: () => import(/* webpackChunkName: "courseBag/activity" */ './pages/courseBag/activity/index'),
+			models: () => [import(/* webpackChunkName: "courseBag/activity" */ './pages/courseBag//activity/model')]
+		},
+		{
+			path: '/courseBag/course',
+			component: () => import(/* webpackChunkName: "courseBag/course" */ './pages/courseBag/course/index'),
+			models: () => [import(/* webpackChunkName: "courseBag/course" */ './pages/courseBag//course/model')]
 		}
 	]
 

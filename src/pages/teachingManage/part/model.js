@@ -1,5 +1,5 @@
 import api from './service';
-import { filterObj } from '@/utils/tools';
+import { filterObj, getUrlParams } from '@/utils/tools';
 import { message } from 'antd';
 
 export default {
@@ -9,6 +9,7 @@ export default {
 		partList: [],
 		startTime: '',
 		endTime: '',
+		textBookId: '',
 		unitId: 0,
 		pageSize: 10,
         pageNum: 1,
@@ -19,15 +20,13 @@ export default {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/teachingManage/part') {
-					let _search = location.search.slice(1)
-					let arr = (_search) ? _search.split('=') : []
-					let _unitId = (arr.length) ? arr[1] - 0 : ''
 					let param = {
 						startTime: '',
 						endTime: '',
 						pageSize: 10,
 						pageNum: 1,
-						unitId: _unitId
+						unitId: getUrlParams(location.search, 'unitId'),
+						textBookId: getUrlParams(location.search, 'textBookId') || ''
 					}
 					dispatch({
 						type: 'setParam',
@@ -40,7 +39,7 @@ export default {
 	},
 
 	effects: {
-		  
+
 		*getPart({ payload }, { call, put, select }) {
 			const { pageNum, pageSize, startTime, endTime, unitId } = yield select(state => state.unitPart);
 			const _pay = (payload) ? payload : { pageNum, pageSize, startTime, endTime, unitId };
@@ -70,7 +69,7 @@ export default {
 				yield put({ type: 'getPart' });
 			}
 		},
-		
+
 		*updatePart({ payload }, { call, put, select }) {
 			const res = yield call(api.updatePart, payload);
 			if (res) {
@@ -106,4 +105,3 @@ export default {
 		}
 	},
 };
-	

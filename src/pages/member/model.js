@@ -28,6 +28,11 @@ export default {
 		modalShow: false,
 		hasSetPassword: '',   // 是否设置密码
 		activeKey: '0',       // 默认选中tabs
+
+		// 开通用户模块
+		userid: '',      // 用户id
+		addvips: '',     // 会员id
+		realName: ''    // 当前用户等级名称
 	},
 
 	subscriptions: {
@@ -50,7 +55,8 @@ export default {
 							registerStartTime: '', // 会员注册起始时间
 		                    registerEndTime: '',   // 会员注册截止时间
 							bookVersionId: '',
-							sex: ''
+							sex: '',
+							addvips: ''
 						}
 					});
 					dispatch({ type: 'getMember' });

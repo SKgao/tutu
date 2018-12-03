@@ -1,6 +1,6 @@
 import api from './service';
 import api_teachingManage from '@/pages/teachingManage/book/service';
-import { filterObj } from '@/utils/tools';
+import { filterObj, getUrlParams } from '@/utils/tools';
 import { message } from 'antd';
 
 export default {
@@ -14,11 +14,12 @@ export default {
         subjectTypeId: '',   // 题目类型id
         startTime: '',
 		endTime: '',
+		partsId: '',         // partid
 		sourceIds: '',       // 搜索题目内容
         modalShow: false,    // 添加题目
 		modal2Show: false,   // 添加素材
 		modal3Show: false,   // 添加素材
-		textbookId: '',       // 教材id
+		textBookId: '',       // 教材id
 		customsPassId: '',    // 关卡id
 		sort: 0,             // 题目顺序
 		detpage: false,      // 是否为题目详情页
@@ -38,36 +39,40 @@ export default {
 			return history.listen(location => {
 				if (location.pathname === '/subjects') {
 					let search = location.search.slice(1)
+					let detpage = getUrlParams(location.search, 'detpage')
+					let customsPassId = getUrlParams(location.search, 'customsPassId')
+					let sort = getUrlParams(location.search, 'sort')
+					let customsPassName = getUrlParams(location.search, 'customsPassName')
+					let textBookId = getUrlParams(location.search, 'textBookId')
+					let partsId = getUrlParams(location.search, 'partsId')
 					if (search) {
-						let arr = (search) ? search.split('&') : []
-						let paramObj = { activeKey: '0', sort: '', }
-						for (let i = 0; i < arr.length; i++) {
-							let temp = arr[i].split('=')
-							if (temp[0] && temp[1] && temp[1] !== 'undefined') {
-								if (temp[0] === 'customsPassName') {
-									paramObj[temp[0]] = decodeURI(temp[1])
-								} else {
-									paramObj[temp[0]] = temp[1] - 0
-								}
-							}
-						}
 						dispatch({
 							type: 'setParam',
-							payload: paramObj
+							payload: {
+								detpage,
+								customsPassId: customsPassId ? customsPassId - 0 : '',
+								sort: sort ? sort - 0 : '',
+								customsPassName: customsPassName || '',
+								textBookId: textBookId ? textBookId - 0 : '',
+								partsId: partsId ? partsId - 0 : ''
+							}
 						})
-						if (paramObj.detpage) {
+						if (detpage) {
 							dispatch({
 								type: 'subjectDesc',
 								payload: {
-									customsPassId: paramObj.customsPassId,
-									sort: paramObj.sort
+									customsPassId: customsPassId ? customsPassId - 0 : '',
+									sort: sort ? sort - 0 : '',
 								}
 							})
 						} else {
 							dispatch({
 								type: 'getSubject',
 								payload: {
-									customsPassId: paramObj.customsPassId,
+									textBookId: textBookId ? textBookId - 0 : '',
+									partsId: partsId ? partsId - 0 : '',
+									customsPassId: customsPassId ? customsPassId - 0 : '',
+									textBookId: textBookId ? textBookId - 0 : '',
 									pageSize: 10,
                                     pageNum: 1
 								}
@@ -84,8 +89,9 @@ export default {
 								customsPassName: '',
 								sort: '',
 								sourceIds: '',
-								textbookId: '',
+								textBookId: '',
 								subjectTypeId: '',
+								partsId: '',
 								pageSize: 10,
                                 pageNum: 1
 							}
@@ -99,8 +105,9 @@ export default {
 								customsPassName: '',
 								sort: '',
 								sourceIds: '',
-								textbookId: '',
+								textBookId: '',
 								subjectTypeId: '',
+								partsId: '',
 								pageSize: 10,
                                 pageNum: 1
 							}
@@ -113,8 +120,8 @@ export default {
 
 	effects: {
 		*getSubject({ payload }, { call, put, select }) {
-			const { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId } = yield select(state => state.subject);
-			const _pay = payload ? payload : { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId }
+			const { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId, partsId, textBookId } = yield select(state => state.subject);
+			const _pay = payload ? payload : { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId, partsId, textBookId}
 			const res = yield call(api.getSubject, filterObj(_pay))
 			if (res) {
 				yield put({

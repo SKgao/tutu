@@ -14,8 +14,6 @@ import { Form, Input, Button, Modal, Icon, DatePicker, Select, Popconfirm, Radio
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
 const SpecialCourse = ({
     specialCourse,
@@ -264,9 +262,9 @@ const SpecialCourse = ({
                     {
                         (!record.status || record.status === 2 ) && <Button type="primary" size="small" onClick={() => changeStatus(record, 1)}>上架</Button>
 					}
-					{
+					{/* {
                         record.status === 1 && <Button size="small" style={{ marginLeft: 5 }} onClick={() => changeStatus(record, 2)}>下架</Button>
-					}
+					} */}
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
@@ -395,7 +393,6 @@ const SpecialCourse = ({
 
     // 设置表单时间
     const onChangeDate = (a, b, c) => {
-        console.log(c, b)
         dispatch({
     		type: 'specialCourse/setParam',
     		payload: {

@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
-import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
 
@@ -24,7 +23,7 @@ const TeachingManage = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { bookList, gradeList, versionList, modalShow, startTime, endTime, gradeId, activeKey, bookVersionName, gradeName, bookVersionId, pageNum, pageSize, totalCount } = teachingmanage;
+    let { bookList, gradeList, versionList, modalShow, activeKey, bookVersionName, gradeName} = teachingmanage;
     let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue } = form;
 
     // 表格配置
@@ -112,6 +111,16 @@ const TeachingManage = ({
                     return <MyUpload uploadTxt={'上传封面图'} uploadSuccess={(url) => changeImages(url, record)}></MyUpload>
                 }
             }, {
+                title: '详情',
+                dataIndex: 'link',
+                render: (txt, record, index) => {
+                    return <span>
+                        <a onClick={() => linktoUnit(record)} style={{ marginLeft: 10 }}>查看单元</a>
+                        <a onClick={() => linktoSession(record)} style={{ marginLeft: 10 }}>查看大关卡</a>
+                        <a onClick={() => linktoCustomPass(record)} style={{ marginLeft: 10 }}>查看小关卡</a>
+                    </span>
+                }
+            }, {
                 title: '操作',
                 dataIndex: 'action',
                 render: (txt, record, index) => {
@@ -119,8 +128,6 @@ const TeachingManage = ({
                         <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                             <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                         </Popconfirm>
-
-                        <Button type="primary" size="small" onClick={() => linktoUnit(record)} style={{ marginLeft: 10 }}>查看单元</Button>
                     </span>
                 }
             }
@@ -239,11 +246,27 @@ const TeachingManage = ({
     }
 
 
-    // 调转到单元页面
+    // 跳转到单元页面
     const linktoUnit = (record) => {
         dispatch(routerRedux.push({
             pathname: '/teachingManage/unit',
             search: `textBookId=${record.id}`
+        }));
+    }
+
+    // 跳转到大关卡
+    const linktoSession = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/session',
+            search: `textbookId=${record.id}`
+        }));
+    }
+
+    // 调转到小关卡
+    const linktoCustomPass = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/customPass',
+            search: `textbookId=${record.id}`
         }));
     }
 

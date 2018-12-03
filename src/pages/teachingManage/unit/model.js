@@ -1,5 +1,5 @@
 import api from './service';
-import { filterObj } from '@/utils/tools';
+import { filterObj, getUrlParams } from '@/utils/tools';
 import api_teachingManage from '@/pages/teachingManage/book/service';
 import { message } from 'antd';
 
@@ -22,15 +22,12 @@ export default {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
 				if (location.pathname === '/teachingManage/unit') {
-					let _search = location.search.slice(1)
-					let arr = (_search) ? _search.split('=') : []
-					let _bookId = (arr.length) ? arr[1] - 0 : ''
 					let param = {
 						startTime: '',
 						endTime: '',
 						pageSize: 10,
 						pageNum: 1,
-						textBookId: _bookId
+						textBookId: getUrlParams(location.search, 'textBookId')
 					}
 					dispatch({
 						type: 'setParam',
@@ -64,7 +61,7 @@ export default {
 				})
 			}
         },
-        
+
         *getBook({ payload }, { call, put, select }) {
 			const res = yield call(api_teachingManage.getBook, {
                 pageNum: 1,
@@ -79,7 +76,7 @@ export default {
 				})
 			}
 		},
-		
+
 		*addUnit({ payload }, { call, put }) {
 			const res = yield call(api.addUnit, payload);
 			if (res) {
@@ -87,7 +84,7 @@ export default {
 				yield put({ type: 'getUnit' });
 			}
         },
-        
+
         *updateUnit({ payload }, { call, put }) {
 			const res = yield call(api.updateUnit, payload);
 			if (res) {
@@ -103,7 +100,7 @@ export default {
 				yield put({ type: 'getUnit' });
 			}
         },
-        
+
         *setParam({ payload }, { put }) {
 			for (let key in payload) {
 				yield put({
@@ -122,4 +119,3 @@ export default {
 		}
 	},
 };
-	

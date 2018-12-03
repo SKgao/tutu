@@ -9,7 +9,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Popconfirm, Radio, Badge, message } from 'antd';
+import { Form, Input, Button, Modal, DatePicker, Select, Popconfirm, Radio, Badge, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -23,7 +23,7 @@ const Activity = ({
 }) => {
     let { dispatch, form } = props;
     let { tableData, selectList, modalShow, modal2Show, addStatus, levelList, beginAt, endAt, pageSize, pageNum } = activity;
-    let { getFieldDecorator, getFieldValue, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+    let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
 
     const columns = [
         {
