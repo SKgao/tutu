@@ -21,20 +21,16 @@ const BagActivity = ({
     ...props
 }) => {
 	let { dispatch, form } = props;
-	let { tableList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
-	let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+	let { tableList, bookList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
+	let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
         {
-            title: '教材id',
-            dataIndex: 'textbookId',
-            sorter: true
-        }, {
-            title: '教材名称',
+            title: '课程名称',
             dataIndex: 'textbookName',
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改教材名称'}
+					title={'修改课程名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>
@@ -296,7 +292,10 @@ const BagActivity = ({
                 let _end = new Date(endAt).getTime()
                 let _begin2 = new Date(saleBeginAt).getTime()
                 let _end2 = new Date(saleEndAt).getTime()
-                if (_begin > _end) {
+                const idArr = tableList.map(e => e.id)
+                if (idArr.includes(values.id)) {
+                    message.warning('课程活动id已存在！')
+                } else if (_begin > _end) {
                     message.warning('开始时间不能大于结束时间')
                 } else if (_begin2 > _end2) {
                     message.warning('预售开始时间不能大于预售结束时间')
@@ -395,14 +394,35 @@ const BagActivity = ({
                     >
                     <Form>
                         <FormItem
-                            label="课程id"
                             {...formItemLayout}
+                            label="教材id"
                             >
                             {getFieldDecorator('textbookId', {
-                                initialValue: bagActivity.id,
-                                rules: [{ required: true, message: '请输入课程id!' }],
+                                rules: [{ required: true, message: '请选择教材id!' }],
                             })(
-                                <Input disabled/>
+                                <Select
+                                    showSearch
+                                    onFocus={() => dispatch({type: 'bagActivity/getBooklist'})}
+                                    placeholder="请选择教材"
+                                    >
+                                    {
+                                        bookList.map(item =>
+                                            <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                                        )
+                                    }
+                                </Select>
+                            )}
+                        </FormItem>
+
+                        <FormItem
+                            label="课程活动id"
+                            {...formItemLayout}
+                            >
+                            {getFieldDecorator('id', {
+                                //initialValue: bagActivity.id,
+                                rules: [{ required: true, message: '请输入课程活动id!' }],
+                            })(
+                                <Input placeholder="请选择课程活动id"/>
                             )}
                         </FormItem>
 

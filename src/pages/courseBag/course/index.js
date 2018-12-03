@@ -17,7 +17,7 @@ const CourseList = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableList, pageNum, pageSize, totalCount, modalShow, icon } = courseList;
+    let { tableList, pageNum, pageSize, totalCount, modalShow } = courseList;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -130,8 +130,10 @@ const CourseList = ({
 		e.preventDefault()
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
+                const { id, icon } = courseList
+                values.bagId = id - 0
                 values.icon = icon
-                values.bagId && (values.bagId = values.bagId - 0)
+                delete values.title
                 dispatch({
                     type: 'courseList/addCourse',
                     payload: filterObj(values)
@@ -189,11 +191,11 @@ const CourseList = ({
                 >
                 <Form>
                     <FormItem
-                        label="课程包id"
+                        label="课程包名称"
                         {...formItemLayout}
                         >
-                        {getFieldDecorator('bagId', {
-                            initialValue: courseList.id,
+                        {getFieldDecorator('title', {
+                            initialValue: courseList.title,
                             rules: [{ required: true, message: '请输入课程包id!' }],
                         })(
                             <Input disabled/>

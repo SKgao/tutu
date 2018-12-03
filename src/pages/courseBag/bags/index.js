@@ -90,8 +90,8 @@ const CourseBag = ({
     const linktoCourse = (record) => {
         dispatch(routerRedux.push({
             pathname: '/courseBag/course',
-            search: `id=${record.id}`
-        }));
+            search: `id=${record.id}&title=${record.title}`
+        }))
     }
 
     // 操作分页

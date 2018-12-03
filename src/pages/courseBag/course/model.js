@@ -12,7 +12,8 @@ export default {
 		pageSize: 10,
 		pageNum: 1,
 		icon: '',    // 添加课程--图标
-        id: ''      // 课程包id
+		id: '',      // 课程包id
+		title: '',   // 课程包名称
 	},
 
 	subscriptions: {
@@ -25,7 +26,8 @@ export default {
 							pageSize: 10,
 							pageNum: 1,
                             totalCount: 0,
-                            id: getUrlParams(location.search, 'id') - 0
+							id: getUrlParams(location.search, 'id') - 0,
+							title: decodeURI(getUrlParams(location.search, 'title')) || ''
 						}
 					});
 					dispatch({ type: 'getCourseList' });

@@ -153,7 +153,6 @@ export default {
             const res = yield call(api.sessionUnbind, payload);
 		    if (res) {
 				message.success(res.data.message);
-				yield put({ type: 'getSessionList' })
 			}
 		},
 
