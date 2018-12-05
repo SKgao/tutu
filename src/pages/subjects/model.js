@@ -36,6 +36,10 @@ export default {
 
 		// 题目id
 		topicId: '',
+		icon: '',
+		sentenceAudio: '',
+		audio: '',
+		sceneGraph: ''
 	},
 
 	subscriptions: {
@@ -196,6 +200,14 @@ export default {
 
 		*deleteSubject({ payload }, { call, put }) {
 			const res = yield call(api.deleteTopic, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' })
+			}
+		},
+
+		*addTopic({ payload }, { call, put }) {
+			const res = yield call(api.addTopic, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getSubject' })

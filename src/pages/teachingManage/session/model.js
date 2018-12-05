@@ -15,6 +15,7 @@ export default {
 		sessionTitle: '',  // 大关卡名称
 		modalShow: false,
 		modalShow2: false,
+		modalShow3: false,
         totalCount: 0,
 		pageSize: 10,
 		pageNum: 1

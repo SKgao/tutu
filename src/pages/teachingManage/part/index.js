@@ -58,7 +58,7 @@ const UnitPart = ({
                     changeIcon(url, record)
                 }}></MyUpload>
             }
-        },{
+        }, {
             title: 'part描述',
             dataIndex: 'tips',
             render: (text, record) =>
@@ -72,6 +72,24 @@ const UnitPart = ({
 							payload: {
 								id: record.id,
 								tips: v
+							}
+						})
+					}/>
+        }, {
+        	title: 'part排序',
+            dataIndex: 'sort',
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改part排序'}
+					valueData={text + '' || '无'}
+					defaultValue={text + '' || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'unitPart/updatePart',
+							payload: {
+								id: record.id,
+								sort: v
 							}
 						})
 					}/>

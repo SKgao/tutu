@@ -28,7 +28,7 @@ const Subject = ({
 }) => {
     let { dispatch, form } = props;
     let { modalShow, modal2Show, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
-    let { getFieldDecorator, resetFields } = form;
+    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     // 题目列表
     const subjectCol = [
@@ -418,10 +418,6 @@ const Subject = ({
                                 </FormItem>
                             }
 
-                            <FormItem>
-                                <Button type="primary" onClick={() => changeModalState('modal2Show',true)}>添加题目</Button>
-                            </FormItem>
-
                             {
                                 !detpage && !customsPassId ? null :
                                 <FormItem>
@@ -501,136 +497,6 @@ const Subject = ({
                                 {...formItemLayout}>
                                 <Button type="primary" onClick={handleSubmitSubject} style={{ marginLeft: 75 }}>提交</Button>
                                 <Button onClick={() => handleReset('modalShow')} style={{ marginLeft: 15 }}>取消</Button>
-                            </FormItem>
-                        </Form>
-                    </Modal>
-
-                    <Modal
-                        title="添加题目"
-                        visible={modal2Show}
-                        onOk={ () => changeModalState('modal2Show', false) }
-                        onCancel= { () => changeModalState('modal2Show', false) }
-                        okText="确认"
-                        cancelText="取消"
-                        footer={null}
-                        >
-                        <Form>
-                            <FormItem
-                                label="题目id"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('id', {
-                                    rules: [{ required: true, message: '请输入题目id!' }],
-                                })(
-                                    <Input placeholder="请输入题目id"/>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label="关卡id"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('customsPassId', {
-                                    initialValue: subject.customsPassId ? subject.customsPassId + ''  : '',
-                                    rules: [{ required: true, message: '请输入关卡id!' }],
-                                })(
-                                    <Input placeholder="请输入关卡id"/>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label="partId"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('partId', {
-                                    initialValue: subject.partId ? subject.partId + ''  : '',
-                                    rules: [{ required: true, message: '请输入partId!' }],
-                                })(
-                                    <Input placeholder="请输入partId"/>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label="题目排序"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('sort', {
-                                    initialValue: subject.sort ? subject.sort + ''  : '',
-                                    rules: [{ required: true, message: '请输入题目排序!' }],
-                                })(
-                                    <Input placeholder="请输入题目排序"/>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label="题目内容"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('sourceIds', {
-                                    rules: [{ required: true, message: '请输入题目内容!' }],
-                                })(
-                                    <Input placeholder="请输入题目内容"/>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label={(
-                                    <span>
-                                      挖空规则&nbsp;
-                                      <Tooltip title="听音拼写挖空规则1 2，表示第1个和第2个提示，例如：do_ dog拼写">
-                                        <Icon type="question-circle-o" />
-                                      </Tooltip>
-                                    </span>
-                                  )}
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('showIndex', {
-                                    rules: [{ required: true, message: '请输入挖空规则, 数字之间用 空格 分隔开!' }],
-                                })(
-                                    <Input placeholder="请输入挖空规则, 数字之间用 空格 分隔开!"/>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label="场景图片"
-                                {...formItemLayout}
-                                >
-                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'sceneGraph')}></MyUpload>
-                            </FormItem>
-
-                            <FormItem
-                                label="题目图片"
-                                {...formItemLayout}
-                                >
-                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'icon')}></MyUpload>
-                            </FormItem>
-
-                             <FormItem
-                                label={(
-                                    <span>
-                                      句子音频&nbsp;
-                                      <Tooltip title="题目是句子+词组时导入">
-                                        <Icon type="question-circle-o" />
-                                      </Tooltip>
-                                    </span>
-                                  )}
-                                {...formItemLayout}
-                                >
-                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'sentenceAudio')}></MyUpload>
-                            </FormItem>
-
-                            <FormItem
-                                label="音频地址"
-                                {...formItemLayout}
-                                >
-                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'audio')}></MyUpload>
-                            </FormItem>
-
-
-                            <FormItem
-                                {...formItemLayout}>
-                                <Button type="primary" onClick={handleSubmitSource} style={{ marginLeft: 45 }}>提交</Button>
-                                <Button onClick={() => handleReset('modal2Show')} style={{ marginLeft: 15 }}>取消</Button>
                             </FormItem>
                         </Form>
                     </Modal>

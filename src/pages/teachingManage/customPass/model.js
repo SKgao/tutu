@@ -9,6 +9,7 @@ export default {
 		passList: [], // 小关卡
 		subjectList: [], // 题型列表
 		modalShow: false,
+		modal2Show: false,
 		textbookId: '',
 		sessionId: '',  // 大关卡id
 		sessionTit: '', // 大关卡名称
