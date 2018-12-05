@@ -120,7 +120,7 @@ const CustomPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `textBookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}`
+            search: `textBookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}&sort=${record.sort}`
         }));
     }
 

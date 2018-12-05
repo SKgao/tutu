@@ -7,12 +7,14 @@ import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
 import VaildForm from '../sourceMaterial//VaildForm';
+import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Radio, Modal, Select, Icon, Upload, Tabs, message, Popconfirm, Table } from 'antd';
+import { Form, DatePicker, Input, Button, Radio, Modal, Tooltip, Select,
+    Icon, Upload, Tabs, message, Popconfirm, Table } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -160,7 +162,7 @@ const Subject = ({
     const linktoDet = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.customsPassId}&sort=${record.sort}&detpage=1`
+            search: `topicId=${record.id}`
         }));
     }
 
@@ -168,10 +170,11 @@ const Subject = ({
     const handleDelete = (record) => {
         dispatch({
             type: 'subject/deleteSubject',
-            payload: {
-                customsPassId: record.customsPassId - 0,
-                sort: record.sort - 0,
-            }
+            payload: record.id - 0,
+            // payload: {
+            //     customsPassId: record.customsPassId - 0,
+            //     sort: record.sort - 0,
+            // }
         })
     }
 
@@ -342,6 +345,17 @@ const Subject = ({
     	})
     }
 
+    // 文件上传成功
+    const uploadSuccess = (url, filed) => {
+        //setFieldsValue({[filed]: url})
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+    			[filed]: url
+    		}
+        })
+    }
+
 	return (
 		<div>
             <Tabs
@@ -403,6 +417,10 @@ const Subject = ({
                                     <Button type="primary" onClick={() => changeModalState('modalShow',true)}>导入题目</Button>
                                 </FormItem>
                             }
+
+                            <FormItem>
+                                <Button type="primary" onClick={() => changeModalState('modal2Show',true)}>添加题目</Button>
+                            </FormItem>
 
                             {
                                 !detpage && !customsPassId ? null :
@@ -488,7 +506,7 @@ const Subject = ({
                     </Modal>
 
                     <Modal
-                        title="导入素材"
+                        title="添加题目"
                         visible={modal2Show}
                         onOk={ () => changeModalState('modal2Show', false) }
                         onCancel= { () => changeModalState('modal2Show', false) }
@@ -498,34 +516,116 @@ const Subject = ({
                         >
                         <Form>
                             <FormItem
-                                label="音频文件目录"
+                                label="题目id"
                                 {...formItemLayout}
                                 >
-                                {getFieldDecorator('audioArray', {
-                                    // rules: [{ message: '请上传音频素材!' }],
+                                {getFieldDecorator('id', {
+                                    rules: [{ required: true, message: '请输入题目id!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory multiple showUploadList={false}>
-                                        <Button>
-                                            <Icon type="upload"/>上传音频
-                                        </Button>
-                                    </Upload>
+                                    <Input placeholder="请输入题目id"/>
                                 )}
                             </FormItem>
 
                             <FormItem
-                                label="图片文件目录"
+                                label="关卡id"
                                 {...formItemLayout}
                                 >
-                                {getFieldDecorator('imageArray', {
-                                // rules: [{ message: '请上传图片素材!' }],
+                                {getFieldDecorator('customsPassId', {
+                                    initialValue: subject.customsPassId ? subject.customsPassId + ''  : '',
+                                    rules: [{ required: true, message: '请输入关卡id!' }],
                                 })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory multiple showUploadList={false}>
-                                        <Button>
-                                            <Icon type="upload"/>上传图片
-                                        </Button>
-                                    </Upload>
+                                    <Input placeholder="请输入关卡id"/>
                                 )}
                             </FormItem>
+
+                            <FormItem
+                                label="partId"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('partId', {
+                                    initialValue: subject.partId ? subject.partId + ''  : '',
+                                    rules: [{ required: true, message: '请输入partId!' }],
+                                })(
+                                    <Input placeholder="请输入partId"/>
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                label="题目排序"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('sort', {
+                                    initialValue: subject.sort ? subject.sort + ''  : '',
+                                    rules: [{ required: true, message: '请输入题目排序!' }],
+                                })(
+                                    <Input placeholder="请输入题目排序"/>
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                label="题目内容"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('sourceIds', {
+                                    rules: [{ required: true, message: '请输入题目内容!' }],
+                                })(
+                                    <Input placeholder="请输入题目内容"/>
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                label={(
+                                    <span>
+                                      挖空规则&nbsp;
+                                      <Tooltip title="听音拼写挖空规则1 2，表示第1个和第2个提示，例如：do_ dog拼写">
+                                        <Icon type="question-circle-o" />
+                                      </Tooltip>
+                                    </span>
+                                  )}
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('showIndex', {
+                                    rules: [{ required: true, message: '请输入挖空规则, 数字之间用 空格 分隔开!' }],
+                                })(
+                                    <Input placeholder="请输入挖空规则, 数字之间用 空格 分隔开!"/>
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                label="场景图片"
+                                {...formItemLayout}
+                                >
+                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'sceneGraph')}></MyUpload>
+                            </FormItem>
+
+                            <FormItem
+                                label="题目图片"
+                                {...formItemLayout}
+                                >
+                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'icon')}></MyUpload>
+                            </FormItem>
+
+                             <FormItem
+                                label={(
+                                    <span>
+                                      句子音频&nbsp;
+                                      <Tooltip title="题目是句子+词组时导入">
+                                        <Icon type="question-circle-o" />
+                                      </Tooltip>
+                                    </span>
+                                  )}
+                                {...formItemLayout}
+                                >
+                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'sentenceAudio')}></MyUpload>
+                            </FormItem>
+
+                            <FormItem
+                                label="音频地址"
+                                {...formItemLayout}
+                                >
+                                <MyUpload uploadSuccess={url => uploadSuccess(url, 'audio')}></MyUpload>
+                            </FormItem>
+
 
                             <FormItem
                                 {...formItemLayout}>
