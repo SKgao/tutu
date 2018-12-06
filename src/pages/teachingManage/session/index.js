@@ -6,11 +6,12 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
+import AddProject from './AddProject';
 
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, message, Table, Tooltip} from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, message, Table} from 'antd';
 const FormItem = Form.Item;
 
 const Session = ({
@@ -185,11 +186,11 @@ const Session = ({
         }));
     }
 
-    // 调转到关卡页面
+    // 调转到题目页面
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `textBookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}`
+            search: `textbookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}`
         }));
     }
 
@@ -322,26 +323,6 @@ const Session = ({
         })
     }
 
-    // 添加题目
-	const handleAddSubject = (e) => {
-		e.preventDefault();
-		validateFieldsAndScroll((err, values) => {
-			if (!err) {
-                const { icon, sentenceAudio, audio, sceneGraph } = session;
-                values.customsPassId && (values.customsPassId = values.customsPassId - 0);
-                values.id && (values.id = values.id - 0);
-                values.partId && (values.partId = values.partId - 0);
-                values.sort && (values.sort = values.sort - 0);
-                values.sentenceAudio = sentenceAudio;
-                values.sceneGraph = sceneGraph;
-                dispatch({
-                    type: 'subject/addTopic',
-                    payload: filterObj(values)
-                })
-			}
-		});
-    }
-
     // 操作分页
     const handleChange = (param) => {
         dispatch({
@@ -367,10 +348,11 @@ const Session = ({
                     </FormItem>
 
                     {
-                        partsId &&
-                        <FormItem>
+                        !!partsId
+                        ? <FormItem>
                             <Button type="primary" onClick={() => changeModalState('modalShow3', true)}>添加题目</Button>
                         </FormItem>
+                        : null
                     }
 
                     <FormItem>
@@ -470,89 +452,7 @@ const Session = ({
                 cancelText="取消"
                 footer={null}
                 >
-                <Form>
-                    <FormItem
-                        label="题目id"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('id', {
-                            rules: [{ required: true, message: '请输入题目id!' }],
-                        })(
-                            <Input placeholder="请输入题目id"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label="题目内容"
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('sourceIds', {
-                            rules: [{ required: true, message: '请输入题目内容!' }],
-                        })(
-                            <Input placeholder="请输入题目内容"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label={(
-                            <span>
-                                挖空规则&nbsp;
-                                <Tooltip title="听音拼写挖空规则1 2，表示第1个和第2个提示，例如：do_ dog拼写">
-                                <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
-                            )}
-                        {...formItemLayout}
-                        >
-                        {getFieldDecorator('showIndex', {
-                            rules: [{ required: true, message: '请输入挖空规则, 数字之间用 空格 分隔开!' }],
-                        })(
-                            <Input placeholder="请输入挖空规则, 数字之间用 空格 分隔开!"/>
-                        )}
-                    </FormItem>
-
-                    <FormItem
-                        label="场景图片"
-                        {...formItemLayout}
-                        >
-                        <MyUpload uploadSuccess={url => uploadSuccess(url, 'sceneGraph')}></MyUpload>
-                    </FormItem>
-
-                    <FormItem
-                        label="题目图片"
-                        {...formItemLayout}
-                        >
-                        <MyUpload uploadSuccess={url => uploadSuccess(url, 'icon')}></MyUpload>
-                    </FormItem>
-
-                        <FormItem
-                        label={(
-                            <span>
-                                句子音频&nbsp;
-                                <Tooltip title="题目是句子+词组时导入">
-                                <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
-                            )}
-                        {...formItemLayout}
-                        >
-                        <MyUpload uploadSuccess={url => uploadSuccess(url, 'sentenceAudio')}></MyUpload>
-                    </FormItem>
-
-                    <FormItem
-                        label="音频地址"
-                        {...formItemLayout}
-                        >
-                        <MyUpload uploadSuccess={url => uploadSuccess(url, 'audio')}></MyUpload>
-                    </FormItem>
-
-
-                    <FormItem
-                        {...formItemLayout}>
-                        <Button type="primary" onClick={handleAddSubject} style={{ marginLeft: 45 }}>提交</Button>
-                        <Button onClick={() => handleReset('modalShow3')} style={{ marginLeft: 15 }}>取消</Button>
-                    </FormItem>
-                </Form>
+                <AddProject></AddProject>
             </Modal>
 
 

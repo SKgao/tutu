@@ -39,8 +39,11 @@ const CustomPass = ({
 						dispatch({
 							type: 'customPass/updatePass',
 							payload: {
+                                textbookId: textbookId - 0,
 								id: record.id,
-								title: v
+                                title: v,
+                                icon: record.icon,
+                                tmpTitle: record.tmpTitle
 							}
 						})
 					}/>
@@ -56,8 +59,11 @@ const CustomPass = ({
 						dispatch({
 							type: 'customPass/updatePass',
 							payload: {
+                                textbookId: textbookId - 0,
 								id: record.id,
-								tmpTitle: v
+                                tmpTitle: v,
+                                title: record.title,
+                                icon: record.title
 							}
 						})
 					}/>
@@ -120,7 +126,7 @@ const CustomPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `textBookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}&sort=${record.sort}`
+            search: `textbookId=${record.textbookId}&customsPassId=${record.id}&partsId=${partsId}`
         }));
     }
 
@@ -155,8 +161,11 @@ const CustomPass = ({
         dispatch({
     		type: 'customPass/updatePass',
     		payload: {
+                textbookId: textbookId - 0,
                 id: record.id,
-                icon: url
+                icon: url,
+                title: record.title,
+                tmpTitle: record.tmpTitle
             }
     	})
     }

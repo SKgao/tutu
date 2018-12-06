@@ -162,8 +162,8 @@ const Subject = ({
     const linktoDet = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `topicId=${record.id}`
-        }));
+            search: `topicId=${record.id}&detpage=1`
+        }))
     }
 
     // 删除题目

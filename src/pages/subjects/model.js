@@ -58,19 +58,17 @@ export default {
 						dispatch({
 							type: 'setParam',
 							payload: {
-								detpage,
+								detpage: detpage || '',
 								customsPassId: customsPassId ? customsPassId - 0 : '',
 								sort: sort ? sort - 0 : '',
 								customsPassName: customsPassName || '',
 								textBookId: textBookId ? textBookId - 0 : '',
-								partsId: partsId ? partsId - 0 : ''
+								partsId: partsId ? partsId - 0 : '',
+								topicId: topicId ? topicId - 0 : ''
 							}
 						})
 						if (detpage) {
-							dispatch({
-								type: 'subjectDesc',
-								payload: { topicId: topicId ? topicId - 0 : '' }
-							})
+							dispatch({ type: 'subjectDesc' })
 						} else {
 							dispatch({
 								type: 'getSubject',
@@ -78,7 +76,6 @@ export default {
 									textBookId: textBookId ? textBookId - 0 : '',
 									partsId: partsId ? partsId - 0 : '',
 									customsPassId: customsPassId ? customsPassId - 0 : '',
-									textBookId: textBookId ? textBookId - 0 : '',
 									pageSize: 10,
                                     pageNum: 1
 								}
@@ -149,6 +146,7 @@ export default {
 
 		*subjectDesc({ payload }, { call, put, select }) {
 			const { topicId } = yield select(state => state.subject);
+			console.log('topicId', topicId)
 			const res = yield call(api.descTopic, topicId)
 			if (res) {
 				yield put({
