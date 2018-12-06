@@ -58,6 +58,8 @@ export default {
 						dispatch({
 							type: 'setParam',
 							payload: {
+								subjectList: [],
+								descList: [],
 								detpage: detpage || '',
 								customsPassId: customsPassId ? customsPassId - 0 : '',
 								sort: sort ? sort - 0 : '',
@@ -146,7 +148,6 @@ export default {
 
 		*subjectDesc({ payload }, { call, put, select }) {
 			const { topicId } = yield select(state => state.subject);
-			console.log('topicId', topicId)
 			const res = yield call(api.descTopic, topicId)
 			if (res) {
 				yield put({
@@ -155,6 +156,13 @@ export default {
                         descList: (res.data.data) ? [res.data.data] : []
 					}
 				})
+			}
+		},
+
+		*scenePic({ payload }, { call, put, select }) {
+			const res = yield call(api.scenePic, payload)
+			if (res) {
+				message.success(res.data.message);
 			}
         },
 

@@ -88,6 +88,14 @@ export default {
 			}
 		},
 
+		*lockBook({ payload }, { call, put }) {
+            const res = yield call(api.lockBook, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getBook' })
+			}
+		},
+
 		*updateBook({ payload }, { call, put }) {
 			const res = yield call(api.updateBook, payload);
 			console.log('updateBook', payload)

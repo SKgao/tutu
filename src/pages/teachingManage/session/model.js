@@ -15,7 +15,6 @@ export default {
 		sessionTitle: '',  // 大关卡名称
 		modalShow: false,
 		modalShow2: false,
-		modalShow3: false,
         totalCount: 0,
 		pageSize: 10,
 		pageNum: 1,
@@ -128,13 +127,6 @@ export default {
 		    if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getSessionList' })
-			}
-		},
-
-		*addTopic({ payload }, { call, put }) {
-			const res = yield call(api.addTopic, payload);
-			if (res) {
-				message.success(res.data.message);
 			}
 		},
 

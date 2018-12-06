@@ -11,7 +11,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, message, Select, DatePicker } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, Select, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -68,6 +68,18 @@ const BookUnit = ({
 						})
 					}/>
         }, {
+            title: '是否锁定',
+            dataIndex: 'canLock',
+            sorter: true,
+            render: (txt) => {
+                switch (txt) {
+                    case 2:
+                        return <Badge status="warning" text="已锁定"/>;
+                    case 1:
+                        return <Badge status="processing" text="已解锁"/>;
+                }
+            }
+        }, {
         	title: '上传封面图',
         	dataIndex: 'updateicon',
             render: (text, record, index) => {
@@ -82,9 +94,19 @@ const BookUnit = ({
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
+                let islock = record.canLock === 1 ? '锁定' : '解锁'
                 return <span>
+                    <Popconfirm title={`是否${islock}该单元？`} onConfirm={() => handleLock(record)}>
+                        <Button
+                            icon={record.canLock === 1 ? 'lock' : 'unlock'}
+                            size="small"
+                            style={{ marginLeft: 10 }}>
+                            { islock }
+                        </Button>
+                    </Popconfirm>
+
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
                     <Button type="primary" size="small" onClick={() => linktoPart(record)} style={{ marginLeft: 10 }}>查看part</Button>
@@ -95,13 +117,27 @@ const BookUnit = ({
 
 
     /**
-     * 删除角色
+     * 删除单元
      * @param  {object} 列数据
      */
     const handleDelete = (param) => {
         dispatch({
     		type: 'bookUnit/deleteUnit',
     		payload: param.id
+    	})
+    }
+
+    /**
+     * 锁定单元
+     * @param  {object} 列数据
+     */
+    const handleLock = (param) => {
+        dispatch({
+    		type: 'bookUnit/lockUnit',
+    		payload: {
+                unitId: param.id,
+                canLock: param.canLock === 1 ? 2 : 1
+            }
     	})
     }
 

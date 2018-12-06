@@ -33,9 +33,6 @@ const Subject = ({
     // 题目列表
     const subjectCol = [
         {
-            title: '教材名称',
-            dataIndex: 'textBookName'
-        }, {
             title: '单元名称',
             dataIndex: 'unitsName'
         }, {
@@ -85,14 +82,22 @@ const Subject = ({
             dataIndex: 'sort',
             sorter: true
         }, {
+            title: '上传场景图',
+            dataIndex: 'updatescenePic',
+            render: (txt, record, index) => {
+                return <MyUpload uploadTxt={'场景图'} uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
+        }, {
             title: '操作',
             dataIndex: 'action',
             render: (text, record) => {
                 return <span>
-                    <Button size="small" onClick={() => linktoDet(record)}>题目详情</Button>
+                    <Button type="primary" size="small" onClick={() => linktoDet(record)}>题目详情</Button>
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
                 </span>
             }
@@ -120,7 +125,10 @@ const Subject = ({
         }
     ]
 
-    const columns = (detpage) ? descCol : subjectCol
+    let columns = (detpage) ? descCol : subjectCol
+    if (!customsPassId || customsPassId !== 8) {
+        columns = columns.filter(l => l.dataIndex !== 'updatescenePic')
+    }
     const dataSource = (detpage) ? subject.descList : subject.subjectList
 
     const expandedRowRender = () => {
@@ -156,6 +164,17 @@ const Subject = ({
               pagination={false}
             />
           )
+    }
+
+     // 修改场景图
+     const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'subject/scenePic',
+    		payload: {
+                id: record.id,
+                scenePic: url
+            }
+    	})
     }
 
     // 调转到题目详情

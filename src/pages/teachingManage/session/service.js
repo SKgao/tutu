@@ -33,8 +33,4 @@ export default {
 
     // 教材下--小关卡列表
     getPass: data => axios.get(`pass/list/${data.textbookId}`, data),
-
-
-    // 添加单个题目
-    addTopic: data => axios.post(`subject/add/one`, data),
 }

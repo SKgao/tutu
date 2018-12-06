@@ -6,6 +6,7 @@ import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
+import AddProject from '../customPass/AddProject';
 
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
@@ -18,7 +19,7 @@ const CustomPass = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { passList, modalShow, modal2Show, pageNum, pageSize, textbookId, sessionId, sessionTit, partsId} = customPass;
+    let { passList, modalShow, modalShow3, pageNum, pageSize, textbookId, sessionId, sessionTit, partsId} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -107,16 +108,15 @@ const CustomPass = ({
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
-                    {
-                        sessionId && sessionTit &&
-                        <Button type="primary" size="small" onClick={() => bindToSession(record)}>{`绑定到${sessionTit}`}</Button>
-                    }
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
-                    <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
+                    {
+                        partsId &&
+                        <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>
+                    }
                 </span>
             }
         }
@@ -126,7 +126,7 @@ const CustomPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `textbookId=${record.textbookId}&customsPassId=${record.id}&partsId=${partsId}`
+            search: `customsPassId=${record.id}&partsId=${partsId}`
         }));
     }
 
@@ -138,21 +138,6 @@ const CustomPass = ({
         dispatch({
     		type: 'customPass/deletePass',
     		payload: param.id
-    	})
-    }
-
-    /**
-     * 绑定到大关卡
-     * @param  {object} 列数据
-     */
-    const bindToSession = (param) => {
-        dispatch({
-    		type: 'customPass/sessionBind',
-    		payload: {
-                textbookId: textbookId - 0,
-                sessionId: sessionId - 0,
-                customPassId: param.id - 0
-            }
     	})
     }
 
@@ -171,11 +156,11 @@ const CustomPass = ({
     }
 
     // 展示modal
-    const changeModalState = (show) => {
+    const changeModalState = (field, show) => {
         dispatch({
         	type: 'customPass/setParam',
         	payload: {
-                modalShow: show
+                [field]: show
             }
         })
     }
@@ -234,8 +219,16 @@ const CustomPass = ({
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
-                        <Button type="primary" onClick={() => changeModalState(true)}>添加小关卡</Button>
+                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加小关卡</Button>
                     </FormItem>
+
+                    {
+                        !!partsId
+                        ? <FormItem>
+                            <Button type="primary" onClick={() => changeModalState('modalShow3', true)}>添加题目</Button>
+                        </FormItem>
+                        : null
+                    }
 
                     <FormItem>
                         <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
@@ -246,8 +239,8 @@ const CustomPass = ({
             <Modal
                 title="新增小关卡"
                 visible={modalShow}
-                onOk={ () => changeModalState(false) }
-                onCancel= { () => changeModalState(false) }
+                onOk={ () => changeModalState('modalShow', false) }
+                onCancel= { () => changeModalState('modalShow', false) }
                 okText="确认"
                 cancelText="取消"
                 footer={null}
@@ -318,6 +311,18 @@ const CustomPass = ({
                         <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
                     </FormItem>
                 </Form>
+            </Modal>
+
+            <Modal
+                title="添加题目"
+                visible={modalShow3}
+                onOk={ () => changeModalState('modalShow3', false) }
+                onCancel= { () => changeModalState('modalShow3', false) }
+                okText="确认"
+                cancelText="取消"
+                footer={null}
+                >
+                <AddProject></AddProject>
             </Modal>
 
             <TableLayout

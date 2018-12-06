@@ -11,7 +11,7 @@ import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, message, Select, DatePicker } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, Select, DatePicker } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -94,20 +94,55 @@ const UnitPart = ({
 						})
 					}/>
         }, {
+            title: '是否锁定',
+            dataIndex: 'canLock',
+            sorter: true,
+            render: (txt) => {
+                switch (txt) {
+                    case 2:
+                        return <Badge status="warning" text="已锁定"/>;
+                    case 1:
+                        return <Badge status="processing" text="已解锁"/>;
+                }
+            }
+        }, {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
+                let islock = record.canLock === 1 ? '锁定' : '解锁'
                 return <span>
-                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                    <Popconfirm title={`是否${islock}该part？`} onConfirm={() => handleLock(record)}>
+                        <Button
+                            icon={record.canLock === 1 ? 'lock' : 'unlock'}
+                            size="small"
+                            style={{ marginLeft: 10 }}>
+                            { islock }
+                        </Button>
                     </Popconfirm>
 
-                    <Button type="primary" size="small" onClick={() => linktoSession(record)} style={{ marginLeft: 10 }}>查看关卡</Button>
+                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                    </Popconfirm>
+
+                    <Button type="primary" size="small" onClick={() => linktoPass(record)} style={{ marginLeft: 10 }}>查看关卡</Button>
                 </span>
             }
         }
     ]
 
+    /**
+     * 锁定part
+     * @param  {object} 列数据
+     */
+    const handleLock = (param) => {
+        dispatch({
+    		type: 'unitPart/updatePart',
+    		payload: {
+                id: param.id,
+                canLock: param.canLock === 1 ? 2 : 1
+            }
+    	})
+    }
 
     /**
      * 删除part
@@ -120,10 +155,10 @@ const UnitPart = ({
     	})
     }
 
-    // 调转到大关卡页面
-    const linktoSession = (record) => {
+    // 调转到小关卡页面
+    const linktoPass = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/teachingManage/session',
+            pathname: '/teachingManage/customPass',
             search: `partsId=${record.id}&textbookId=${textBookId}`
         }));
     }

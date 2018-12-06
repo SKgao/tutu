@@ -19,6 +19,9 @@ export default {
     // 小关卡--题型列表
     getSubject: data => axios.get('pass/subject', data),
 
+    // 添加单个题目
+    addTopic: data => axios.post(`subject/add/one`, data),
+
     // 大关卡--绑定小关卡
     sessionBind: data => axios.post(
         `session/bind?textbookId=${data.textbookId}&sessionId=${data.sessionId}&customPassId=${data.customPassId}`, data),

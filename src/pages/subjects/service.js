@@ -24,12 +24,12 @@ export default {
 
 
 	// ---------------------------------- 分割线 --------------------------------------
-	// 添加题目
-	addTopic: data => axios.post('subject/add', data),
-
 	// 题目详情
 	descTopic: data => axios.get(`subject/decs/${data}`, data),
 
 	// 题目删除
 	deleteTopic: data => axios.get(`/subject/delete/${data}`, data),
+
+	// 上传场景图
+	scenePic: data => axios.post(`subject/upload/pic?id=${data.id}&scenePic=${data.scenePic}`, data),
 }

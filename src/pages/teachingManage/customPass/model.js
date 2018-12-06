@@ -9,14 +9,17 @@ export default {
 		passList: [], // 小关卡
 		subjectList: [], // 题型列表
 		modalShow: false,
-		modal2Show: false,
+		modalShow3: false,
 		textbookId: '',
 		sessionId: '',  // 大关卡id
 		sessionTit: '', // 大关卡名称
 		partsId: '',    // partid
         totalCount: 0,
 		pageSize: 10,
-		pageNum: 1
+		pageNum: 1,
+
+		// 添加题目参数
+		customsPassId: '',  // 关卡id
 	},
 
 	subscriptions: {
@@ -89,7 +92,14 @@ export default {
 				message.success(res.data.message);
 				yield put({ type: 'getPassList' })
 			}
-        },
+		},
+
+		*addTopic({ payload }, { call, put }) {
+			const res = yield call(api.addTopic, payload);
+			if (res) {
+				message.success(res.data.message);
+			}
+		},
 
         *updatePass({ payload }, { call, put }) {
             const res = yield call(api.updatePass, payload);

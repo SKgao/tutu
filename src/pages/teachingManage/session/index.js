@@ -6,7 +6,6 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
-import AddProject from './AddProject';
 
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
@@ -19,7 +18,7 @@ const Session = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { sessionList, customList, passList, modalShow, modalShow3, modalShow2, pageNum, pageSize, textbookId, sessionTitle, partsId} = session;
+    let { sessionList, customList, passList, modalShow, modalShow2, pageNum, pageSize, textbookId, sessionTitle, partsId} = session;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -93,7 +92,6 @@ const Session = ({
             dataIndex: 'link',
             render: (txt, record, index) => {
                 return <span>
-                    {/* <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>绑定小关卡</a> */}
                     <TablePopoverLayout
                         title={'绑定小关卡'}
                         optionKey={'id'}
@@ -119,10 +117,8 @@ const Session = ({
                     </Button>
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(row)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
-
-                    <Button type="primary" size="small" onClick={() => linktoProject(row)} style={{ marginLeft: 10 }}>查看题目</Button>
                 </span>
             }
         }
@@ -174,17 +170,6 @@ const Session = ({
     // key
     columns.map(e => e.key = `${e.dataIndex}_`)
     sourceCol.map(e => e.key = `_${e.dataIndex}`)
-
-    // 绑定小关卡
-    const bindPass = (record) => {
-        const title = encodeURI(record.title)
-        let search = `textbookId=${textbookId}&sessionTit=${title}&sessionId=${record.id}`
-        search = (partsId) ? `${search}&partsId=${partsId}` : search
-        dispatch(routerRedux.push({
-            pathname: '/teachingManage/customPass',
-            search: search
-        }));
-    }
 
     // 调转到题目页面
     const linktoProject = (record) => {
@@ -347,14 +332,6 @@ const Session = ({
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加大关卡</Button>
                     </FormItem>
 
-                    {
-                        !!partsId
-                        ? <FormItem>
-                            <Button type="primary" onClick={() => changeModalState('modalShow3', true)}>添加题目</Button>
-                        </FormItem>
-                        : null
-                    }
-
                     <FormItem>
                         <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                     </FormItem>
@@ -441,18 +418,6 @@ const Session = ({
                     dataSource={customList}
                     pagination={false}
                 />
-            </Modal>
-
-            <Modal
-                title="添加题目"
-                visible={modalShow3}
-                onOk={ () => changeModalState('modalShow3', false) }
-                onCancel= { () => changeModalState('modalShow3', false) }
-                okText="确认"
-                cancelText="取消"
-                footer={null}
-                >
-                <AddProject></AddProject>
             </Modal>
 
 

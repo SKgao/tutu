@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
-import { Form, Input, Button, message, Tooltip, Icon } from 'antd';
+import { Form, Input, Button, message, Tooltip, Icon, Select } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';
 import { connect } from 'dva';
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 const AddProject = ({
-    session,
+    customPass,
     ...props
 }) => {
     let { dispatch, form } = props;
@@ -17,18 +18,17 @@ const AddProject = ({
 	const handleAddSubject = (e) => {
 		e.preventDefault()
 		validateFieldsAndScroll((err, values) => {
-            console.log('添加题目::', values, err)
 			if (!err) {
-                const { sentenceAudio, sceneGraph } = session;
+                const { sentenceAudio, sceneGraph, partId } = customPass;
                 values.customsPassId && (values.customsPassId = values.customsPassId - 0);
                 values.id && (values.id = values.id - 0);
-                values.partId && (values.partId = values.partId - 0);
+                values.partId = partId - 0;
                 values.sort && (values.sort = values.sort - 0);
                 values.sentenceAudio = sentenceAudio;
                 values.sceneGraph = sceneGraph;
                 values.showIndex = values.showIndex.split(/\s+/g);
                 dispatch({
-                    type: 'session/addTopic',
+                    type: 'customPass/addTopic',
                     payload: filterObj(values)
                 }).then(() => {
                     handleReset()
@@ -41,10 +41,18 @@ const AddProject = ({
     const handleReset = (e) => {
         resetFields()
         dispatch({
-    		type: 'session/setParam',
+    		type: 'customPass/setParam',
     		payload: {
     			modalShow3: false
     		}
+    	})
+    }
+
+    // 选择下拉框
+    const changeSelect = (v) => {
+    	dispatch({
+    		type: 'customPass/setParam',
+    		payload: v
     	})
     }
 
@@ -56,6 +64,27 @@ const AddProject = ({
 	return (
         <div>
             <Form>
+                <FormItem
+                    label="小关卡"
+                    {...formItemLayout}
+                    >
+                    {getFieldDecorator('customsPassId', {
+                        rules: [{ required: true, message: '请选择小关卡!' }],
+                    })(
+                        <Select
+                            showSearch
+                            placeholder="请选择小关卡"
+                            onChange={v => changeSelect({ customsPassId: v })}
+                            >
+                            {
+                                customPass.passList.map(item =>
+                                    <Option key={item.id} value={item.id}>{item.title + ''}</Option>
+                                )
+                            }
+                        </Select>
+                    )}
+                </FormItem>
+
                 <FormItem
                     label="题目id"
                     {...formItemLayout}
@@ -107,12 +136,16 @@ const AddProject = ({
                     )}
                 </FormItem>
 
-                <FormItem
-                    label="场景图片"
-                    {...formItemLayout}
-                    >
-                    <MyUpload uploadSuccess={url => uploadSuccess(url, 'sceneGraph')}></MyUpload>
-                </FormItem>
+                {
+                    customPass.customsPassId == 8
+                    ? <FormItem
+                        label="场景图片"
+                        {...formItemLayout}
+                        >
+                        <MyUpload uploadSuccess={url => uploadSuccess(url, 'sceneGraph')}></MyUpload>
+                    </FormItem>
+                    : null
+                }
 
                 <FormItem
                     label="题目图片"
@@ -121,7 +154,14 @@ const AddProject = ({
                     <MyUpload uploadSuccess={url => uploadSuccess(url, 'icon')}></MyUpload>
                 </FormItem>
 
-                    <FormItem
+                <FormItem
+                    label="题目音频"
+                    {...formItemLayout}
+                    >
+                    <MyUpload uploadSuccess={url => uploadSuccess(url, 'audio')}></MyUpload>
+                </FormItem>
+
+                <FormItem
                     label={(
                         <span>
                             句子音频&nbsp;
@@ -136,14 +176,6 @@ const AddProject = ({
                 </FormItem>
 
                 <FormItem
-                    label="音频地址"
-                    {...formItemLayout}
-                    >
-                    <MyUpload uploadSuccess={url => uploadSuccess(url, 'audio')}></MyUpload>
-                </FormItem>
-
-
-                <FormItem
                     {...formItemLayout}>
                     <Button type="primary" onClick={handleAddSubject} style={{ marginLeft: 45 }}>提交</Button>
                     <Button onClick={() => handleReset('modalShow3')} style={{ marginLeft: 15 }}>取消</Button>
@@ -154,7 +186,7 @@ const AddProject = ({
 };
 
 AddProject.propTypes = {
-    session: PropTypes.object
+    customPass: PropTypes.object
 };
 
-export default connect(({ session }) => ({ session }))(Form.create()(AddProject));
+export default connect(({ customPass }) => ({ customPass }))(Form.create()(AddProject));
