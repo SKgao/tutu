@@ -14,7 +14,7 @@ import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
 import { Form, DatePicker, Input, Button, Radio, Modal, Tooltip, Select,
-    Icon, Upload, Tabs, message, Popconfirm, Table } from 'antd';
+    Icon, Upload, Tabs, message, Popconfirm, Table, notification } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -27,7 +27,7 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     // 题目列表
@@ -199,7 +199,7 @@ const Subject = ({
 
     // 添加题目
     const handleSubmitSubject = () => {
-        let { textbookId, file, addType } = subject
+        let { textbookId, file } = subject
         let formData = new FormData()
         if (file[0]) {
             formData.append('textbookId', textbookId)
@@ -208,6 +208,11 @@ const Subject = ({
             axios.post('subject/subject/import', formData)
                 .then((res) => {
                     if (res.data.code === 0) {
+                        notification.info({
+                            message: addType == 1 ? '大纲检测结果' : '题目上传结果',
+                            description: res.data.message,
+                            duration: 0,
+                        });
                         dispatch({
                             type: 'subject/setParam',
                             payload: {
@@ -502,7 +507,7 @@ const Subject = ({
                                 label="操作类型"
                                 >
                                 {getFieldDecorator('type', {
-                                    initialValue: subject.addType,
+                                    initialValue: addType,
                                     rules: [{ requied: true, message: '请选择操作类型!' }],
                                 })(
                                     <RadioGroup onChange={changeAddtype}>
@@ -565,7 +570,7 @@ const Subject = ({
                     (detpage || activeKey === '0') ? null :
                     <TabPane tab="上传进度" key="1">
                         <UploadProgress
-                           cardTitle={'题目上传进度'}
+                           cardTitle={addType == 1 ? '大纲检测进度' : '题目上传进度'}
                            url={'subject/subject/import/progress'}
                         >
                         </UploadProgress>

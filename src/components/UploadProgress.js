@@ -10,10 +10,10 @@ class UploadProgress extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            progressTxt: '暂无文件上传'       
+            progressTxt: '暂无文件上传'
 		}
     }
-    
+
     // 定时刷新
     UNSAFE_componentWillMount() {
         let url = this.props.url
@@ -31,7 +31,7 @@ class UploadProgress extends Component {
                 })
         }, 2 * 1000)
     }
-    
+
     // 组件卸载清除定时器
     componentWillUnmount() {
         this.timer && clearTimeout(this.timer)
@@ -40,7 +40,7 @@ class UploadProgress extends Component {
     render() {
         return (
             <div style={{ padding: '5px 0' }}>
-                <Row gutter={16}>                
+                <Row gutter={16}>
                     <Col span={24}>
                         <Card title={this.props.cardTitle} style={{ textAlign: 'center' }} hoverable>
                             <div dangerouslySetInnerHTML={{__html: this.state.progressTxt}} />
