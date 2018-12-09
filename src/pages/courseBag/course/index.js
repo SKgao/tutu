@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
+import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
@@ -23,16 +24,22 @@ const CourseList = ({
     const columns = [
         {
             title: '课程名称',
-            dataIndex: 'name'
-        }, {
-            title: '精品课程版本',
-            dataIndex: 'bookVersionId'
-        }, {
-            title: '年级',
-            dataIndex: 'gradeId'
-        }, {
-            title: '课程类型',
-            dataIndex: 'type'
+            dataIndex: 'name',
+            render: (text, record) =>
+                <TablePopoverLayout
+                    title={'修改课程名称'}
+                    valueData={text || '无'}
+                    defaultValue={text || '无'}
+                    onOk={v =>
+                        dispatch({
+                            type: 'courseList/updateCourse',
+                            payload: {
+                                id: record.id - 0,
+                                name: v,
+                                icon: record.icon
+                            }
+                        })
+                    }/>
         }, {
             title: '封面',
             dataIndex: 'icon',
@@ -53,8 +60,25 @@ const CourseList = ({
         }, {
             title: '创建时间',
             dataIndex: 'createdAt'
-        },
-        {
+        }, {
+            title: '上传封面',
+            dataIndex: 'updateicon',
+            render: (txt, record, index) => {
+                return <MyUpload uploadTxt={'上传封面'} uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
+        }, {
+            title: '详情',
+            dataIndex: 'link',
+            render: (txt, record, index) => {
+                return <span>
+                    <a onClick={() => linktoUnit(record)} style={{ marginLeft: 10 }}>查看单元</a>
+                    <a onClick={() => linktoSession(record)} style={{ marginLeft: 10 }}>查看大关卡</a>
+                    <a onClick={() => linktoCustomPass(record)} style={{ marginLeft: 10 }}>查看小关卡</a>
+                </span>
+            }
+        }, {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, row, index) => {
@@ -74,12 +98,36 @@ const CourseList = ({
         }
     ]
 
+    // 跳转到单元页面
+    const linktoUnit = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/unit',
+            search: `textBookId=${record.id}`
+        }));
+    }
+
+    // 跳转到大关卡
+    const linktoSession = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/session',
+            search: `textbookId=${record.id}`
+        }));
+    }
+
+    // 调转到小关卡
+    const linktoCustomPass = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/teachingManage/customPass',
+            search: `textbookId=${record.id}`
+        }))
+    }
+
     // 调转到课程页面
     const linktoActivity = (record) => {
         dispatch(routerRedux.push({
             pathname: '/courseBag/activity',
             search: `id=${record.id}`
-        }));
+        }))
     }
 
     // 改变状态
@@ -101,6 +149,18 @@ const CourseList = ({
                 id: row.id - 0
             }
         })
+    }
+
+    // 修改封面
+    const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'courseList/updateCourse',
+    		payload: {
+                id: record.id - 0,
+                name: record.name,
+                icon: url
+            }
+    	})
     }
 
     // 操作分页

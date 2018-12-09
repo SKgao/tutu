@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
+import PaginationLayout from '@/components/PaginationLayout';
 import MyUpload from '@/components/UploadComponent';
 
 import moment from 'moment';
@@ -423,7 +424,9 @@ const TeachingManage = ({
         dispatch({
     		type: 'teachingmanage/setParam',
     		payload: {
-                activeKey: key
+                activeKey: key,
+                pageSize: 10,
+                pageNum: 1
             }
     	})
         if (key === 'grade') {
@@ -650,19 +653,19 @@ const TeachingManage = ({
                 scrollX={true}
                 />
             {
-                // activeKey === 'book' &&
-                // <PaginationLayout
-                //     total={totalCount}
-                //     onChange={(page, pageSize) => handleChange({
-                //         pageNum: page,
-                //         pageSize
-                //     })}
-                //     onShowSizeChange={(current, pageSize) => handleChange({
-                //         pageNum: 1,
-                //         pageSize
-                //     })}
-                //     current={pageNum}
-                //     pageSize={pageSize} />
+                activeKey === 'book' &&
+                <PaginationLayout
+                    total={teachingmanage.totalCount}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    current={teachingmanage.pageNum}
+                    pageSize={teachingmanage.pageSize} />
             }
 		</div>
 	)

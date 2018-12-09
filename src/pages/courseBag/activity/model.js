@@ -63,7 +63,7 @@ export default {
             const res = yield call(api.addActivity, payload);
 		    if (res) {
 				message.success(res.data.message);
-				yield put({ type: 'updateActivity' })
+				yield put({ type: 'getActivity' })
 			}
         },
 
@@ -71,7 +71,7 @@ export default {
             const res = yield call(api.updateActivity, payload);
 		    if (res) {
 				message.success(res.data.message);
-				yield put({ type: 'updateActivity' })
+				yield put({ type: 'getActivity' })
 			}
 		},
 

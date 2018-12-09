@@ -106,7 +106,7 @@ export default {
 
 		*setauthRole({ payload }, { call, put }) {
 			const pay = {
-				menuIds: payload.menuIds.map(e => e - 0).push(144),
+				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0
 			}
 			const res = yield call(api.setauthRole, pay);

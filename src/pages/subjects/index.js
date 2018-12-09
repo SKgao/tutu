@@ -82,6 +82,13 @@ const Subject = ({
             dataIndex: 'sort',
             sorter: true
         }, {
+            title: '场景图',
+            dataIndex: 'sceneGraph',
+            sorter: true,
+            render: (text) => {
+               return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+            }
+        }, {
             title: '上传场景图',
             dataIndex: 'updatescenePic',
             render: (txt, record, index) => {
@@ -126,8 +133,8 @@ const Subject = ({
     ]
 
     let columns = (detpage) ? descCol : subjectCol
-    if (!customsPassId || customsPassId !== 8) {
-        columns = columns.filter(l => l.dataIndex !== 'updatescenePic')
+    if (customsPassId !== 8 && customsPassId !== 2) {
+        columns = columns.filter(l => l.dataIndex !== 'updatescenePic' && l.dataIndex !== 'sceneGraph')
     }
     const dataSource = (detpage) ? subject.descList : subject.subjectList
 
@@ -210,15 +217,15 @@ const Subject = ({
                     if (res.data.code === 0) {
                         notification.info({
                             message: addType == 1 ? '大纲检测结果' : '题目上传结果',
-                            description: res.data.message,
+                            description: <div dangerouslySetInnerHTML={{__html: res.data.data}} />,
                             duration: 0,
-                        });
+                        })
                         dispatch({
                             type: 'subject/setParam',
                             payload: {
                                 file: [],
                                 modalShow: false,
-                                activeKey: '1'
+                                activeKey: '0'
                             }
                         })
                     } else {

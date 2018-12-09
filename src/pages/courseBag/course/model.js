@@ -59,6 +59,14 @@ export default {
 			}
 		},
 
+		*updateCourse({ payload }, { call, put }) {
+            const res = yield call(api.updateCourse, payload);
+		    if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getCourseList' })
+			}
+		},
+
 		*delCourse({ payload }, { call, put }) {
 			const { id } = payload;
 			const res = yield call(api.delCourse, id);
