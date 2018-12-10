@@ -89,7 +89,7 @@ const PartPass = ({
             render: (txt, record, index) => {
                 return <span>
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
 
                     <Button type="primary" size="small" onClick={() => linktoProject(record)} style={{ marginLeft: 10 }}>查看题目</Button>

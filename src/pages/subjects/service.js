@@ -21,4 +21,15 @@ export default {
 
 	// 题目删除
 	deleteSubject: data => axios.post('subject/delete', data),
+
+
+	// ---------------------------------- 分割线 --------------------------------------
+	// 题目详情
+	descTopic: data => axios.get(`subject/decs/${data}`, data),
+
+	// 题目删除
+	deleteTopic: data => axios.get(`/subject/delete/${data}`, data),
+
+	// 上传场景图
+	scenePic: data => axios.post(`subject/upload/pic?id=${data.id}&scenePic=${data.scenePic}`, data),
 }

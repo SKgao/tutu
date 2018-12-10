@@ -68,24 +68,26 @@ const sourceMaterial = ({
           render: (audio) => {
              return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
           }
-        }, {
-            title: '音标',
-            dataIndex: 'phonetic',
-            render: (text, record) =>
-				<TablePopoverLayout
-					title={'修改音标'}
-					valueData={text || '无'}
-					defaultValue={text || '无'}
-					onOk={v =>
-						dispatch({
-							type: 'sourcematerial/editSource',
-							payload: {
-								id: record.id - 0,
-								phonetic: v
-							}
-						})
-					}/>
-        }, {
+        },
+        // {
+        //     title: '音标',
+        //     dataIndex: 'phonetic',
+        //     render: (text, record) =>
+		// 		<TablePopoverLayout
+		// 			title={'修改音标'}
+		// 			valueData={text || '无'}
+		// 			defaultValue={text || '无'}
+		// 			onOk={v =>
+		// 				dispatch({
+		// 					type: 'sourcematerial/editSource',
+		// 					payload: {
+		// 						id: record.id - 0,
+		// 						phonetic: v
+		// 					}
+		// 				})
+		// 			}/>
+        // },
+        {
             title: '单次释义',
             dataIndex: 'translation',
             render: (text, record) =>
@@ -119,6 +121,10 @@ const sourceMaterial = ({
                 }}></MyUpload>
             }
         }, {
+            title: '创建时间',
+            dataIndex: 'createdAt'
+        },
+        {
         	title: '修改图标',
         	dataIndex: 'updateImage',
             render: (text, record, index) => {
@@ -126,7 +132,8 @@ const sourceMaterial = ({
                     changeSource(url, record, 'icon')
                 }}></MyUpload>
             }
-        }, {
+        },
+        {
           title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {

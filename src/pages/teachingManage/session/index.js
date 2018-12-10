@@ -28,7 +28,7 @@ const Session = ({
             sorter: true
         },
         {
-            title: '大关卡标题222',
+            title: '大关卡标题',
             dataIndex: 'title',
             render: (text, record) =>
 				<TablePopoverLayout
@@ -92,7 +92,6 @@ const Session = ({
             dataIndex: 'link',
             render: (txt, record, index) => {
                 return <span>
-                    {/* <a onClick={() => bindPass(record)} style={{ marginLeft: 10 }}>绑定小关卡</a> */}
                     <TablePopoverLayout
                         title={'绑定小关卡'}
                         optionKey={'id'}
@@ -118,7 +117,7 @@ const Session = ({
                     </Button>
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(row)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
                 </span>
             }
@@ -158,7 +157,7 @@ const Session = ({
             dataIndex: 'action',
             render: (txt, row, index) => {
                 return <span>
-                    <Button type="danger" size="small" style={{ marginLeft: 10 }} onClick={() => bindToSession(row.sessionId, row.customPassId)}>绑定</Button>
+                    <Button size="small" style={{ marginLeft: 10 }} onClick={() => bindToSession(row.sessionId, row.customPassId)}>绑定</Button>
 
                     <Popconfirm title="是否解除绑定小关卡?" onConfirm={() => handleUnbind(row)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>解绑</Button>
@@ -172,14 +171,11 @@ const Session = ({
     columns.map(e => e.key = `${e.dataIndex}_`)
     sourceCol.map(e => e.key = `_${e.dataIndex}`)
 
-    // 绑定小关卡
-    const bindPass = (record) => {
-        const title = encodeURI(record.title)
-        let search = `textbookId=${textbookId}&sessionTit=${title}&sessionId=${record.id}`
-        search = (partsId) ? `${search}&partsId=${partsId}` : search
+    // 调转到题目页面
+    const linktoProject = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/teachingManage/customPass',
-            search: search
+            pathname: '/subjects',
+            search: `textbookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}`
         }));
     }
 
@@ -236,7 +232,15 @@ const Session = ({
         dispatch({
     		type: 'session/sessionUnbind',
     		payload: param.id - 0
-    	})
+    	}).then(() => {
+            dispatch({
+                type: 'session/getCustomList',
+                payload: {
+                    textbookId,
+                    sessionId: param.sessionId
+                }
+            })
+        })
     }
 
     // 改变状态
@@ -272,12 +276,12 @@ const Session = ({
     }
 
     // 表单取消
-    const handleReset  = () => {
+    const handleReset  = (field) => {
         resetFields()
         dispatch({
     		type: 'session/setParam',
     		payload: {
-    			modalShow: false
+    			[field]: false
     		}
     	})
     }
@@ -297,7 +301,7 @@ const Session = ({
                         type: 'session/addSession',
                         payload: filterObj(values)
                     }).then(() => {
-                        handleReset()
+                        handleReset('modalShow')
                     })
                 }
             }
@@ -395,7 +399,7 @@ const Session = ({
                     <FormItem
                         {...formItemLayout}>
                         <Button type="primary" onClick={handleSubmit} style={{ marginLeft: 75 }}>提交</Button>
-                        <Button onClick={handleReset} style={{ marginLeft: 15 }}>取消</Button>
+                        <Button onClick={() => handleReset('modalShow')} style={{ marginLeft: 15 }}>取消</Button>
                     </FormItem>
                 </Form>
             </Modal>
@@ -415,6 +419,7 @@ const Session = ({
                     pagination={false}
                 />
             </Modal>
+
 
             <Table
                 dataSource={sessionList}

@@ -1,12 +1,14 @@
 import api from './service';
 import { message } from 'antd';
+import api_teachingManage from '@/pages/teachingManage/book/service';
 import { getUrlParams } from '@/utils/tools';
 
 export default {
 	namespace: 'bagActivity',
 
 	state: {
-        tableList: [], // 课程包列表
+		tableList: [], // 课程包列表
+		bookList: [],
         totalCount: 0,
 		pageSize: 10,
         pageNum: 1,
@@ -61,7 +63,7 @@ export default {
             const res = yield call(api.addActivity, payload);
 		    if (res) {
 				message.success(res.data.message);
-				yield put({ type: 'updateActivity' })
+				yield put({ type: 'getActivity' })
 			}
         },
 
@@ -69,9 +71,24 @@ export default {
             const res = yield call(api.updateActivity, payload);
 		    if (res) {
 				message.success(res.data.message);
-				yield put({ type: 'updateActivity' })
+				yield put({ type: 'getActivity' })
 			}
 		},
+
+		*getBooklist({ payload }, { call, put, select }) {
+			const res = yield call(api_teachingManage.getBook, {
+                pageNum: 1,
+                pageSize: 100
+			});
+			if (res) {
+				yield put({
+					type: 'save',
+					payload: {
+						bookList: (res.data.data) ? res.data.data.data : []
+					}
+				})
+			}
+        },
 
 		*setParam({ payload }, { put }) {
 			for (let key in payload) {

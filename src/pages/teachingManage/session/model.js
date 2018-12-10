@@ -17,7 +17,12 @@ export default {
 		modalShow2: false,
         totalCount: 0,
 		pageSize: 10,
-		pageNum: 1
+		pageNum: 1,
+
+
+		// 添加题目
+		sentenceAudio: '',
+		sceneGraph: ''
 	},
 
 	subscriptions: {
@@ -123,7 +128,7 @@ export default {
 				message.success(res.data.message);
 				yield put({ type: 'getSessionList' })
 			}
-        },
+		},
 
         *updateSession({ payload }, { call, put }) {
             const res = yield call(api.updateSession, payload);
@@ -153,7 +158,6 @@ export default {
             const res = yield call(api.sessionUnbind, payload);
 		    if (res) {
 				message.success(res.data.message);
-				yield put({ type: 'getSessionList' })
 			}
 		},
 

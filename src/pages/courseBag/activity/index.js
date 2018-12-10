@@ -21,27 +21,27 @@ const BagActivity = ({
     ...props
 }) => {
 	let { dispatch, form } = props;
-	let { tableList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
-	let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+	let { tableList, bookList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
+	let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
         {
-            title: '教材id',
-            dataIndex: 'textbookId',
-            sorter: true
-        }, {
-            title: '教材名称',
+            title: '课程id',
+            dataIndex: 'id'
+        },
+        {
+            title: '课程名称',
             dataIndex: 'textbookName',
             render: (text, record) =>
 				<TablePopoverLayout
-					title={'修改教材名称'}
+					title={'修改课程名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
 					onOk={v =>
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								textbookName: v
 							}
 						})
@@ -58,7 +58,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								teacher: v
 							}
 						})
@@ -88,7 +88,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								orgAmt: Number(v.replace(/元/g, '')) * 100
 							}
 						})
@@ -106,7 +106,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								amt: Number(v.replace(/元/g, '')) * 100
 							}
 						})
@@ -123,7 +123,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								num: v - 0
 							}
 						})
@@ -163,7 +163,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
                                 type: v - 0,
                                 beginAt: (v == 1) ? record.beginAt : '',
                                 endAt: (v == 1) ? record.endAt : ''
@@ -199,7 +199,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								saleEndAt: v
 							}
 						})
@@ -216,7 +216,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								beginAt: v
 							}
 						})
@@ -233,7 +233,7 @@ const BagActivity = ({
 						dispatch({
 							type: 'bagActivity/updateActivity',
 							payload: {
-								textbookId: record.textbookId,
+								id: record.id,
 								endAt: v
 							}
 						})
@@ -271,7 +271,7 @@ const BagActivity = ({
         dispatch({
     		type: 'bagActivity/updateActivity',
     		payload: {
-                textbookId: record.textbookId,
+                id: record.id,
                 [filed]: url
             }
     	})
@@ -282,7 +282,7 @@ const BagActivity = ({
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { beginAt, endAt, iconDetail, iconTicket } = bagActivity;
+                const { beginAt, endAt, iconDetail, iconTicket, alldate } = bagActivity;
                 values.orgAmt && (values.orgAmt = values.orgAmt * 100);
                 values.amt && (values.amt = values.amt * 100);
                 values.num && (values.num = values.num - 0);
@@ -293,27 +293,31 @@ const BagActivity = ({
                 values.iconDetail = iconDetail;
                 values.iconTicket = iconTicket;
                 let _begin = new Date(beginAt).getTime()
-                let _end = new Date(endAt).getTime()
+                let _end = _begin + alldate * (1000 * 3600 * 24)
+                const endDate = moment(new Date(_end)).format('YYYY-MM-DD HH:mm:ss')
                 let _begin2 = new Date(saleBeginAt).getTime()
                 let _end2 = new Date(saleEndAt).getTime()
-                if (_begin > _end) {
+                const idArr = tableList.map(e => e.id)
+                if (idArr.includes(values.id)) {
+                    message.warning('课程活动id已存在！')
+                } else if (_begin > _end) {
                     message.warning('开始时间不能大于结束时间')
                 } else if (_begin2 > _end2) {
                     message.warning('预售开始时间不能大于预售结束时间')
                 } else {
                     if (type === '1') {
                         values.beginAt = beginAt
-                        values.endAt = endAt
+                        values.endAt = endDate
                     } else {
                         values.beginAt = ''
                         values.endAt = ''
                     }
-                    values.saleBeginAt = saleBeginAt
-                    values.saleEndAt = saleEndAt
-                    dispatch({
-                        type: 'bagActivity/addActivity',
-                        payload: filterObj(values)
-                    })
+                    // values.saleBeginAt = saleBeginAt
+                    // values.saleEndAt = saleEndAt
+                    // dispatch({
+                    //     type: 'bagActivity/addActivity',
+                    //     payload: filterObj(values)
+                    // })
                 }
 			}
 		});
@@ -395,16 +399,37 @@ const BagActivity = ({
                     >
                     <Form>
                         <FormItem
+                            {...formItemLayout}
+                            label="教材id"
+                            >
+                            {getFieldDecorator('textbookId', {
+                                rules: [{ required: true, message: '请选择教材id!' }],
+                            })(
+                                <Select
+                                    showSearch
+                                    onFocus={() => dispatch({type: 'bagActivity/getBooklist'})}
+                                    placeholder="请选择教材"
+                                    >
+                                    {
+                                        bookList.map(item =>
+                                            <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                                        )
+                                    }
+                                </Select>
+                            )}
+                        </FormItem>
+
+                        {/* <FormItem
                             label="课程id"
                             {...formItemLayout}
                             >
-                            {getFieldDecorator('textbookId', {
-                                initialValue: bagActivity.id,
+                            {getFieldDecorator('id', {
+                                //initialValue: bagActivity.id,
                                 rules: [{ required: true, message: '请输入课程id!' }],
                             })(
-                                <Input disabled/>
+                                <Input placeholder="请输入课程id"/>
                             )}
-                        </FormItem>
+                        </FormItem> */}
 
                         <FormItem
                             label="预售开始时间"
@@ -423,6 +448,18 @@ const BagActivity = ({
                         </FormItem>
 
                         <FormItem
+                            label="持续时间"
+                            {...formItemLayout}
+                            >
+                            {getFieldDecorator('alldate', {
+                                //initialValue: bagActivity.id,
+                                rules: [{ required: true, message: '请输入持续时间!' }],
+                            })(
+                                <Input placeholder="请输入持续时间(以天为单位)" onChange={ (e) => onChangeDate('', e.target.value, 'alldate')}/>
+                            )}
+                        </FormItem>
+
+                        {/* <FormItem
                             label="预售截止时间"
                             {...formItemLayout}
                             >
@@ -436,7 +473,7 @@ const BagActivity = ({
                                     onChange={ (a, b) => onChangeDate(a, b, 'saleEndAt') }
                                     />
                             )}
-                        </FormItem>
+                        </FormItem> */}
 
                         <FormItem
                             label="辅导教师"

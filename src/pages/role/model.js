@@ -109,7 +109,6 @@ export default {
 				menuIds: payload.menuIds.map(e => e - 0),
 				roleId: payload.roleId - 0
 			}
-			console.log('pay:::', pay)
 			const res = yield call(api.setauthRole, pay);
 			if (res) {
 				message.success(res.data.message);

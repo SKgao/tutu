@@ -1,5 +1,5 @@
 import api from './service';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import { filterObj } from '@/utils/tools';
 import api_teachingManage from '@/pages/teachingManage/book/service';
 export default {
@@ -116,15 +116,19 @@ export default {
     *addSubjectSource({ payload }, { call, put, select }) {
       const res = yield call(api.addSubjectSource, payload);
 			if (res) {
-				message.success(res.data.message);
+        message.success(res.data.message);
+        notification.info({
+            message: '上传结果',
+            description: <div dangerouslySetInnerHTML={{__html: res.data.data}} />,
+            duration: 0
+        })
 				yield put({
 					type: 'setParam',
 					payload: {
 						audioArray: [],
             imageArray: [],
             sentensArray: [],
-            modal3Show: false,
-            activeKey: '1'
+            modal3Show: false
 					}
 				})
 			}
@@ -149,7 +153,7 @@ export default {
           message.success(res.data.message);
           yield put({
             type: 'setParam',
-            payload: { 
+            payload: {
               sourceIds: [],
               selectedRowKeys: []
             }
@@ -187,7 +191,7 @@ export default {
           pageNum: 1,
           pageSize: 100
       });
-      
+
 			if (res) {
 				yield put({
 					type: 'save',

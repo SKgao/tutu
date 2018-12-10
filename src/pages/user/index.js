@@ -191,7 +191,7 @@ const UserSetting = ({
                     }}>修改密码</Button>
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
                 </span>
             }

@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
+import PaginationLayout from '@/components/PaginationLayout';
 import MyUpload from '@/components/UploadComponent';
 
 import moment from 'moment';
@@ -11,7 +12,7 @@ import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 import { axios } from '@/configs/request';
 
-import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, message } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, message, Badge } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -105,6 +106,18 @@ const TeachingManage = ({
                 dataIndex: 'status',
                 sorter: true
             }, {
+                title: '是否锁定',
+                dataIndex: 'canLock',
+                sorter: true,
+                render: (txt) => {
+                    switch (txt) {
+                        case 2:
+                            return <Badge status="warning" text="已锁定"/>;
+                        case 1:
+                            return <Badge status="processing" text="已解锁"/>;
+                    }
+                }
+            }, {
                 title: '上传封面图',
                 dataIndex: 'updateicon',
                 render: (txt, record, index) => {
@@ -124,9 +137,20 @@ const TeachingManage = ({
                 title: '操作',
                 dataIndex: 'action',
                 render: (txt, record, index) => {
+                    let islock = record.canLock === 1 ? '锁定' : '解锁'
                     return <span>
+
+                        <Popconfirm title={`是否${islock}该教材？`} onConfirm={() => handleLock(record)}>
+                            <Button
+                                icon={record.canLock === 1 ? 'lock' : 'unlock'}
+                                size="small"
+                                style={{ marginLeft: 10 }}>
+                                { islock }
+                            </Button>
+                        </Popconfirm>
+
                         <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                            <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                            <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                         </Popconfirm>
                     </span>
                 }
@@ -307,6 +331,20 @@ const TeachingManage = ({
     	})
     }
 
+    /**
+     * 锁定教材
+     * @param  {object} 列数据
+     */
+    const handleLock = (param) => {
+        dispatch({
+    		type: 'teachingmanage/lockBook',
+    		payload: {
+                textbookId: param.id,
+                canLock: param.canLock === 1 ? 2 : 1
+            }
+    	})
+    }
+
     // 搜索
     const handleSearch = () => {
      	dispatch({ type: 'teachingmanage/getBook'})
@@ -386,7 +424,9 @@ const TeachingManage = ({
         dispatch({
     		type: 'teachingmanage/setParam',
     		payload: {
-                activeKey: key
+                activeKey: key,
+                pageSize: 10,
+                pageNum: 1
             }
     	})
         if (key === 'grade') {
@@ -613,19 +653,19 @@ const TeachingManage = ({
                 scrollX={true}
                 />
             {
-                // activeKey === 'book' &&
-                // <PaginationLayout
-                //     total={totalCount}
-                //     onChange={(page, pageSize) => handleChange({
-                //         pageNum: page,
-                //         pageSize
-                //     })}
-                //     onShowSizeChange={(current, pageSize) => handleChange({
-                //         pageNum: 1,
-                //         pageSize
-                //     })}
-                //     current={pageNum}
-                //     pageSize={pageSize} />
+                activeKey === 'book' &&
+                <PaginationLayout
+                    total={teachingmanage.totalCount}
+                    onChange={(page, pageSize) => handleChange({
+                        pageNum: page,
+                        pageSize
+                    })}
+                    onShowSizeChange={(current, pageSize) => handleChange({
+                        pageNum: 1,
+                        pageSize
+                    })}
+                    current={teachingmanage.pageNum}
+                    pageSize={teachingmanage.pageSize} />
             }
 		</div>
 	)

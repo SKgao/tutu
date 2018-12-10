@@ -31,7 +31,15 @@ export default {
 		activeKey: '0',      // tabs选项
         pageSize: 10,
         pageNum: 1,
-        totalCount: 0
+		totalCount: 0,
+
+
+		// 题目id
+		topicId: '',
+		icon: '',
+		sentenceAudio: '',
+		audio: '',
+		sceneGraph: ''
 	},
 
 	subscriptions: {
@@ -45,26 +53,24 @@ export default {
 					let customsPassName = getUrlParams(location.search, 'customsPassName')
 					let textBookId = getUrlParams(location.search, 'textBookId')
 					let partsId = getUrlParams(location.search, 'partsId')
+					let topicId = getUrlParams(location.search, 'topicId')
 					if (search) {
 						dispatch({
 							type: 'setParam',
 							payload: {
-								detpage,
+								subjectList: [],
+								descList: [],
+								detpage: detpage || '',
 								customsPassId: customsPassId ? customsPassId - 0 : '',
 								sort: sort ? sort - 0 : '',
 								customsPassName: customsPassName || '',
 								textBookId: textBookId ? textBookId - 0 : '',
-								partsId: partsId ? partsId - 0 : ''
+								partsId: partsId ? partsId - 0 : '',
+								topicId: topicId ? topicId - 0 : ''
 							}
 						})
 						if (detpage) {
-							dispatch({
-								type: 'subjectDesc',
-								payload: {
-									customsPassId: customsPassId ? customsPassId - 0 : '',
-									sort: sort ? sort - 0 : '',
-								}
-							})
+							dispatch({ type: 'subjectDesc' })
 						} else {
 							dispatch({
 								type: 'getSubject',
@@ -72,7 +78,6 @@ export default {
 									textBookId: textBookId ? textBookId - 0 : '',
 									partsId: partsId ? partsId - 0 : '',
 									customsPassId: customsPassId ? customsPassId - 0 : '',
-									textBookId: textBookId ? textBookId - 0 : '',
 									pageSize: 10,
                                     pageNum: 1
 								}
@@ -121,7 +126,7 @@ export default {
 	effects: {
 		*getSubject({ payload }, { call, put, select }) {
 			const { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId, partsId, textBookId } = yield select(state => state.subject);
-			const _pay = payload ? payload : { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId, partsId, textBookId}
+			const _pay = { startTime, endTime, pageNum, pageSize, sourceIds, customsPassName, customsPassId, partsId, textBookId}
 			const res = yield call(api.getSubject, filterObj(_pay))
 			if (res) {
 				yield put({
@@ -141,8 +146,9 @@ export default {
 			}
 		},
 
-		*subjectDesc({ payload }, { call, put }) {
-			const res = yield call(api.subjectDesc, payload)
+		*subjectDesc({ payload }, { call, put, select }) {
+			const { topicId } = yield select(state => state.subject);
+			const res = yield call(api.descTopic, topicId)
 			if (res) {
 				yield put({
 					type: 'save',
@@ -150,6 +156,13 @@ export default {
                         descList: (res.data.data) ? [res.data.data] : []
 					}
 				})
+			}
+		},
+
+		*scenePic({ payload }, { call, put, select }) {
+			const res = yield call(api.scenePic, payload)
+			if (res) {
+				message.success(res.data.message);
 			}
         },
 
@@ -192,7 +205,15 @@ export default {
 		},
 
 		*deleteSubject({ payload }, { call, put }) {
-			const res = yield call(api.deleteSubject, payload);
+			const res = yield call(api.deleteTopic, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' })
+			}
+		},
+
+		*addTopic({ payload }, { call, put }) {
+			const res = yield call(api.addTopic, payload);
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getSubject' })

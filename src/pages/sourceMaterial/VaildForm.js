@@ -114,7 +114,7 @@ const ValidForm = ({
                     {...formItemLayout}
                     >
                     {getFieldDecorator('textbookId', {
-                        initialValue: sourcematerial.textbookId,
+                        initialValue: sourcematerial.textbookId ? sourcematerial.textbookId : '',
                         rules: [{ required: true, message: '请选择教材!' }],
                     })(
                         <Select

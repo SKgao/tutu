@@ -93,6 +93,14 @@ export default {
 			}
 		},
 
+		*lockUnit({ payload }, { call, put }) {
+			const res = yield call(api.lockUnit, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getUnit' });
+			}
+		},
+
 		*deleteUnit({ payload }, { call, select, put }) {
 			const res = yield call(api.deleteUnit, payload);
 			if (res) {

@@ -7,12 +7,14 @@ import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
 import VaildForm from '../sourceMaterial//VaildForm';
+import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Radio, Modal, Select, Icon, Upload, Tabs, message, Popconfirm, Table } from 'antd';
+import { Form, DatePicker, Input, Button, Radio, Modal, Tooltip, Select,
+    Icon, Upload, Tabs, message, Popconfirm, Table, notification } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -25,15 +27,12 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, modal2Show, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
-    let { getFieldDecorator, resetFields } = form;
+    let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     // 题目列表
     const subjectCol = [
         {
-            title: '教材名称',
-            dataIndex: 'textBookName'
-        }, {
             title: '单元名称',
             dataIndex: 'unitsName'
         }, {
@@ -83,14 +82,29 @@ const Subject = ({
             dataIndex: 'sort',
             sorter: true
         }, {
+            title: '场景图',
+            dataIndex: 'sceneGraph',
+            sorter: true,
+            render: (text) => {
+               return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+            }
+        }, {
+            title: '上传场景图',
+            dataIndex: 'updatescenePic',
+            render: (txt, record, index) => {
+                return <MyUpload uploadTxt={'场景图'} uploadSuccess={(url) => {
+                    changeIcon(url, record)
+                }}></MyUpload>
+            }
+        }, {
             title: '操作',
             dataIndex: 'action',
             render: (text, record) => {
                 return <span>
-                    <Button size="small" onClick={() => linktoDet(record)}>题目详情</Button>
+                    <Button type="primary" size="small" onClick={() => linktoDet(record)}>题目详情</Button>
 
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
+                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
                     </Popconfirm>
                 </span>
             }
@@ -118,7 +132,10 @@ const Subject = ({
         }
     ]
 
-    const columns = (detpage) ? descCol : subjectCol
+    let columns = (detpage) ? descCol : subjectCol
+    if (customsPassId !== 8 && customsPassId !== 2) {
+        columns = columns.filter(l => l.dataIndex !== 'updatescenePic' && l.dataIndex !== 'sceneGraph')
+    }
     const dataSource = (detpage) ? subject.descList : subject.subjectList
 
     const expandedRowRender = () => {
@@ -156,28 +173,40 @@ const Subject = ({
           )
     }
 
+     // 修改场景图
+     const changeIcon = (url, record) => {
+        dispatch({
+    		type: 'subject/scenePic',
+    		payload: {
+                id: record.id,
+                scenePic: url
+            }
+    	})
+    }
+
     // 调转到题目详情
     const linktoDet = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.customsPassId}&sort=${record.sort}&detpage=1`
-        }));
+            search: `topicId=${record.id}&detpage=1`
+        }))
     }
 
     // 删除题目
     const handleDelete = (record) => {
         dispatch({
             type: 'subject/deleteSubject',
-            payload: {
-                customsPassId: record.customsPassId - 0,
-                sort: record.sort - 0,
-            }
+            payload: record.id - 0,
+            // payload: {
+            //     customsPassId: record.customsPassId - 0,
+            //     sort: record.sort - 0,
+            // }
         })
     }
 
     // 添加题目
     const handleSubmitSubject = () => {
-        let { textbookId, file, addType } = subject
+        let { textbookId, file } = subject
         let formData = new FormData()
         if (file[0]) {
             formData.append('textbookId', textbookId)
@@ -186,12 +215,17 @@ const Subject = ({
             axios.post('subject/subject/import', formData)
                 .then((res) => {
                     if (res.data.code === 0) {
+                        notification.info({
+                            message: addType == 1 ? '大纲检测结果' : '题目上传结果',
+                            description: <div dangerouslySetInnerHTML={{__html: res.data.data}} />,
+                            duration: 0,
+                        })
                         dispatch({
                             type: 'subject/setParam',
                             payload: {
                                 file: [],
                                 modalShow: false,
-                                activeKey: '1'
+                                activeKey: '0'
                             }
                         })
                     } else {
@@ -342,6 +376,17 @@ const Subject = ({
     	})
     }
 
+    // 文件上传成功
+    const uploadSuccess = (url, filed) => {
+        //setFieldsValue({[filed]: url})
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+    			[filed]: url
+    		}
+        })
+    }
+
 	return (
 		<div>
             <Tabs
@@ -469,7 +514,7 @@ const Subject = ({
                                 label="操作类型"
                                 >
                                 {getFieldDecorator('type', {
-                                    initialValue: subject.addType,
+                                    initialValue: addType,
                                     rules: [{ requied: true, message: '请选择操作类型!' }],
                                 })(
                                     <RadioGroup onChange={changeAddtype}>
@@ -483,54 +528,6 @@ const Subject = ({
                                 {...formItemLayout}>
                                 <Button type="primary" onClick={handleSubmitSubject} style={{ marginLeft: 75 }}>提交</Button>
                                 <Button onClick={() => handleReset('modalShow')} style={{ marginLeft: 15 }}>取消</Button>
-                            </FormItem>
-                        </Form>
-                    </Modal>
-
-                    <Modal
-                        title="导入素材"
-                        visible={modal2Show}
-                        onOk={ () => changeModalState('modal2Show', false) }
-                        onCancel= { () => changeModalState('modal2Show', false) }
-                        okText="确认"
-                        cancelText="取消"
-                        footer={null}
-                        >
-                        <Form>
-                            <FormItem
-                                label="音频文件目录"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('audioArray', {
-                                    // rules: [{ message: '请上传音频素材!' }],
-                                })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'audioArray')} directory multiple showUploadList={false}>
-                                        <Button>
-                                            <Icon type="upload"/>上传音频
-                                        </Button>
-                                    </Upload>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                label="图片文件目录"
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('imageArray', {
-                                // rules: [{ message: '请上传图片素材!' }],
-                                })(
-                                    <Upload beforeUpload={(a, b) => uploadFileArray(a, b, 'imageArray')} directory multiple showUploadList={false}>
-                                        <Button>
-                                            <Icon type="upload"/>上传图片
-                                        </Button>
-                                    </Upload>
-                                )}
-                            </FormItem>
-
-                            <FormItem
-                                {...formItemLayout}>
-                                <Button type="primary" onClick={handleSubmitSource} style={{ marginLeft: 45 }}>提交</Button>
-                                <Button onClick={() => handleReset('modal2Show')} style={{ marginLeft: 15 }}>取消</Button>
                             </FormItem>
                         </Form>
                     </Modal>
@@ -580,7 +577,7 @@ const Subject = ({
                     (detpage || activeKey === '0') ? null :
                     <TabPane tab="上传进度" key="1">
                         <UploadProgress
-                           cardTitle={'题目上传进度'}
+                           cardTitle={addType == 1 ? '大纲检测进度' : '题目上传进度'}
                            url={'subject/subject/import/progress'}
                         >
                         </UploadProgress>

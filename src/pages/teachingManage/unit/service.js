@@ -12,7 +12,10 @@ export default {
 
 	// 删除单元
     deleteUnit: data => axios.get('unit/del/' + data, data),
-    
+
     // 修改单元
-	updateUnit: data => axios.post('unit/update', data)
+	updateUnit: data => axios.post('unit/update', data),
+
+	// 锁定单元
+	lockUnit: data => axios.post(`unit/lock?unitId=${data.unitId}&canLock=${data.canLock}`, data)
 }

@@ -12,18 +12,21 @@ export default {
 
 	// 修改年级
 	updateGrade: data => axios.post('grade/update', data),
-	
+
 	// 删除年级
     deleteGrade: data => axios.get('grade/version/delete/' + data.id, data),
 
     // 教材列表
     getBook: data => axios.post('book/list', data),
-    
+
     // 添加教材
 	addBook: data => axios.post('book/add', data),
 
 	// 删除教材
 	deleteBook: data => axios.post('book/delete', data),
+
+	// 锁定教材
+	lockBook: data => axios.post(`book/lock?textbookId=${data.textbookId}&canLock=${data.canLock}`, data),
 
 	// 修改教材
 	updateBook: data => axios.post('book/update', data),
