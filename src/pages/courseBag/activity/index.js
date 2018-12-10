@@ -282,11 +282,10 @@ const BagActivity = ({
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { beginAt, endAt, iconDetail, iconTicket, alldate } = bagActivity;
+                const { beginAt, iconDetail, iconTicket, alldate } = bagActivity;
                 values.orgAmt && (values.orgAmt = values.orgAmt * 100);
                 values.amt && (values.amt = values.amt * 100);
                 values.num && (values.num = values.num - 0);
-                values.id && (values.id = values.id - 0);
                 values.type && (values.type = values.type - 0);
                 values.status && (values.status = values.status - 0);
                 values.textbookId && (values.textbookId = values.textbookId - 0);
@@ -312,12 +311,12 @@ const BagActivity = ({
                         values.beginAt = ''
                         values.endAt = ''
                     }
-                    // values.saleBeginAt = saleBeginAt
-                    // values.saleEndAt = saleEndAt
-                    // dispatch({
-                    //     type: 'bagActivity/addActivity',
-                    //     payload: filterObj(values)
-                    // })
+                    values.saleBeginAt = saleBeginAt
+                    values.saleEndAt = saleEndAt
+                    dispatch({
+                        type: 'bagActivity/addActivity',
+                        payload: filterObj(values)
+                    })
                 }
 			}
 		});

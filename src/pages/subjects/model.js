@@ -163,6 +163,7 @@ export default {
 			const res = yield call(api.scenePic, payload)
 			if (res) {
 				message.success(res.data.message);
+				yield put({ type: 'getSubject' });
 			}
         },
 
