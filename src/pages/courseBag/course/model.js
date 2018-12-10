@@ -42,10 +42,16 @@ export default {
             const res = yield call(api.getCourseList);
             if (res) {
 				const table = (res.data) ? res.data.data.filter(e => e.id === _id) : []
+				yield put({
+            		type: 'save',
+            		payload: {
+						tableList: []
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
-						tableList: table.length ? table[0].textBookDOS : [{id: 1, name: 'test 数据'}]
+						tableList: table.length ? table[0].textBookDOS : []
             		}
             	})
             }

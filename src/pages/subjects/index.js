@@ -53,6 +53,7 @@ const Subject = ({
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
+                                id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
                                 sort: record.sort - 0,
 								customsPassName: v
@@ -71,6 +72,7 @@ const Subject = ({
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
+                                id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
                                 sort: record.sort - 0,
 								sourceIds: v
@@ -175,13 +177,25 @@ const Subject = ({
 
      // 修改场景图
      const changeIcon = (url, record) => {
-        dispatch({
-    		type: 'subject/scenePic',
-    		payload: {
-                id: record.id,
-                scenePic: url
-            }
-    	})
+        if (record.sceneGraph && record.sceneGraph != 'null') {
+            dispatch({
+                type: 'subject/updateSubject',
+                payload: {
+                    id: record.id - 0,
+                    customsPassId: record.customsPassId - 0,
+                    sort: record.sort - 0,
+                    scenePic: url
+                }
+            })
+        } else {
+            dispatch({
+                type: 'subject/scenePic',
+                payload: {
+                    id: record.id,
+                    scenePic: url
+                }
+            })
+        }
     }
 
     // 调转到题目详情

@@ -14,7 +14,7 @@ export default {
     updateCourse: data => axios.post(`course/update?id=${data.id}&name=${data.name}&icon=${data.icon}`, data),
 
     // 更改课程状态
-    chanegeStatus: data => axios.get(`course/changeStatus?status=${data.status}&id=${data.id}`, data),
+    changeStatus: data => axios.get(`course/changeStatus?status=${data.status}&id=${data.id}`, data),
 
     // 添加精品课程
     addCourse: data => axios.post(`course/add?bagId=${data.bagId}&name=${data.name}&icon=${data.icon}`, data),

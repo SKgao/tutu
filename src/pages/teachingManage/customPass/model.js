@@ -78,8 +78,7 @@ export default {
         },
 
 		*deletePass({ payload }, { call, put }) {
-			const { id } = payload;
-			const res = yield call(api.deletePass, id);
+			const res = yield call(api.deletePass, payload);
             if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getPassList' });

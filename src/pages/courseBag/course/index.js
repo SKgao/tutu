@@ -267,9 +267,9 @@ const CourseList = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('name', {
-                            rules: [{ required: true, message: '请输入课程包名称!' }],
+                            rules: [{ required: true, message: '请输入课程名称!' }],
                         })(
-                            <Input placeholder="请输入课程包名称"/>
+                            <Input placeholder="请输入课程名称"/>
                         )}
                     </FormItem>
 

@@ -305,19 +305,20 @@ const BagActivity = ({
                 } else if (_begin2 > _end2) {
                     message.warning('预售开始时间不能大于预售结束时间')
                 } else {
-                    if (type === '1') {
+                    if (values.type === 1) {
                         values.beginAt = beginAt
                         values.endAt = endDate
                     } else {
                         values.beginAt = ''
                         values.endAt = ''
                     }
-                    // values.saleBeginAt = saleBeginAt
-                    // values.saleEndAt = saleEndAt
-                    // dispatch({
-                    //     type: 'bagActivity/addActivity',
-                    //     payload: filterObj(values)
-                    // })
+                    values.saleBeginAt = saleBeginAt
+                    values.saleEndAt = endDate
+                    delete values.alldate
+                    dispatch({
+                        type: 'bagActivity/addActivity',
+                        payload: filterObj(values)
+                    })
                 }
 			}
 		});
