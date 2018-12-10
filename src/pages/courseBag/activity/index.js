@@ -312,12 +312,8 @@ const BagActivity = ({
                         values.endAt = ''
                     }
                     values.saleBeginAt = saleBeginAt
-<<<<<<< HEAD
                     values.saleEndAt = endDate
                     delete values.alldate
-=======
-                    values.saleEndAt = saleEndAt
->>>>>>> 67bb4d111066fe7c46ed909df86cf2952917d2d7
                     dispatch({
                         type: 'bagActivity/addActivity',
                         payload: filterObj(values)
