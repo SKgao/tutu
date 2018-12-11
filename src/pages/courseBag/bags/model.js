@@ -36,6 +36,12 @@ export default {
 		*getBagList({ payload }, { put, call }) {
             const res = yield call(api.getBag);
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						bagList: []
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {

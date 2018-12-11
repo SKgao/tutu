@@ -165,6 +165,14 @@ export default {
 				message.success(res.data.message);
 				yield put({ type: 'getSubject' });
 			}
+		},
+
+		*updatePic({ payload }, { call, put, select }) {
+			const res = yield call(api.updatePic, payload)
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' });
+			}
         },
 
         *addSource({ payload }, { call, put, select }) {

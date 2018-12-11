@@ -24,9 +24,8 @@ const ValidForm = ({
                 dispatch({
                     type: 'sourcematerial/addSource',
                     payload: filterObj(values)
-                });
-                changeModalState && changeModalState();
-                resetFields();
+                })
+
             }
         });
     }
@@ -61,7 +60,9 @@ const ValidForm = ({
 
     // 获取文件信息
     const getFileInfo = (file, tag) => {
-        const FILENAME = file.name.trim().slice(0, -4)
+        let str = file.name.trim()
+        let idx = str.lastIndexOf('.')
+        const FILENAME = str.slice(0, idx)
         if (tag === 'icon') {
             dispatch({
                 type: 'sourcematerial/setParam',
@@ -158,10 +159,10 @@ const ValidForm = ({
 
                 <FormItem
                     {...formItemLayout}
-                    label="音频地址"
+                    label="素材音频地址"
                     >
                     {getFieldDecorator('audio', {
-                        rules: [{ required: true, message: '请上传音频!' }],
+                        rules: [{ message: '请上传音频!' }],
                     })(
                         <MyUpload
                             uploadSuccess={audioUploadSuccess}

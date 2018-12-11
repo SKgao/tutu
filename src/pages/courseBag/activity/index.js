@@ -254,8 +254,28 @@ const BagActivity = ({
                     changeIcon(url, record, 'iconTicket')
                 }}></MyUpload>
             }
+        }, {
+        	title: '操作',
+            dataIndex: 'action',
+            render: (txt, row, index) => {
+                return <span>
+                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(row)}>
+                        <Button type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
+                    </Popconfirm>
+                </span>
+            }
         }
     ]
+
+    // 删除
+    const handleDelete = (row) => {
+        dispatch({
+            type: 'bagActivity/deleteActivity',
+            payload: {
+                id: row.id - 0
+            }
+        })
+    }
 
     // 操作分页
     const handleChange = (param) => {

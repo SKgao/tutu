@@ -32,4 +32,7 @@ export default {
 
 	// 上传场景图
 	scenePic: data => axios.post(`subject/upload/pic?id=${data.id}&scenePic=${data.scenePic}`, data),
+
+	// 修改场景图
+	updatePic: data => axios.post(`subject/upload/pic/update?id=${data.id}&scenePic=${data.scenePic}`, data),
 }

@@ -50,6 +50,12 @@ export default {
             const _id = yield select(state => state.bagActivity.id);
             const res = yield call(api.getActivity, {id: _id});
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						tableList: []
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
@@ -69,6 +75,14 @@ export default {
 
         *updateActivity({ payload }, { call, put }) {
             const res = yield call(api.updateActivity, payload);
+		    if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getActivity' })
+			}
+		},
+
+		*deleteActivity({ payload }, { call, put }) {
+            const res = yield call(api.deleteActivity, payload);
 		    if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getActivity' })

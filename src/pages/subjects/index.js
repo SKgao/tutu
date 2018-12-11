@@ -179,11 +179,9 @@ const Subject = ({
      const changeIcon = (url, record) => {
         if (record.sceneGraph && record.sceneGraph != 'null') {
             dispatch({
-                type: 'subject/updateSubject',
+                type: 'subject/updatePic',
                 payload: {
-                    id: record.id - 0,
-                    customsPassId: record.customsPassId - 0,
-                    sort: record.sort - 0,
+                    id: record.id,
                     scenePic: url
                 }
             })

@@ -11,5 +11,8 @@ export default {
 	getActivity: data => axios.get(`course/active/list/${data.id}`, data),
 
     // 课程活动修改
-    updateActivity: data => axios.post('course/active/update', data),
+	updateActivity: data => axios.post('course/active/update', data),
+
+	// 课程活动删除
+	deleteActivity: data => axios.get(`course/active/del/${data.id}`, data),
 }
