@@ -11,7 +11,7 @@ export default {
     delCourse: data => axios.get(`course/delete/${data.id}`, data),
 
     // 更新课程列表
-    updateCourse: data => axios.post(`course/update?id=${data.id}&name=${data.name}&icon=${data.icon}`, data),
+    updateCourse: data => axios.post(`course/update?id=${data.id}&name=${data.name}&icon=${data.icon}&sort=${data.sort}`, data),
 
     // 更改课程状态
     changeStatus: data => axios.get(`course/changeStatus?status=${data.status}&id=${data.id}`, data),

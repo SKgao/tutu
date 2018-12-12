@@ -20,6 +20,8 @@ export default {
 		endAt: '',
 		saleBeginAt: '', // 预售开始时间
 		saleEndAt: '',   // 预售结束时间
+		alldate: '',     // 预售持续时间
+		alldate2: '',    // 开课持续时间
         iconDetail: '',
 		iconTicket: '',
 		userId: '',   // 用户ID

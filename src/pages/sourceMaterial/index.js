@@ -402,6 +402,22 @@ const sourceMaterial = ({
     	})
     }
 
+    // 批量下载音频素材
+    const handleBatchDownload = () => {
+        dispatch({
+    		type: 'sourcematerial/batchDownloadSource',
+    		payload: sourcematerial.sourceIds
+    	})
+    }
+
+    // 批量同步素材
+    const handleBatchSend = () => {
+        dispatch({
+    		type: 'sourcematerial/batchSendSource',
+    		payload: sourcematerial.sourceIds
+    	})
+    }
+
     // 是否开启模糊搜索
     const handleOpenlike = (e) => {
         let isopen = e.target.checked
@@ -460,7 +476,31 @@ const sourceMaterial = ({
 
                     <FormItem>
                         <Popconfirm title="是否删除选中素材?" onConfirm={handleBatchDelete}>
-                            <Button type="danger" disabled={!sourcematerial.sourceIds.length}>批量删除</Button>
+                            <Button type="danger" icon="delete" disabled={!sourcematerial.sourceIds.length}>批量删除</Button>
+                        </Popconfirm>
+                    </FormItem>
+
+                    <FormItem>
+                        <Popconfirm title="是否删下载选中素材音频?" onConfirm={handleBatchDownload}>
+                            <Button
+                                type="primary"
+                                icon="download"
+                                loading={ loading.effects['sourcematerial/batchDownloadSource'] }
+                                disabled={!sourcematerial.sourceIds.length}>
+                                批量下载音频
+                            </Button>
+                        </Popconfirm>
+                    </FormItem>
+
+                    <FormItem>
+                        <Popconfirm title="是否同步选中素材?" onConfirm={handleBatchSend}>
+                            <Button
+                                type="primary"
+                                icon="reload"
+                                loading={ loading.effects['sourcematerial/batchSendSource'] }
+                                disabled={!sourcematerial.sourceIds.length}>
+                                批量同步
+                            </Button>
                         </Popconfirm>
                     </FormItem>
 

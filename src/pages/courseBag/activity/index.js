@@ -302,7 +302,7 @@ const BagActivity = ({
 		e.preventDefault();
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { beginAt, iconDetail, iconTicket, alldate } = bagActivity;
+                const { beginAt, iconDetail, iconTicket, alldate, alldate2 } = bagActivity;
                 values.orgAmt && (values.orgAmt = values.orgAmt * 100);
                 values.amt && (values.amt = values.amt * 100);
                 values.num && (values.num = values.num - 0);
@@ -311,18 +311,17 @@ const BagActivity = ({
                 values.textbookId && (values.textbookId = values.textbookId - 0);
                 values.iconDetail = iconDetail;
                 values.iconTicket = iconTicket;
+                // 开课截止时间
                 let _begin = new Date(beginAt).getTime()
-                let _end = _begin + alldate * (1000 * 3600 * 24)
+                let _end = _begin + alldate2 * (1000 * 3600 * 24)
                 const endDate = moment(new Date(_end)).format('YYYY-MM-DD HH:mm:ss')
+                // 预售截止时间
                 let _begin2 = new Date(saleBeginAt).getTime()
-                let _end2 = new Date(saleEndAt).getTime()
+                let _end2 = _begin2 + alldate * (1000 * 3600 * 24)
+                const endDate2 = moment(new Date(_end2)).format('YYYY-MM-DD HH:mm:ss')
                 const idArr = tableList.map(e => e.id)
                 if (idArr.includes(values.id)) {
                     message.warning('课程活动id已存在！')
-                } else if (_begin > _end) {
-                    message.warning('开始时间不能大于结束时间')
-                } else if (_begin2 > _end2) {
-                    message.warning('预售开始时间不能大于预售结束时间')
                 } else {
                     if (values.type === 1) {
                         values.beginAt = beginAt
@@ -332,7 +331,7 @@ const BagActivity = ({
                         values.endAt = ''
                     }
                     values.saleBeginAt = saleBeginAt
-                    values.saleEndAt = endDate
+                    values.saleEndAt = endDate2
                     delete values.alldate
                     dispatch({
                         type: 'bagActivity/addActivity',
@@ -468,7 +467,7 @@ const BagActivity = ({
                         </FormItem>
 
                         <FormItem
-                            label="持续时间"
+                            label="预售持续时间"
                             {...formItemLayout}
                             >
                             {getFieldDecorator('alldate', {
@@ -556,6 +555,21 @@ const BagActivity = ({
                         {
                             type ===  '1' &&
                             <FormItem
+                                label="开课持续时间"
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('alldate2', {
+                                    //initialValue: bagActivity.id,
+                                    rules: [{ required: true, message: '请输入持续时间!' }],
+                                })(
+                                    <Input placeholder="请输入持续时间(以天为单位)" onChange={ (e) => onChangeDate('', e.target.value, 'alldate2')}/>
+                                )}
+                            </FormItem>
+                        }
+
+                        {/* {
+                            type ===  '1' &&
+                            <FormItem
                                 label="结课时间"
                                 {...formItemLayout}
                                 >
@@ -570,7 +584,7 @@ const BagActivity = ({
                                         />
                                 )}
                             </FormItem>
-                        }
+                        } */}
 
                         <FormItem
                             label="原始金额"
