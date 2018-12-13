@@ -363,9 +363,9 @@ const Activity = ({
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加活动</Button>
                     </FormItem>
 
-                    <FormItem>
+                    {/* <FormItem>
                         <Button onClick={() => changeModalState('modal2Show', true)}>查看分享海报</Button>
-                    </FormItem>
+                    </FormItem> */}
 
                 </Form>
 

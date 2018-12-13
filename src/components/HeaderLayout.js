@@ -20,7 +20,7 @@ const HeaderLayout = ({
 }) => {
 	let { dispatch, form } = props;
 	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
-	
+
 	// 修改密码
 	const handlePassword = (e) => {
 		e.preventDefault();
@@ -28,7 +28,7 @@ const HeaderLayout = ({
 			if (!err) {
 				if (values.password2 !== values.password) {
                     message.warning('两次密码输入不一样！')
-                } else {    
+                } else {
 					axios.post('user/update', {
 					   id: localStorage.getItem('id'),
 					   password: values.password
@@ -65,7 +65,7 @@ const HeaderLayout = ({
 
 
 			<div className="header-right">
-				
+
 				{/* <div className="header-icon header-search">
 					<Icon type={"search"} />
 				</div> */}
@@ -75,20 +75,20 @@ const HeaderLayout = ({
 				</div>
 
 				<div className="header-icon header-msg">
-					<Avatar 
+					<Avatar
 					    icon="user"
-					    style={{ backgroundColor: '#ffbf00', verticalAlign: 'middle' }} 
+					    style={{ backgroundColor: '#ffbf00', verticalAlign: 'middle' }}
 					    src={ localStorage.getItem('avatar') || '//web.chengxuyuantoutiao.com/static/tutu_logo.png' }>
 					</Avatar>
 				</div>
 
-				<Menu 
+				<Menu
 					mode="horizontal"
 					className="header-menu header-btns"
 					onClick={handleUser}>
 					<SubMenu title={<span><em>{ localStorage.getItem('account') || 'admin' }</em></span>}>
-						<Menu.Item key="setting">修改密码</Menu.Item>
-						<Menu.Item key="logout">退出</Menu.Item>
+						<Menu.Item key="setting"><Icon type="edit"/>修改密码</Menu.Item>
+						<Menu.Item key="logout"><Icon type="logout"/>退出</Menu.Item>
 					</SubMenu>
 				</Menu>
 

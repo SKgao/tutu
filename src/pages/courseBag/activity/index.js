@@ -529,6 +529,7 @@ const BagActivity = ({
                                 <RadioGroup onChange={ (e) => onChangeDate('', e.target.value, 'type') }>
                                     <Radio value="1" key="1">统一开课</Radio>
                                     <Radio value="2" key="2">购买生效</Radio>
+                                    <Radio value="3" key="3">闯关解锁</Radio>
                                 </RadioGroup>
                             )}
                         </FormItem>
