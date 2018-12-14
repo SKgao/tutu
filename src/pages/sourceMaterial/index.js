@@ -11,6 +11,7 @@ import MultipleUpload from '@/components/MultipleUpload';
 import EditForm from './editForm';
 
 import moment from 'moment';
+import { isPro } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
@@ -492,17 +493,19 @@ const sourceMaterial = ({
                         </Popconfirm>
                     </FormItem>
 
-                    <FormItem>
-                        <Popconfirm title="是否同步选中素材?" onConfirm={handleBatchSend}>
-                            <Button
-                                type="primary"
-                                icon="reload"
-                                loading={ loading.effects['sourcematerial/batchSendSource'] }
-                                disabled={!sourcematerial.sourceIds.length}>
-                                批量同步
-                            </Button>
-                        </Popconfirm>
-                    </FormItem>
+                    {
+                        isPro ? null : <FormItem>
+                            <Popconfirm title="是否同步选中素材?" onConfirm={handleBatchSend}>
+                                <Button
+                                    type="primary"
+                                    icon="reload"
+                                    loading={ loading.effects['sourcematerial/batchSendSource'] }
+                                    disabled={!sourcematerial.sourceIds.length}>
+                                    批量同步
+                                </Button>
+                            </Popconfirm>
+                        </FormItem>
+                    }
 
                 </Form>
             </FormInlineLayout>

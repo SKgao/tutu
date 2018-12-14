@@ -11,5 +11,5 @@ export default {
     addMember: data => axios.post('member/add', data),
 
     // 精品课程列表
-	getBooklist: data => axios.post('course/list', data),
+	getBooklist: data => axios.post('course/list/down', data),
 }

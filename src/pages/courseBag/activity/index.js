@@ -155,10 +155,13 @@ const BagActivity = ({
                     }, {
                         id: 2,
                         name: '购买生效'
+                    }, {
+                        id: 3,
+                        name: '闯关解锁'
                     }]}
 					optionKey={'id'}
                     optionItem={'name'}
-					defaultValue={text === 1 ? '统一开课' : '购买生效'}
+					defaultValue={text === 1 ? '统一开课' : text === 2 ? '购买生效' : '闯关解锁'}
 					onOk={v =>
 						dispatch({
 							type: 'bagActivity/updateActivity',

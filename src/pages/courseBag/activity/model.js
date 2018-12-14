@@ -100,7 +100,7 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						bookList: (res.data.data) ? res.data.data.data : []
+						bookList: (res.data) ? res.data.data : []
 					}
 				})
 			}

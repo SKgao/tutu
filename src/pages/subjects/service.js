@@ -35,4 +35,7 @@ export default {
 
 	// 修改场景图
 	updatePic: data => axios.post(`subject/upload/pic/update?id=${data.id}&scenePic=${data.scenePic}`, data),
+
+	// 删除场景图
+	deletePic: data => axios.get(`subject/del/pic/${data}`, data),
 }

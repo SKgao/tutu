@@ -91,12 +91,21 @@ const Subject = ({
                return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
             }
         }, {
-            title: '上传场景图',
+            title: '操作场景图',
             dataIndex: 'updatescenePic',
             render: (txt, record, index) => {
-                return <MyUpload uploadTxt={'场景图'} uploadSuccess={(url) => {
-                    changeIcon(url, record)
-                }}></MyUpload>
+                return <span style={{ display: 'flex', textAlign: 'center' }}>
+                    <MyUpload uploadTxt={'场景图'} uploadSuccess={(url) => {
+                        changeIcon(url, record)
+                    }}></MyUpload>
+
+                    {
+                        record.sceneGraph && record.sceneGraph != 'null' &&
+                        <Popconfirm title="是否删除场景图?" onConfirm={() => deletePic(record)}>
+                            <Button icon="delete" type="danger" style={{ marginLeft: 5 }}>删除</Button>
+                        </Popconfirm>
+                    }
+                </span>
             }
         }, {
             title: '操作',
@@ -208,11 +217,15 @@ const Subject = ({
     const handleDelete = (record) => {
         dispatch({
             type: 'subject/deleteSubject',
-            payload: record.id - 0,
-            // payload: {
-            //     customsPassId: record.customsPassId - 0,
-            //     sort: record.sort - 0,
-            // }
+            payload: record.id - 0
+        })
+    }
+
+    // 删除场景图
+    const deletePic = (record) => {
+        dispatch({
+            type: 'subject/deletePic',
+            payload: record.id - 0
         })
     }
 
