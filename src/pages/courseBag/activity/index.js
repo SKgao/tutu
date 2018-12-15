@@ -434,7 +434,7 @@ const BagActivity = ({
                                     >
                                     {
                                         bookList.map(item =>
-                                            <Option key={item.id} value={item.id}>{item.name + ''}</Option>
+                                            <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
                                         )
                                     }
                                 </Select>

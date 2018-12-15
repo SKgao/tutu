@@ -92,7 +92,7 @@ export default {
 		},
 
 		*getBooklist({ payload }, { call, put, select }) {
-			const res = yield call(api_teachingManage.getBook, {
+			const res = yield call(api.getSelect, {
                 pageNum: 1,
                 pageSize: 100
 			});
