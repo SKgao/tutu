@@ -22,6 +22,9 @@ export default {
 	// 题目删除
 	deleteSubject: data => axios.post('subject/delete', data),
 
+	// 批量删除题目
+	batchDeleteSubject: data => axios.post('subject/delete/batch', data),
+
 
 	// ---------------------------------- 分割线 --------------------------------------
 	// 题目详情

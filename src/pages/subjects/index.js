@@ -27,7 +27,8 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize,
+        customsPassId, sort, sourceIds, activeKey, customsPassName, detpage, selectedRowKeys, idArr} = subject;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     // 题目列表
@@ -114,9 +115,9 @@ const Subject = ({
                 return <span>
                     <Button type="primary" size="small" onClick={() => linktoDet(record)}>题目详情</Button>
 
-                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
+                    {/* <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
-                    </Popconfirm>
+                    </Popconfirm> */}
                 </span>
             }
         }
@@ -327,7 +328,9 @@ const Subject = ({
         } else {
             let pageParam = {
                 pageSize: 10,
-                pageNum: 1
+                pageNum: 1,
+                idArr: [],
+                selectedRowKeys: []
             }
             dispatch({
                 type: 'subject/setParam',
@@ -343,7 +346,11 @@ const Subject = ({
     const handleChange = (param) => {
         dispatch({
     		type: 'subject/setParam',
-    		payload: param
+    		payload: {
+                ...param,
+                idArr: [],
+                selectedRowKeys: []
+            }
         })
         dispatch({
     		type: 'subject/getSubject',
@@ -412,6 +419,26 @@ const Subject = ({
         })
     }
 
+    // table选中checkboxß
+    const tableRowSelectd = (selectedRowKeys, selectedRows) => {
+        let idArr = selectedRows.map(e => e.id)
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+                selectedRowKeys,
+				idArr
+			}
+    	})
+    }
+
+    // 批量删除素材
+    const handleBatchDelete = () => {
+        dispatch({
+    		type: 'subject/batchDeleteSubject',
+    		payload: subject.idArr
+    	})
+    }
+
 	return (
 		<div>
             <Tabs
@@ -478,6 +505,14 @@ const Subject = ({
                                 !detpage && !customsPassId ? null :
                                 <FormItem>
                                     <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
+                                </FormItem>
+                            }
+
+                            {
+                                detpage ? null : <FormItem>
+                                    <Popconfirm title="是否删除选中题目?" onConfirm={handleBatchDelete}>
+                                        <Button type="danger" icon="delete" disabled={!subject.idArr.length}>批量删除</Button>
+                                    </Popconfirm>
                                 </FormItem>
                             }
 
@@ -575,6 +610,12 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
+                            rowSelection={{
+                                fixed: true,
+                                type: 'checkbox',
+                                onChange: tableRowSelectd,
+                                selectedRowKeys: subject.selectedRowKeys
+                            }}
                             expandedRowRender={detpage ? expandedRowRender : null}
                             expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }

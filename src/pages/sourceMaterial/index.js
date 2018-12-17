@@ -220,7 +220,9 @@ const sourceMaterial = ({
     const handleSearch = () => {
         let pageParam = {
             pageSize: 10,
-            pageNum: 1
+            pageNum: 1,
+            sourceIds: [],
+            selectedRowKeys: []
         }
         dispatch({
     		type: 'sourcematerial/setParam',
@@ -302,7 +304,11 @@ const sourceMaterial = ({
     const handleChange = (param) => {
         dispatch({
     		type: 'sourcematerial/setParam',
-    		payload: param
+    		payload: {
+                ...param,
+                sourceIds: [],
+                selectedRowKeys: []
+            }
         })
         dispatch({
     		type: 'sourcematerial/getSource',
