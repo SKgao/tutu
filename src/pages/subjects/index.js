@@ -27,7 +27,8 @@ const Subject = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize, customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize,
+        customsPassId, sort, sourceIds, activeKey, customsPassName, detpage, selectedRowKeys, idArr} = subject;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     // 题目列表
@@ -53,6 +54,7 @@ const Subject = ({
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
+                                id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
                                 sort: record.sort - 0,
 								customsPassName: v
@@ -71,6 +73,7 @@ const Subject = ({
 						dispatch({
 							type: 'subject/updateSubject',
 							payload: {
+                                id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
                                 sort: record.sort - 0,
 								sourceIds: v
@@ -89,12 +92,21 @@ const Subject = ({
                return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
             }
         }, {
-            title: '上传场景图',
+            title: '操作场景图',
             dataIndex: 'updatescenePic',
             render: (txt, record, index) => {
-                return <MyUpload uploadTxt={'场景图'} uploadSuccess={(url) => {
-                    changeIcon(url, record)
-                }}></MyUpload>
+                return <span style={{ display: 'flex', textAlign: 'center' }}>
+                    <MyUpload uploadTxt={'场景图'} uploadSuccess={(url) => {
+                        changeIcon(url, record)
+                    }}></MyUpload>
+
+                    {
+                        record.sceneGraph && record.sceneGraph != 'null' &&
+                        <Popconfirm title="是否删除场景图?" onConfirm={() => deletePic(record)}>
+                            <Button icon="delete" type="danger" style={{ marginLeft: 5 }}>删除</Button>
+                        </Popconfirm>
+                    }
+                </span>
             }
         }, {
             title: '操作',
@@ -103,9 +115,9 @@ const Subject = ({
                 return <span>
                     <Button type="primary" size="small" onClick={() => linktoDet(record)}>题目详情</Button>
 
-                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
+                    {/* <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
-                    </Popconfirm>
+                    </Popconfirm> */}
                 </span>
             }
         }
@@ -175,13 +187,23 @@ const Subject = ({
 
      // 修改场景图
      const changeIcon = (url, record) => {
-        dispatch({
-    		type: 'subject/scenePic',
-    		payload: {
-                id: record.id,
-                scenePic: url
-            }
-    	})
+        if (record.sceneGraph && record.sceneGraph != 'null') {
+            dispatch({
+                type: 'subject/updatePic',
+                payload: {
+                    id: record.id,
+                    scenePic: url
+                }
+            })
+        } else {
+            dispatch({
+                type: 'subject/scenePic',
+                payload: {
+                    id: record.id,
+                    scenePic: url
+                }
+            })
+        }
     }
 
     // 调转到题目详情
@@ -196,11 +218,15 @@ const Subject = ({
     const handleDelete = (record) => {
         dispatch({
             type: 'subject/deleteSubject',
-            payload: record.id - 0,
-            // payload: {
-            //     customsPassId: record.customsPassId - 0,
-            //     sort: record.sort - 0,
-            // }
+            payload: record.id - 0
+        })
+    }
+
+    // 删除场景图
+    const deletePic = (record) => {
+        dispatch({
+            type: 'subject/deletePic',
+            payload: record.id - 0
         })
     }
 
@@ -302,7 +328,9 @@ const Subject = ({
         } else {
             let pageParam = {
                 pageSize: 10,
-                pageNum: 1
+                pageNum: 1,
+                idArr: [],
+                selectedRowKeys: []
             }
             dispatch({
                 type: 'subject/setParam',
@@ -318,7 +346,11 @@ const Subject = ({
     const handleChange = (param) => {
         dispatch({
     		type: 'subject/setParam',
-    		payload: param
+    		payload: {
+                ...param,
+                idArr: [],
+                selectedRowKeys: []
+            }
         })
         dispatch({
     		type: 'subject/getSubject',
@@ -387,6 +419,26 @@ const Subject = ({
         })
     }
 
+    // table选中checkboxß
+    const tableRowSelectd = (selectedRowKeys, selectedRows) => {
+        let idArr = selectedRows.map(e => e.id)
+        dispatch({
+    		type: 'subject/setParam',
+    		payload: {
+                selectedRowKeys,
+				idArr
+			}
+    	})
+    }
+
+    // 批量删除素材
+    const handleBatchDelete = () => {
+        dispatch({
+    		type: 'subject/batchDeleteSubject',
+    		payload: subject.idArr
+    	})
+    }
+
 	return (
 		<div>
             <Tabs
@@ -453,6 +505,14 @@ const Subject = ({
                                 !detpage && !customsPassId ? null :
                                 <FormItem>
                                     <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
+                                </FormItem>
+                            }
+
+                            {
+                                detpage ? null : <FormItem>
+                                    <Popconfirm title="是否删除选中题目?" onConfirm={handleBatchDelete}>
+                                        <Button type="danger" icon="delete" disabled={!subject.idArr.length}>批量删除</Button>
+                                    </Popconfirm>
                                 </FormItem>
                             }
 
@@ -550,6 +610,12 @@ const Subject = ({
                             pagination={false}
                             dataSource={dataSource}
                             allColumns={columns}
+                            rowSelection={{
+                                fixed: true,
+                                type: 'checkbox',
+                                onChange: tableRowSelectd,
+                                selectedRowKeys: subject.selectedRowKeys
+                            }}
                             expandedRowRender={detpage ? expandedRowRender : null}
                             expandRowByClick={true}
                             loading={ loading.effects['subject/getSubject'] || loading.effects['subject/subjectDesc'] }

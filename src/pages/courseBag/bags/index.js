@@ -36,7 +36,8 @@ const CourseBag = ({
                             payload: {
                                 id: record.id - 0,
                                 title: v,
-                                icon: record.icon
+                                icon: record.icon,
+                                sort: record.sort
                             }
                         })
                     }/>
@@ -49,6 +50,7 @@ const CourseBag = ({
         }, {
             title: '状态',
             dataIndex: 'status',
+            sorter: true,
             render: (txt) => {
 				switch (txt) {
 					case 1:
@@ -57,6 +59,26 @@ const CourseBag = ({
                         return <Badge status="warning" text="禁用"/>;
 				}
 			}
+        }, {
+            title: '排序',
+            dataIndex: 'sort',
+            sorter: true,
+            render: (text, record) =>
+                <TablePopoverLayout
+                    title={'修改排序'}
+                    valueData={text && '无'}
+                    defaultValue={text || '无'}
+                    onOk={v =>
+                        dispatch({
+                            type: 'courseBag/updateBag',
+                            payload: {
+                                id: record.id - 0,
+                                title: record.title,
+                                icon: record.icon,
+                                sort: v - 0
+                            }
+                        })
+                    }/>
         }, {
             title: '上传图标',
             dataIndex: 'updateicon',
@@ -141,6 +163,7 @@ const CourseBag = ({
     		payload: {
                 id: record.id - 0,
                 title: record.title,
+                sort: record.sort,
                 icon: url
             }
     	})

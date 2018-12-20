@@ -33,6 +33,10 @@ export default {
         pageNum: 1,
 		totalCount: 0,
 
+		// 批量删除
+		idArr: [], // 批量删除题目
+        selectedRowKeys: [], // 默认选中项
+
 
 		// 题目id
 		topicId: '',
@@ -97,6 +101,8 @@ export default {
 								textBookId: '',
 								subjectTypeId: '',
 								partsId: '',
+								idArr: [], // 批量删除题目
+   								selectedRowKeys: [], // 默认选中项
 								pageSize: 10,
                                 pageNum: 1
 							}
@@ -163,8 +169,42 @@ export default {
 			const res = yield call(api.scenePic, payload)
 			if (res) {
 				message.success(res.data.message);
+				yield put({ type: 'getSubject' });
 			}
-        },
+		},
+
+		*updatePic({ payload }, { call, put, select }) {
+			const res = yield call(api.updatePic, payload)
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' });
+			}
+		},
+
+		*deletePic({ payload }, { call, put, select }) {
+			const res = yield call(api.deletePic, payload)
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getSubject' });
+			}
+		},
+
+		// 批量删除
+		*batchDeleteSubject({ payload }, { call, put }) {
+			const res = yield call(api.batchDeleteSubject, payload);
+			if (res) {
+			  message.success(res.data.message);
+			  yield put({
+				type: 'setParam',
+				payload: {
+				  idArr: [],
+				  selectedRowKeys: []
+				}
+			  })
+
+			  yield put({ type: 'getSubject' });
+			}
+		},
 
         *addSource({ payload }, { call, put, select }) {
 			const res = yield call(api.addSource, payload);

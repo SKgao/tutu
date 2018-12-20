@@ -20,6 +20,8 @@ export default {
 		endAt: '',
 		saleBeginAt: '', // 预售开始时间
 		saleEndAt: '',   // 预售结束时间
+		alldate: '',     // 预售持续时间
+		alldate2: '',    // 开课持续时间
         iconDetail: '',
 		iconTicket: '',
 		userId: '',   // 用户ID
@@ -50,6 +52,12 @@ export default {
             const _id = yield select(state => state.bagActivity.id);
             const res = yield call(api.getActivity, {id: _id});
             if (res) {
+				yield put({
+            		type: 'save',
+            		payload: {
+						tableList: []
+            		}
+            	})
             	yield put({
             		type: 'save',
             		payload: {
@@ -75,8 +83,16 @@ export default {
 			}
 		},
 
+		*deleteActivity({ payload }, { call, put }) {
+            const res = yield call(api.deleteActivity, payload);
+		    if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getActivity' })
+			}
+		},
+
 		*getBooklist({ payload }, { call, put, select }) {
-			const res = yield call(api_teachingManage.getBook, {
+			const res = yield call(api.getSelect, {
                 pageNum: 1,
                 pageSize: 100
 			});
@@ -84,7 +100,7 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						bookList: (res.data.data) ? res.data.data.data : []
+						bookList: (res.data) ? res.data.data : []
 					}
 				})
 			}

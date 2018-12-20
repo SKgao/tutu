@@ -16,6 +16,9 @@ export default {
     // 修改单元
 	updateUnit: data => axios.post('unit/update', data),
 
+	// 同步单元
+	sendUnit: data => axios.get(`test/send2line/unit/${data}`, data),
+
 	// 锁定单元
 	lockUnit: data => axios.post(`unit/lock?unitId=${data.unitId}&canLock=${data.canLock}`, data)
 }

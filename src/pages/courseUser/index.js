@@ -3,6 +3,9 @@ import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import DragTableLayout from '@/components/DragTableLayout';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
@@ -180,6 +183,8 @@ const CourseUser = ({
     	})
     }
 
+    const SortingTable = DragDropContext(HTML5Backend)(DragTableLayout)
+
 	return (
 		<div>
             <FormInlineLayout>
@@ -327,6 +332,14 @@ const CourseUser = ({
                 loading={ loading.effects['courseUser/getUser'] }
                 scrollX={true}
                 />
+
+            {/* <SortingTable
+                dataSource={[{
+                    key: '1',
+                    name: 'John Brown',
+                    age: 32,
+                }]}/> */}
+
 
             <div className="main-pagination">
                 {

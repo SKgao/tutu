@@ -10,6 +10,9 @@ export default {
 	// 添加年级
 	addGrade: data => axios.post('grade/add', data),
 
+	// 同步年级
+	sendGrade: data => axios.get(`test/send2line/grade/${data}`, data),
+
 	// 修改年级
 	updateGrade: data => axios.post('grade/update', data),
 
@@ -31,11 +34,17 @@ export default {
 	// 修改教材
 	updateBook: data => axios.post('book/update', data),
 
+	// 同步教材
+	sendBook: data => axios.get(`test/send2line/textbook/${data}`, data),
+
 	// 添加教材版本
 	addVersion: data => axios.post('book/version/add', data),
 
 	// 教材版本列表
 	getVersion: data => axios.get('book/version/list', data),
+
+	// 同步教材版本
+	sendVersion: data => axios.get(`test/send2line/book/version/${data}`, data),
 
 	// 修改教材版本
 	updateVersion: data => axios.post('book/version/update', data),

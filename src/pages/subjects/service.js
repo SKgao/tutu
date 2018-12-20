@@ -22,6 +22,9 @@ export default {
 	// 题目删除
 	deleteSubject: data => axios.post('subject/delete', data),
 
+	// 批量删除题目
+	batchDeleteSubject: data => axios.post('subject/delete/batch', data),
+
 
 	// ---------------------------------- 分割线 --------------------------------------
 	// 题目详情
@@ -32,4 +35,10 @@ export default {
 
 	// 上传场景图
 	scenePic: data => axios.post(`subject/upload/pic?id=${data.id}&scenePic=${data.scenePic}`, data),
+
+	// 修改场景图
+	updatePic: data => axios.post(`subject/upload/pic/update?id=${data.id}&scenePic=${data.scenePic}`, data),
+
+	// 删除场景图
+	deletePic: data => axios.get(`subject/del/pic/${data}`, data),
 }

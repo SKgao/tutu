@@ -9,7 +9,7 @@ import { axios } from '@/configs/request';
  */
 class MyUpload extends Component {
     constructor(props) {
-        super(props);    
+        super(props);
     }
 
     beforeUpload = (file, fileList) => {
@@ -46,7 +46,7 @@ class MyUpload extends Component {
     render() {
         const { uploadTxt, directory } = this.props;
         return (
-            <Upload 
+            <Upload
                 beforeUpload={this.beforeUpload}
                 directory={directory}>
                 <Button>
@@ -55,7 +55,7 @@ class MyUpload extends Component {
                        uploadTxt === 0 ? null : uploadTxt ? uploadTxt : '上传文件'
                     }
                 </Button>
-            </Upload> 
+            </Upload>
         );
     }
 }

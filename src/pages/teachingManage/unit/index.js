@@ -10,6 +10,7 @@ import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
+import { isPro } from '@/configs/request';
 
 import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, Select, DatePicker } from 'antd';
 const FormItem = Form.Item;
@@ -105,6 +106,12 @@ const BookUnit = ({
                         </Button>
                     </Popconfirm>
 
+                    {
+                        isPro ? null : <Popconfirm title="是否同步该单元?" onConfirm={() => handleSendUnit(record)}>
+                            <Button icon="reload" type="primary" size="small" style={{ marginLeft: 10 }}>同步</Button>
+                        </Popconfirm>
+                    }
+
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
@@ -123,6 +130,17 @@ const BookUnit = ({
     const handleDelete = (param) => {
         dispatch({
     		type: 'bookUnit/deleteUnit',
+    		payload: param.id
+    	})
+    }
+
+    /**
+     * 同步教材单元
+     * @param  {object} 列数据
+     */
+    const handleSendUnit = (param) => {
+        dispatch({
+    		type: 'bookUnit/sendUnit',
     		payload: param.id
     	})
     }

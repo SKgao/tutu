@@ -1,6 +1,5 @@
 import api from './service';
 import { message } from 'antd';
-import api_teachingManage from '@/pages/teachingManage/book/service';
 import { filterObj } from '@/utils/tools';
 
 export default {
@@ -82,7 +81,7 @@ export default {
 				yield put({
 					type: 'save',
 					payload: {
-						bookList: (res.data.data) ? res.data.data.data : []
+						bookList: (res.data) ? res.data.data : []
 					}
 				})
 			}

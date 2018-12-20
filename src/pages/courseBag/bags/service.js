@@ -17,6 +17,6 @@ export default {
     getBag: data => axios.get('bag/list', data),
 
     // 课程包修改
-    updateBag: data => axios.post(`bag/update?id=${data.id}&title=${data.title}&icon=${data.icon}`, data),
+    updateBag: data => axios.post(`bag/update?id=${data.id}&sort=${data.sort}&title=${data.title}&icon=${data.icon}`, data),
 }
 //http://test.img.tutukids.com/group1/M00/00/01/rBELkVv3XhyARF-bAAEGq1C5Q9k145.jpg

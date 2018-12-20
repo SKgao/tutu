@@ -19,6 +19,12 @@ export default {
 	// 批量删除素材
 	batchDeleteSource: data => axios.post('/source/delete/batch', data),
 
+	// 批量下载音频素材
+	batchDownloadSource: data => axios.post('/source/audio/down/batch', data),
+
+	// 批量同步素材
+	batchSendSource: data => axios.post('/test/send2line/source', data),
+
 	// 修改素材
 	editSource: data => axios.post('/source/update', data),
 }

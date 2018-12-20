@@ -36,7 +36,8 @@ const CourseList = ({
                             payload: {
                                 id: record.id - 0,
                                 name: v,
-                                icon: record.icon
+                                icon: record.icon,
+                                sort: record.sort
                             }
                         })
                     }/>
@@ -57,6 +58,26 @@ const CourseList = ({
                         return <Badge status="warning" text="禁用"/>;
 				}
 			}
+        }, {
+            title: '排序',
+            dataIndex: 'sort',
+            sorter: true,
+            render: (text, record) =>
+                <TablePopoverLayout
+                    title={'修改排序'}
+                    valueData={text && '无'}
+                    defaultValue={text || '无'}
+                    onOk={v =>
+                        dispatch({
+                            type: 'courseList/updateCourse',
+                            payload: {
+                                id: record.id - 0,
+                                name: record.name,
+                                icon: record.icon,
+                                sort: v - 0
+                            }
+                        })
+                    }/>
         }, {
             title: '创建时间',
             dataIndex: 'createdAt'
@@ -158,6 +179,7 @@ const CourseList = ({
     		payload: {
                 id: record.id - 0,
                 name: record.name,
+                sort: record.sort,
                 icon: url
             }
     	})
@@ -267,9 +289,9 @@ const CourseList = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('name', {
-                            rules: [{ required: true, message: '请输入课程包名称!' }],
+                            rules: [{ required: true, message: '请输入课程名称!' }],
                         })(
-                            <Input placeholder="请输入课程包名称"/>
+                            <Input placeholder="请输入课程名称"/>
                         )}
                     </FormItem>
 

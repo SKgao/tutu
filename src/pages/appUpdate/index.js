@@ -285,6 +285,8 @@ const AppverUpdate = ({
 				dispatch({
 					type: 'appver/addVersion',
 					payload: filterObj(values)
+				}).then(() => {
+					this.handleReset()
 				})
 			}
 		});
@@ -296,13 +298,20 @@ const AppverUpdate = ({
 		dispatch({
 			type: 'appver/setParam',
 			payload: {
-				modalShow: false
+				modalShow: false,
+				apkUrl: ''
 			}
 		})
 	}
 
 	// 上传文件回调
 	const uploadSuccess = (url) => {
+		dispatch({
+			type: 'appver/setParam',
+			payload: {
+				apkUrl: url
+			}
+		})
 		setFieldsValue({'apkUrl': url})
 	}
 
@@ -443,6 +452,7 @@ const AppverUpdate = ({
 
 							<FormItem
 								label="apk上传"
+								help={ appver.apkUrl ? 'apk包上传成功' : '请上传apk包' }
 								{...formItemLayout}
 								>
 								{getFieldDecorator('apkUrl', {

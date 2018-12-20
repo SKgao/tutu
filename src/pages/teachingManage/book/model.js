@@ -88,6 +88,14 @@ export default {
 			}
 		},
 
+		*sendBook({ payload }, { call, put }) {
+            const res = yield call(api.sendBook, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getBook' })
+			}
+		},
+
 		*lockBook({ payload }, { call, put }) {
             const res = yield call(api.lockBook, payload);
 			if (res) {
@@ -119,7 +127,15 @@ export default {
 				message.success(res.data.message);
 				yield put({ type: 'getVersion' })
 			}
-        },
+		},
+
+		*sendVersion({ payload }, { call, put }) {
+            const res = yield call(api.sendVersion, payload);
+			if (res) {
+				message.success(res.data.message);
+				yield put({ type: 'getVersion' })
+			}
+		},
 
         *getGrade({ payload }, { call, put }) {
 			const res = yield call(api.getGrade, payload);
@@ -151,6 +167,11 @@ export default {
 
         *updateGrade({ payload }, { call }) {
             const res = yield call(api.updateGrade, payload);
+            res && message.success(res.data.message);
+		},
+
+		*sendGrade({ payload }, { call }) {
+            const res = yield call(api.sendGrade, payload);
             res && message.success(res.data.message);
 		},
 

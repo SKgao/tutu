@@ -18,7 +18,8 @@ export default {
 		pageSize: 10,
 		pageNum: 1,
 		totalCount: 0,
-		ios: ''
+		ios: '',
+		apkUrl: '',  // 上传apk
 	},
 
 	subscriptions: {
@@ -34,7 +35,8 @@ export default {
 							startTime: '',
 							endTime: '',
 							appTypeId: '',
-							ios: ''
+							ios: '',
+							apkUrl: ''
 						}
 					});
 					dispatch({ type: 'getAppList' });
@@ -133,12 +135,6 @@ export default {
 			if (res) {
 				message.success(res.data.message);
 				yield put({ type: 'getVerList' });
-				yield put({
-					type: 'setParam',
-					payload: {
-						modalShow: false
-					}
-				})
 			}
 		},
 

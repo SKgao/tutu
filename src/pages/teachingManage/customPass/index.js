@@ -109,9 +109,9 @@ const CustomPass = ({
             render: (txt, record, index) => {
                 return <span>
 
-                    <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
+                    {/* <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
-                    </Popconfirm>
+                    </Popconfirm> */}
 
                     {
                         partsId &&
@@ -137,7 +137,10 @@ const CustomPass = ({
     const handleDelete = (param) => {
         dispatch({
     		type: 'customPass/deletePass',
-    		payload: param.id
+    		payload: {
+                textbookId: textbookId,
+                id: param.id
+            }
     	})
     }
 

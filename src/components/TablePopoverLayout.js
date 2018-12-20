@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Popover, Button, Input, Select } from 'antd';
 const Option = Select.Option;
 
@@ -74,8 +73,8 @@ class TablePopoverLayout extends Component {
 				content={
 					<div className="popover-group">
 						{
-							(typeof(valueData) === 'string' || typeof(valueData) === 'number') && 
-							<Input 
+							(typeof(valueData) === 'string' || typeof(valueData) === 'number') &&
+							<Input
 								value={value}
 								onChange={e => this.handleChange(e.target.value)}
 								{...inputProps}/>
@@ -88,7 +87,7 @@ class TablePopoverLayout extends Component {
 									onSelect={() => this.setState({ visible: true })}
 									{...selectProps}>
 									{
-										valueData.map(item => 
+										valueData.map(item =>
 											<Option key={item[optionKey] || item}>{item[optionItem] || item}</Option>
 										)
 									}

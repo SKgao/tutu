@@ -10,7 +10,7 @@ import MyUpload from '@/components/UploadComponent';
 import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
-import { axios } from '@/configs/request';
+import { axios, isPro } from '@/configs/request';
 
 import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, message, Badge } from 'antd';
 const FormItem = Form.Item;
@@ -149,6 +149,12 @@ const TeachingManage = ({
                             </Button>
                         </Popconfirm>
 
+                        {
+                            isPro ? null : <Popconfirm title="是否同步该教材?" onConfirm={() => handleSendBook(record)}>
+                                <Button icon="reload" type="primary" size="small" style={{ marginLeft: 10 }}>同步</Button>
+                            </Popconfirm>
+                        }
+
                         <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                             <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                         </Popconfirm>
@@ -202,8 +208,14 @@ const TeachingManage = ({
                 dataIndex: 'action',
                 render: (txt, record, index) => {
                     return <span>
+                        {
+                            isPro ? null : <Popconfirm title="是否同步该年级?" onConfirm={() => handleSendGrade(record)}>
+                                <Button icon="reload" type="primary" size="small" style={{ marginLeft: 10 }}>同步</Button>
+                            </Popconfirm>
+                        }
+
                         <Popconfirm title="是否删除?" onConfirm={() => handleDeleteGrade(record)}>
-                            <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                            <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                         </Popconfirm>
                     </span>
                 }
@@ -237,8 +249,14 @@ const TeachingManage = ({
                 dataIndex: 'action',
                 render: (txt, record, index) => {
                     return <span>
+                        {
+                            isPro ? null : <Popconfirm title="是否同步该版本?" onConfirm={() => handleSendVersion(record)}>
+                                <Button icon="reload" type="primary" size="small" style={{ marginLeft: 10 }}>同步</Button>
+                            </Popconfirm>
+                        }
+
                         <Popconfirm title="是否删除?" onConfirm={() => handleDeleteVersion(record)}>
-                            <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
+                            <Button icon="delete" type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                         </Popconfirm>
                     </span>
                 }
@@ -327,6 +345,39 @@ const TeachingManage = ({
     const handleDelete = (param) => {
         dispatch({
     		type: 'teachingmanage/deleteBook',
+    		payload: param.id
+    	})
+    }
+
+    /**
+     * 同步教材
+     * @param  {object} 列数据
+     */
+    const handleSendBook = (param) => {
+        dispatch({
+    		type: 'teachingmanage/sendBook',
+    		payload: param.id
+    	})
+    }
+
+    /**
+     * 同步教材版本
+     * @param  {object} 列数据
+     */
+    const handleSendVersion = (param) => {
+        dispatch({
+    		type: 'teachingmanage/sendVersion',
+    		payload: param.id
+    	})
+    }
+
+    /**
+     * 同步年级
+     * @param  {object} 列数据
+     */
+    const handleSendGrade = (param) => {
+        dispatch({
+    		type: 'teachingmanage/sendGrade',
     		payload: param.id
     	})
     }

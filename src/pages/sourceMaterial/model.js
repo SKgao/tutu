@@ -49,7 +49,10 @@ export default {
               pageNum: 1,
               pageSize: 10,
               text: '',
-              openLike: ''
+              openLike: '',
+              materialList: [],
+              sourceIds: [],
+              selectedRowKeys: []
             }
           });
           dispatch({
@@ -146,6 +149,7 @@ export default {
         }
     },
 
+    // 批量删除
     *batchDeleteSource({ payload }, { call, put, select }) {
         const { pageNum, pageSize, startTime, endTime, openLike } = yield select(state => state.sourcematerial);
         const res = yield call(api.batchDeleteSource, payload);
@@ -165,6 +169,48 @@ export default {
           })
         }
     },
+
+    // 批量下载音频素材
+    *batchDownloadSource({ payload }, { call, put, select }) {
+        const { pageNum, pageSize, startTime, endTime, openLike } = yield select(state => state.sourcematerial);
+        const res = yield call(api.batchDownloadSource, payload);
+        if (res) {
+          message.success(res.data.message);
+          yield put({
+            type: 'setParam',
+            payload: {
+              sourceIds: [],
+              selectedRowKeys: []
+            }
+          })
+
+          yield put({
+            type: 'getSource',
+            payload: { pageNum, pageSize, startTime, endTime, openLike }
+          })
+        }
+    },
+
+    // 批量同步素材
+    *batchSendSource({ payload }, { call, put, select }) {
+      const { pageNum, pageSize, startTime, endTime, openLike } = yield select(state => state.sourcematerial);
+      const res = yield call(api.batchSendSource, payload);
+      if (res) {
+        message.success(res.data.message);
+        yield put({
+          type: 'setParam',
+          payload: {
+            sourceIds: [],
+            selectedRowKeys: []
+          }
+        })
+
+        yield put({
+          type: 'getSource',
+          payload: { pageNum, pageSize, startTime, endTime, openLike }
+        })
+      }
+  },
 
     *editSource({ payload }, { call, put, select }) {
       const { pageNum, pageSize, startTime, endTime, text, openLike } = yield select(state => state.sourcematerial);

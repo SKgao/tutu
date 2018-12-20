@@ -157,7 +157,7 @@ const Session = ({
             dataIndex: 'action',
             render: (txt, row, index) => {
                 return <span>
-                    <Button size="small" style={{ marginLeft: 10 }} onClick={() => bindToSession(row.sessionId, row.customPassId)}>绑定</Button>
+                    {/* <Button size="small" style={{ marginLeft: 10 }} onClick={() => bindToSession(row.sessionId, row.customPassId)}>绑定</Button> */}
 
                     <Popconfirm title="是否解除绑定小关卡?" onConfirm={() => handleUnbind(row)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>解绑</Button>
