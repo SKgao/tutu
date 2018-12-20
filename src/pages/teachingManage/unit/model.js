@@ -83,7 +83,12 @@ export default {
 				message.success(res.data.message);
 				yield put({ type: 'getUnit' });
 			}
-        },
+		},
+
+		*sendUnit({ payload }, { call }) {
+            const res = yield call(api.sendUnit, payload);
+            res && message.success(res.data.message);
+		},
 
         *updateUnit({ payload }, { call, put }) {
 			const res = yield call(api.updateUnit, payload);
