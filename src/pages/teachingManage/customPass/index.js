@@ -11,7 +11,7 @@ import AddProject from '../customPass/AddProject';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, message, Tooltip} from 'antd';
+import { Form, Input, Button, Modal, Icon, message} from 'antd';
 const FormItem = Form.Item;
 
 const CustomPass = ({
@@ -19,7 +19,7 @@ const CustomPass = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { passList, modalShow, modalShow3, pageNum, pageSize, textbookId, sessionId, sessionTit, partsId} = customPass;
+    let { passList, modalShow, modalShow3, pageNum, pageSize, textbookId, partsId} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -64,7 +64,7 @@ const CustomPass = ({
 								id: record.id,
                                 tmpTitle: v,
                                 title: record.title,
-                                icon: record.title
+                                icon: record.icon
 							}
 						})
 					}/>
