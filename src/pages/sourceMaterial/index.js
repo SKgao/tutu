@@ -29,13 +29,9 @@ const sourceMaterial = ({
 }) => {
     let { dispatch, form } = props;
     let { materialList, modalShow, modal2Show, modal3Show, modal4Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike, explainsArray } = sourcematerial;
-    let { getFieldDecorator, getFieldValue, resetFields } = form;
+    let { getFieldDecorator, resetFields } = form;
 
 
-    // 鼠标放在图片上的事件
-    const mouseEnter=(e)=>{
-
-    }
     const columns = [
         {
             title: '素材内容',
@@ -411,6 +407,7 @@ const sourceMaterial = ({
 
     // 批量下载音频素材
     const handleBatchDownload = () => {
+        console.log('sourceIds::', sourcematerial.sourceIds)
         dispatch({
     		type: 'sourcematerial/batchDownloadSource',
     		payload: sourcematerial.sourceIds
@@ -427,7 +424,6 @@ const sourceMaterial = ({
 
     // 是否开启模糊搜索
     const handleOpenlike = (e) => {
-        let isopen = e.target.checked
         dispatch({
     		type: 'sourcematerial/setParam',
     		payload: {

@@ -15,7 +15,7 @@ export default {
 		endAt: '',
 		id: '',   // 活动id
 		pageSize: 10,
-        pageNum: 1,
+    pageNum: 1,
 		totalCount: 0,
 		modalShow: false,
 		modal2Show: false,
@@ -66,7 +66,7 @@ export default {
 		},
 
 		*getMemberLevel({ payload }, { call, put }) {
-            const res = yield call(api.getMemberLevel);
+      const res = yield call(api.getMemberLevel);
 			if (res) {
 				yield put({
 					type: 'save',
@@ -75,7 +75,7 @@ export default {
 					}
 				});
 			}
-        },
+    },
 
 		*addActivity({ payload }, { call, put, select }) {
 			const res = yield call(api.addActivity, payload);
@@ -87,7 +87,7 @@ export default {
                     payload: {
 						modalShow: false,
 						addStatus: 1
-				    }			
+				    }
 				})
 			}
 		},
@@ -127,7 +127,7 @@ export default {
 				});
 			}
 		},
-		
+
 		*setParam({ payload }, { put }) {
 			for (let key in payload) {
 				yield put({
@@ -146,4 +146,3 @@ export default {
 		}
 	},
 };
-	
