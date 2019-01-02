@@ -6,14 +6,14 @@ export default {
 	namespace: 'member',
 
 	state: {
-        bookList: [],
+    bookList: [],
 		memberLevelList: [],
 		bookList: [],
 		feedList: [],    // 反馈列表
-        pageSize: 10,
-        pageNum: 1,
-        totalCount: 0,
-        expireStartTime: '', // 会员到期起始时间
+		pageSize: 10,
+		pageNum: 1,
+		totalCount: 0,
+		expireStartTime: '', // 会员到期起始时间
 		expireEndTime : '',  // 会员到期截止时间
 		payStartTime: '',  // 会员开始起始时间
 		payEndTime: '',    // 会员开始截止时间
@@ -51,9 +51,9 @@ export default {
 							expireStartTime: '', // 会员起始时间
 							expireEndTime : '',  // 会员截止时间
 							payStartTime: '',  // 会员开始起始时间
-		                    payEndTime: '',    // 会员开始截止时间
+		          payEndTime: '',    // 会员开始截止时间
 							registerStartTime: '', // 会员注册起始时间
-		                    registerEndTime: '',   // 会员注册截止时间
+		          registerEndTime: '',   // 会员注册截止时间
 							bookVersionId: '',
 							sex: '',
 							addvips: ''

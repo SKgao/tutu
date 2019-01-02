@@ -39,8 +39,24 @@ const Member = ({
                 return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
             }
         }, {
+            title: '邀请用户人数',
+            dataIndex: 'inviteCount',
+            sorter: true,
+            render: (text, record) => <span
+                    onClick={() => linktoInvite(record)}
+                    style={{color: 'blue', cursor: 'pointer'}}>
+                    { text ? text : 0 }
+                </span>
+        }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
+        }, {
+            title: '用户来源',
+            dataIndex: 'channel',
+            sorter: true,
+            render: (txt) => {
+                return txt === 1 ? '自主注册' : '后台添加'
+            }
         }, {
             title: '是否购买精品课程',
             dataIndex: 'hasBuyTextbook',
@@ -92,11 +108,13 @@ const Member = ({
             title: '练习教材名称',
             dataIndex: 'textbookNamePractice',
             render: (text) => <span>{ text ? text :  '无' }</span>
-        }, {
-            title: '配音教材名称',
-            dataIndex: 'textbookNameAudio',
-            render: (text) => <span>{ text ? text :  '无' }</span>
-        }, {
+        },
+        // {
+        //     title: '配音教材名称',
+        //     dataIndex: 'textbookNameAudio',
+        //     render: (text) => <span>{ text ? text :  '无' }</span>
+        // },
+        {
             title: '闯关进度',
             dataIndex: 'unitName',
             render: (text, record) => {
@@ -148,6 +166,14 @@ const Member = ({
             pathname: '/specialCourse',
             search: `userId=${record.tutuNumber}`
         }))
+    }
+
+    // 调转到邀请统计页面
+    const linktoInvite = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/inviteCount',
+            search: `userId=${record.tutuNumber}`
+        }));
     }
 
     // 开通会员

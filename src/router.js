@@ -80,6 +80,11 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "member" */ './pages/member/model')]
 		},
 		{
+			path: '/inviteCount',
+			component: () => import(/* webpackChunkName: "inviteCount" */ './pages/inviteCount/index'),
+			models: () => [import(/* webpackChunkName: "inviteCount" */ './pages/inviteCount/model')]
+		},
+		{
 			path: '/memberLevel',
 			component: () => import(/* webpackChunkName: "memberLevel" */ './pages/memberLevel/index'),
 			models: () => [import(/* webpackChunkName: "memberLevel" */ './pages/memberLevel/model')]
