@@ -407,7 +407,6 @@ const sourceMaterial = ({
 
     // 批量下载音频素材
     const handleBatchDownload = () => {
-        console.log('sourceIds::', sourcematerial.sourceIds)
         dispatch({
     		type: 'sourcematerial/batchDownloadSource',
     		payload: sourcematerial.sourceIds

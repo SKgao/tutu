@@ -693,7 +693,7 @@ const TeachingManage = ({
                     </Form>
                 </FormInlineLayout>
             </TabPane>
-            </Tabs>
+        </Tabs>
 
 
             <TableLayout

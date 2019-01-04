@@ -4,9 +4,6 @@ import { routerRedux } from 'dva/router';
 import TableLayout from '@/components/TableLayout';
 import FormInlineLayout from '@/components/FormInlineLayout';
 
-import { filterObj } from '@/utils/tools';
-import { formItemLayout } from '@/configs/layout';
-
 import { Form, Icon, Pagination } from 'antd';
 const FormItem = Form.Item;
 
@@ -37,14 +34,6 @@ const InviteCount = ({
             dataIndex: 'createdAt'
         }
     ]
-
-    // 调转到关卡页面
-    const linktoCourse= (record) => {
-        dispatch(routerRedux.push({
-            pathname: '/specialCourse',
-            search: `userId=${record.tutuNumber}`
-        }))
-    }
 
     // 操作分页
     const handleChange = (param) => {

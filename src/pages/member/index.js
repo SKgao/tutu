@@ -42,11 +42,11 @@ const Member = ({
             title: '邀请用户人数',
             dataIndex: 'inviteCount',
             sorter: true,
-            render: (text, record) => <span
-                    onClick={() => linktoInvite(record)}
-                    style={{color: 'blue', cursor: 'pointer'}}>
-                    { text ? text : 0 }
-                </span>
+            // render: (text, record) => <span
+            //         onClick={() => linktoInvite(record)}
+            //         style={{color: 'blue', cursor: 'pointer'}}>
+            //         { text ? text : 0 }
+            //     </span>
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'

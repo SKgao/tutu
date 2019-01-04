@@ -243,7 +243,7 @@ const Subject = ({
                     if (res.data.code === 0) {
                         notification.info({
                             message: addType == 1 ? '大纲检测结果' : '题目上传结果',
-                            description: <div dangerouslySetInnerHTML={{__html: res.data.data}} />,
+                            description: <div style={{maxHeight: '500px', overflow: 'auto'}} dangerouslySetInnerHTML={{__html: res.data.data}} />,
                             duration: 0,
                         })
                         dispatch({
