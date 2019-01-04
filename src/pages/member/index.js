@@ -8,7 +8,7 @@ import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination, Radio} from 'antd';
+import { Form, Input, Button, Modal, DatePicker, Select, Tabs, Pagination, Radio} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
@@ -21,7 +21,7 @@ const Member = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, bookList} = member;
+    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, vipButton} = member;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -42,11 +42,15 @@ const Member = ({
             title: '邀请用户人数',
             dataIndex: 'inviteCount',
             sorter: true,
-            // render: (text, record) => <span
-            //         onClick={() => linktoInvite(record)}
-            //         style={{color: 'blue', cursor: 'pointer'}}>
-            //         { text ? text : 0 }
-            //     </span>
+            render: (text, record) => <span
+                    onClick={() => {
+                        if (text && text > 0) {
+                            linktoInvite(record)
+                        }
+                    }}
+                    style={ text && text > 0 ? {color: '#3f94e2', fontWeight: 900, cursor: 'pointer'} : null}>
+                    { text ? text : 0 }
+                </span>
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
@@ -114,24 +118,42 @@ const Member = ({
         //     dataIndex: 'textbookNameAudio',
         //     render: (text) => <span>{ text ? text :  '无' }</span>
         // },
+        // {
+        //     title: '闯关进度',
+        //     dataIndex: 'unitName',
+        //     render: (text, record) => {
+        //         let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
+        //         return <span>{ arr.filter(e => e).join(' > ') }</span>
+        //     }
+        // },
         {
-            title: '闯关进度',
-            dataIndex: 'unitName',
-            render: (text, record) => {
-                let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
-                return <span>{ arr.filter(e => e).join(' > ') }</span>
+            title: '详情',
+            dataIndex: 'link',
+            render: (txt, record, index) => {
+                return <span>
+                    <a onClick={() => linktoLearing(record)} style={{ marginLeft: 10 }}>查看学习记录</a>
+
+                    {
+                        record.hasBuyTextbook !==  0 &&
+                        <a onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>查看已买课程</a>
+                    }
+                </span>
             }
-        }, {
+        },
+        {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
+                        vipButton && <Button size="small" style={{ marginLeft: 5 }}
+                        onClick={() => handleAddvip(record)}>开通会员</Button>
                     }
-                    <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleAddvip(record)}>开通会员</Button>
-                    <Button type="primary" size="small" style={{ marginLeft: 5 }} onClick={() => handleUsing(record)}>启用</Button>
-                    <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
+
+                    <Button type="primary" size="small" style={{ marginLeft: 5 }}
+                    onClick={() => handleUsing(record)}>启用</Button>
+                    <Button type="danger" size="small" style={{ marginLeft: 5 }}
+                    onClick={() => handleForbidden(record)}>禁用</Button>
                 </span>
             }
         }
@@ -172,6 +194,14 @@ const Member = ({
     const linktoInvite = (record) => {
         dispatch(routerRedux.push({
             pathname: '/inviteCount',
+            search: `userId=${record.tutuNumber}`
+        }));
+    }
+
+    // 调转到学习记录页面
+    const linktoLearing = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/learningRecord',
             search: `userId=${record.tutuNumber}`
         }));
     }

@@ -20,7 +20,7 @@ const CourseUser = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableList, pageNum, pageSize, totalCount, modalShow, bookList} = courseUser;
+    let { tableList, pageNum, pageSize, totalCount, modalShow, bookList, courseButton} = courseUser;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const allColumns = [
@@ -232,9 +232,12 @@ const CourseUser = ({
                         <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                     </FormItem>
 
-                    <FormItem>
-                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>开通精品课程</Button>
-                    </FormItem>
+                    {
+                        courseButton && <FormItem>
+                            <Button type="primary" onClick={() => changeModalState('modalShow', true)}>
+                            开通精品课程</Button>
+                        </FormItem>
+                    }
 
                 </Form>
             </FormInlineLayout>

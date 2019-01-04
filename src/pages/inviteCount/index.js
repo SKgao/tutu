@@ -21,17 +21,22 @@ const InviteCount = ({
             dataIndex: 'tutuNumber',
             sorter: true
         }, {
-            title: '手机号',
-            dataIndex: 'mobile',
-            sorter: true,
+            title: '用户昵称',
+            dataIndex: 'realName',
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
-            title: '被邀请者名称',
-            dataIndex: 'content',
+            title: '用户头像',
+            dataIndex: 'icon',
+            render: (text) => {
+                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+            }
+        }, {
+            title: '手机号',
+            dataIndex: 'mobile',
             render: (text) => <span>{ text ? text :  '无' }</span>
         }, {
             title: '邀请时间',
-            dataIndex: 'createdAt'
+            dataIndex: 'inviteTime'
         }
     ]
 

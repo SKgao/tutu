@@ -17,6 +17,7 @@ export default {
         realName: '',
         textbookId: '',
 		mobile: '',     // 手机号
+		courseButton: false  // 是否有 开通精品课程按钮权限
 	},
 
 	subscriptions: {
@@ -34,14 +35,28 @@ export default {
                             realName: '',
 							sex: ''
 						}
-					});
-					dispatch({ type: 'getUser' });
+					}).then(() => {
+						dispatch({ type: 'getUser' }).then(() => {
+							dispatch({ type: 'hasCourseButton' });
+						})
+					})
 				}
 			})
 		},
 	},
 
 	effects: {
+		// 是否有 开通精品课程按钮权限
+		*hasCourseButton({ }, { call, put, select }) {
+			const { authsId } = yield select(state => state.app);
+			yield put({
+				type: 'save',
+				payload: {
+					courseButton: authsId.indexOf(146) > -1 // 146 - 开通精品课程
+				}
+			});
+		},
+
 		*getUser({ payload }, { call, put, select }) {
 			const _state = yield select(state => state.courseUser);
 			const res = yield call(api.getUser, filterObj({

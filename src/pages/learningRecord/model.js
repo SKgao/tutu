@@ -1,31 +1,33 @@
 import api from './service';
-import { getUrlParams } from '@/utils/tools';
+import { getUrlParams, filterObj } from '@/utils/tools';
 
 export default {
-	namespace: 'inviteCount',
+	namespace: 'learningRecord',
 
 	state: {
-    	inviteList: [],
+        list: [],
 		pageSize: 10,
 		pageNum: 1,
-		totalCount: 0,
+        totalCount: 0,
+        startTime: '',
+        endTime: '',
 		userId: '',      // 用户id
 	},
 
 	subscriptions: {
 		setup({ dispatch, history }) {
 			return history.listen(location => {
-				if (location.pathname === '/inviteCount') {
+				if (location.pathname === '/learningRecord') {
 					dispatch({
 						type: 'setParam',
 						payload: {
-							inviteList: [],
+                            list: [],
 							pageNum: 1,
 							totalCount: 0,
 							userId: getUrlParams(location.search, 'userId') - 0 || '',
 						}
 					}).then(() => {
-						dispatch({ type: 'getInvite' })
+						dispatch({ type: 'getRecord' })
 					})
 				}
 			})
@@ -33,15 +35,15 @@ export default {
 	},
 
 	effects: {
-		*getInvite({ payload }, { call, put, select }) {
-			const { userId } = yield select(state => state.inviteCount);
-			const res = yield call(api.getInvite, userId);
+		*getRecord({ payload }, { call, put, select }) {
+			const { userId, pageSize, pageNum, startTime, endTime } = yield select(state => state.learningRecord);
+            const res = yield call(api.getRecord, filterObj({ userId, pageSize, pageNum, startTime, endTime }));
 			if (res) {
 				yield put({
 					type: 'save',
 					payload: {
-						inviteList: (res.data) ? res.data.data : [],
-						totalCount: (res.data) ? res.data.totalCount : 0
+						list: (res.data.data) ? res.data.data.data : [],
+						totalCount: (res.data.data) ? res.data.data.totalCount : 0
 					}
 				});
 			}

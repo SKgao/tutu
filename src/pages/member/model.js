@@ -28,6 +28,7 @@ export default {
 		modalShow: false,
 		hasSetPassword: '',   // 是否设置密码
 		activeKey: '0',       // 默认选中tabs
+		vipButton: false,     // 是否有开通会员按钮权限
 
 		// 开通用户模块
 		userid: '',      // 用户id
@@ -51,22 +52,36 @@ export default {
 							expireStartTime: '', // 会员起始时间
 							expireEndTime : '',  // 会员截止时间
 							payStartTime: '',  // 会员开始起始时间
-		          payEndTime: '',    // 会员开始截止时间
+		          			payEndTime: '',    // 会员开始截止时间
 							registerStartTime: '', // 会员注册起始时间
-		          registerEndTime: '',   // 会员注册截止时间
+		          			registerEndTime: '',   // 会员注册截止时间
 							bookVersionId: '',
 							sex: '',
 							addvips: ''
 						}
-					});
-					dispatch({ type: 'getMember' });
-					dispatch({ type: 'getMemberLevel' });
+					}).then(() => {
+						dispatch({ type: 'getMember' }).then(() => {
+							dispatch({ type: 'hasVipButton' });
+						})
+						dispatch({ type: 'getMemberLevel' });
+					})
 				}
 			})
 		},
 	},
 
 	effects: {
+		// 是否有 开通会员按钮权限
+		*hasVipButton({ }, { put, select }) {
+			const { authsId } = yield select(state => state.app);
+			yield put({
+				type: 'save',
+				payload: {
+					vipButton: authsId.indexOf(147) > -1 // 147 - 开通会员功能
+				}
+			});
+		},
+
 		*getMember({ payload }, { call, put, select }) {
 			const _state = yield select(state => state.member);
 			const idArr = _state.userLevelIds.filter(e => e);
