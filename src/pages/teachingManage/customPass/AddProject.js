@@ -19,14 +19,14 @@ const AddProject = ({
 		e.preventDefault()
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { sentenceAudio, sceneGraph, partId } = customPass;
+                const { sentenceAudio, sceneGraph, partsId } = customPass;
                 values.customsPassId && (values.customsPassId = values.customsPassId - 0);
                 values.id && (values.id = values.id - 0);
-                values.partId = partId - 0;
+                values.partId = partsId - 0;
                 values.sort && (values.sort = values.sort - 0);
                 values.sentenceAudio = sentenceAudio;
                 values.sceneGraph = sceneGraph;
-                values.showIndex = values.showIndex.split(/\s+/g);
+                values.showIndex = values.showIndex ? values.showIndex.split(/\s+/g) : '';
                 dispatch({
                     type: 'customPass/addTopic',
                     payload: filterObj(values)

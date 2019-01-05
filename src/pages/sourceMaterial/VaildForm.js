@@ -24,8 +24,9 @@ const ValidForm = ({
                 dispatch({
                     type: 'sourcematerial/addSource',
                     payload: filterObj(values)
+                }).then(() => {
+                    handleReset()
                 })
-
             }
         });
     }
