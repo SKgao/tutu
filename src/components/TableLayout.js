@@ -34,11 +34,12 @@ class TableLayout extends Component {
 				</ColumnGroup>
 			)
 		} else {
-			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1) || (showColumns && showColumns.indexOf(item.dataIndex) === -1);
+			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1)
+				|| (showColumns && showColumns.indexOf(item.dataIndex) === -1);
 			return hideColumn ? null : <Column
-			   key={item.dataIndex}
-			   sorter={item.sorter ? (a, b) => a[item.dataIndex] - b[item.dataIndex] : false}
-			   {...item}
+				{...item}
+			   	key={item.dataIndex}
+			   	sorter={item.sorter ? (a, b) => a[item.dataIndex] - b[item.dataIndex] : false}
 			/>
 		}
 	}

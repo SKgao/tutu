@@ -32,6 +32,9 @@ const LearningRecord = ({
             title: '关卡名称',
             dataIndex: 'sessionName',
             render: (text) => <span>{ text ? text :  '无' }</span>
+        }, {
+            title: '学习时间',
+            dataIndex: 'createdAt'
         }
     ]
 
