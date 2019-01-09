@@ -31,7 +31,8 @@ const Login = ({
 	return (
 		<div className="form">
 		    <div className="logo">
-			    <img src="//test.web.admin.tutukids.com/static/assets/logo.png"/>
+			    {/* <img src="//test.web.admin.tutukids.com/static/assets/logo.png"/> */}
+				<div className="img"></div>
 				{/* <span>图图英语</span> */}
 			</div>
 			<form>
