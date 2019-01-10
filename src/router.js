@@ -155,7 +155,7 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
-            <Route exact path='*' component={ErrorPage} />
+            			<Route exact path='*' component={ErrorPage} />
 					</Switch>
 				</App>
 			</LocaleProvider>

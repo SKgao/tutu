@@ -21,7 +21,6 @@ const AddProject = ({
 			if (!err) {
                 const { sentenceAudio, sceneGraph, partsId } = customPass;
                 values.customsPassId && (values.customsPassId = values.customsPassId - 0);
-                values.id && (values.id = values.id - 0);
                 values.partId = partsId - 0;
                 values.sort && (values.sort = values.sort - 0);
                 values.sentenceAudio = sentenceAudio;
@@ -82,17 +81,6 @@ const AddProject = ({
                                 )
                             }
                         </Select>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    label="题目id"
-                    {...formItemLayout}
-                    >
-                    {getFieldDecorator('id', {
-                        rules: [{ required: true, message: '请输入题目id!' }],
-                    })(
-                        <Input placeholder="请输入题目id"/>
                     )}
                 </FormItem>
 
