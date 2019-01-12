@@ -56,7 +56,6 @@ const Subject = ({
 							payload: {
                                 id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
-                                sort: record.sort - 0,
 								customsPassName: v
 							}
 						})
@@ -75,7 +74,6 @@ const Subject = ({
 							payload: {
                                 id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
-                                sort: record.sort - 0,
 								sourceIds: v
 							}
 						})
@@ -83,7 +81,21 @@ const Subject = ({
         }, {
             title: '题目顺序',
             dataIndex: 'sort',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改题目顺序'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'subject/updateSubject',
+							payload: {
+                                id: record.id - 0,
+								sort: v - 0
+							}
+						})
+					}/>
         }, {
             title: '场景图',
             dataIndex: 'sceneGraph',

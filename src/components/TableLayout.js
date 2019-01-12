@@ -91,7 +91,7 @@ class TableLayout extends Component {
 	}
 
 	render() {
-		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading, rowSelection, expandedRowRender, expandRowByClick, scrollX } = this.props
+		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading, rowSelection, expandedRowRender, expandRowByClick, scrollX, onChange } = this.props
 		return (
 			<div className="table-wrapper" style={{ padding: 10 }}>
 				{
@@ -139,6 +139,7 @@ class TableLayout extends Component {
 					expandedRowRender={expandedRowRender}
 					expandRowByClick={expandRowByClick}
 					rowKey={(record, index) => index}
+					onChange={onChange}
 					loading={{
 						spinning: loading,
 						delay: 100
@@ -171,6 +172,7 @@ TableLayout.propTypes = {
 	loading: PropTypes.bool,
 	rowSelection: PropTypes.object,
 	expandedRowRender: PropTypes.func,
+	onChange: PropTypes.func,
 	expandRowByClick: PropTypes.bool
 };
 

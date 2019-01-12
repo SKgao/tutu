@@ -25,6 +25,8 @@ export default {
 		sex: '',  // 性别
 		tutuNumber: '', // 图图号
 		mobile: '',     // 手机号
+		sortInvite: '',   // 邀请人数排序
+		sortUserId: '',   // 图图号排序
 		modalShow: false,
 		hasSetPassword: '',   // 是否设置密码
 		activeKey: '0',       // 默认选中tabs
@@ -57,7 +59,9 @@ export default {
 		          			registerEndTime: '',   // 会员注册截止时间
 							bookVersionId: '',
 							sex: '',
-							addvips: ''
+							addvips: '',
+							sortInvite: '',   // 邀请人数排序
+							sortUserId: '',   // 图图号排序
 						}
 					}).then(() => {
 						dispatch({ type: 'getMember' }).then(() => {
@@ -99,7 +103,10 @@ export default {
 				tutuNumber: _state.tutuNumber,
 				mobile: _state.mobile,
 				sex: _state.sex,
-				hasSetPassword: _state.hasSetPassword
+				hasSetPassword: _state.hasSetPassword,
+				sortInvite: _state.sortInvite,
+				sortUserId: _state.sortUserId
+
 			}));
 			if (res) {
 				yield put({

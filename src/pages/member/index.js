@@ -372,6 +372,35 @@ const Member = ({
     	})
     }
 
+    // 操作表格排序
+    const handleTable = (a, b, c, d) => {
+        let field = ''
+        let cancleField = ''
+        if (c.field === 'tutuNumber') {
+            field = 'sortUserId'
+            cancleField = 'sortInvite'
+        } else if (c.field === 'inviteCount') {
+            field = 'sortInvite'
+            cancleField = 'sortUserId'
+        } else {
+            field = ''
+            cancleField = ''
+        }
+        if (field) {
+            dispatch({
+                type: 'member/setParam',
+                payload: {
+                    [field]: c.order === 'ascend' ? 1 : 0,
+                    [cancleField]: ''
+                }
+            }).then(() => {
+                dispatch({ type: 'member/getMember' })
+            })
+        } else {
+            return false
+        }
+    }
+
 	return (
 		<div>
             <Tabs
@@ -568,6 +597,7 @@ const Member = ({
                 allColumns={_tableCols}
                 loading={ loading.effects['member/getMember'] }
                 scrollX={true}
+                onChange={ handleTable }
                 />
 
             <div className="main-pagination">
