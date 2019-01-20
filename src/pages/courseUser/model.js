@@ -49,10 +49,12 @@ export default {
 		// 是否有 开通精品课程按钮权限
 		*hasCourseButton({ }, { call, put, select }) {
 			const { authsId } = yield select(state => state.app);
+
 			yield put({
 				type: 'save',
 				payload: {
-					courseButton: authsId.indexOf(146) > -1 // 146 - 开通精品课程
+					// 146 - 开通精品课程 148
+					courseButton: authsId.indexOf(146) > -1  || authsId.indexOf(148) > -1
 				}
 			});
 		},
