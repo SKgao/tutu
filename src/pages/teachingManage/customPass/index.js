@@ -19,7 +19,7 @@ const CustomPass = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { passList, modalShow, modalShow3, pageNum, pageSize, textbookId, partsId} = customPass;
+    let { passList, modalShow, modalShow3, pageNum, pageSize, textbookId, partsId, sessionId} = customPass;
     let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
 
     const columns = [
@@ -126,7 +126,7 @@ const CustomPass = ({
     const linktoProject = (record) => {
         dispatch(routerRedux.push({
             pathname: '/subjects',
-            search: `customsPassId=${record.id}&partsId=${partsId}`
+            search: `customsPassId=${record.id}&partsId=${partsId}&sessionId=${sessionId}`
         }));
     }
 

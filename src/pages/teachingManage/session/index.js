@@ -109,9 +109,15 @@ const Session = ({
             dataIndex: 'action',
             render: (txt, row, index) => {
                 return <span>
+                    {
+                        partsId &&
+                        <Button type="primary" size="small" onClick={() => linktoCustom(row)}>查看小关卡</Button>
+                    }
+
                     <Button
                         type={row.status === 1 ? 'danger' : 'primary'}
-                        size="small" style={{ marginLeft: 5 }}
+                        size="small"
+                        style={{ marginLeft: 10 }}
                         onClick={() => handleChangeStatus(row)}>
                         {row.status === 1 ? '禁用' : '启用'}
                     </Button>
@@ -157,7 +163,6 @@ const Session = ({
             dataIndex: 'action',
             render: (txt, row, index) => {
                 return <span>
-                    {/* <Button size="small" style={{ marginLeft: 10 }} onClick={() => bindToSession(row.sessionId, row.customPassId)}>绑定</Button> */}
 
                     <Popconfirm title="是否解除绑定小关卡?" onConfirm={() => handleUnbind(row)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>解绑</Button>
@@ -171,11 +176,11 @@ const Session = ({
     columns.map(e => e.key = `${e.dataIndex}_`)
     sourceCol.map(e => e.key = `_${e.dataIndex}`)
 
-    // 调转到题目页面
-    const linktoProject = (record) => {
+    // 调转到小关卡页面
+    const linktoCustom = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/subjects',
-            search: `textbookId=${textbookId}&customsPassId=${record.id}&partsId=${partsId}`
+            pathname: '/teachingManage/customPass',
+            search: `textbookId=${textbookId}&sessionId=${record.id}&partsId=${partsId}`
         }));
     }
 

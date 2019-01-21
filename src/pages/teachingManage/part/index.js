@@ -158,7 +158,7 @@ const UnitPart = ({
     // 调转到小关卡页面
     const linktoPass = (record) => {
         dispatch(routerRedux.push({
-            pathname: '/teachingManage/customPass',
+            pathname: '/teachingManage/session',
             search: `partsId=${record.id}&textbookId=${textBookId}`
         }));
     }

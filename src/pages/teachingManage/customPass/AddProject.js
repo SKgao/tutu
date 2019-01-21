@@ -19,9 +19,10 @@ const AddProject = ({
 		e.preventDefault()
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { sentenceAudio, sceneGraph, partsId } = customPass;
+                const { sentenceAudio, sceneGraph, partsId, sessionId } = customPass;
                 values.customsPassId && (values.customsPassId = values.customsPassId - 0);
                 values.partId = partsId - 0;
+                values.sessionId = sessionId - 0;
                 values.sort && (values.sort = values.sort - 0);
                 values.sentenceAudio = sentenceAudio;
                 values.sceneGraph = sceneGraph;
