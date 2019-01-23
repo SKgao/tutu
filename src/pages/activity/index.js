@@ -67,7 +67,9 @@ const Activity = ({
             dataIndex: 'icon',
             sorter: true,
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+               return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '活动金额',
@@ -91,13 +93,12 @@ const Activity = ({
             title: '活动状态',
             dataIndex: 'status',
             sorter: true,
-            render: (txt) => {
-				switch (txt) {
-					case 1:
-						return <Badge status="processing" text="启动"/>;
-					case 2:
-						return <Badge status="error" text="关闭"/>;
-				}
+            render: (val) => {
+                const opt = [
+                    { val: 1, status: 'processing', text: '启动' },
+                    { val: 2, status: 'error', text: '关闭' }
+                ].filter(e => e.val === val)
+                return <Badge status={opt.status} text={opt.text}/>;
 			}
         }, {
             title: '活动持续时间',

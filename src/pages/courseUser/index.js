@@ -64,21 +64,14 @@ const CourseUser = ({
         },
     ]
 
-    // 调转到关卡页面
-    const linktoCourse= (record) => {
-        dispatch(routerRedux.push({
-            pathname: '/specialCourse',
-            search: `userId=${record.tutuNumber}`
-        }))
-    }
-
     // 操作分页
     const handleChange = (param) => {
         dispatch({
     		type: 'courseUser/setParam',
     		payload: param
+        }).then(() => {
+            dispatch({ type: 'courseUser/getUser' })
         })
-        dispatch({ type: 'courseUser/getUser' })
     }
 
     // 搜索
@@ -109,39 +102,6 @@ const CourseUser = ({
                 [m]: e.target.value
             }
     	})
-    }
-
-    // 时间选择
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'courseUser/setParam',
-        	payload: {
-                expireStartTime: t[0] ? t[0] + ':00' : '',
-                expireEndTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
-
-    // 时间选择
-    const datepickerChange2 = (d, t) => {
-        dispatch({
-        	type: 'courseUser/setParam',
-        	payload: {
-                payStartTime: t[0] ? t[0] + ':00' : '',
-                payEndTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
-
-    // 时间选择
-    const datepickerChangeReg = (d, t) => {
-        dispatch({
-        	type: 'courseUser/setParam',
-        	payload: {
-                registerStartTime: t[0] ? t[0] + ':00' : '',
-                registerEndTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
     }
 
     // 展示modal
@@ -189,20 +149,20 @@ const CourseUser = ({
 		<div>
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
-                <FormItem label="精品课程">
-                    <Select
-                        showSearch
-                        onFocus={() => dispatch({type: 'courseUser/getBooklist'})}
-                        placeholder="请选择精品课程"
-                        onChange={v => changeSelect({ textbookId: v })}
-                        >
-                        {
-                            [{textbookId: '', textbookName: '全部'}, ...bookList].map(item =>
-                                <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
-                            )
-                        }
-                    </Select>
-                </FormItem>
+                    <FormItem label="精品课程">
+                        <Select
+                            showSearch
+                            onFocus={() => dispatch({type: 'courseUser/getBooklist'})}
+                            placeholder="请选择精品课程"
+                            onChange={v => changeSelect({ textbookId: v })}
+                            >
+                            {
+                                [{textbookId: '', textbookName: '全部'}, ...bookList].map(item =>
+                                    <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
+                                )
+                            }
+                        </Select>
+                    </FormItem>
 
                     <FormItem label="图图号">
                         <Input placeholder="输入图图号" value={courseUser.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
