@@ -3,7 +3,6 @@
 import axios from 'axios';
 import { routes } from './configs/pages';
 import { routerRedux } from 'dva/router';
-import { message } from 'antd';
 import api_login from '@/pages/others/login/service';
 import api_role from '@/pages/role/service';
 import layoutConfig from '@/configs/layout';
@@ -93,13 +92,11 @@ export default {
 
 		// 渲染面包屑
 		*renderBread({ payload }, { put, select }) {
-			const datalist = yield select(state => state.app.datalist);
-
 			let b = {}
 			routes.map(item => {
 				if(item.url == payload) {
 					b = item
-					return
+					return false
 				}
 			})
 

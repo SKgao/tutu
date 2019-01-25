@@ -32,7 +32,7 @@ const UserSetting = ({
             dataIndex: 'avatar',
             render: (text) => {
                 let url = (text && text !== 'string') ? text : '//web.chengxuyuantoutiao.com/static/tutu_logo.png'
-                return (text && text !== 'string') ? <a href={ url } target='_blank'  rel="nofollow noopener noreferrer">
+                return (text && text !== 'string') ? <a href={ url } target='_blank' rel="nofollow noopener noreferrer">
                     <img alt="" src={ url } style={{ width: 55, height: 45 }}/>
                 </a> : '无'
             }
@@ -358,7 +358,6 @@ const UserSetting = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
                     </FormItem>

@@ -9,7 +9,7 @@ import DragTableLayout from '@/components/DragTableLayout';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Modal, Select, Pagination, Radio} from 'antd';
+import { Form, Input, Button, Modal, Select, Pagination, Radio, Icon} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -20,7 +20,7 @@ const CourseUser = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableList, pageNum, pageSize, totalCount, modalShow, bookList, courseButton} = courseUser;
+    let { tableList, pageNum, pageSize, totalCount, modalShow, bookList, courseButton, tutuNumber } = courseUser;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const allColumns = [
@@ -143,7 +143,10 @@ const CourseUser = ({
     	})
     }
 
-    const SortingTable = DragDropContext(HTML5Backend)(DragTableLayout)
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
+
+    // const SortingTable = DragDropContext(HTML5Backend)(DragTableLayout)
 
 	return (
 		<div>
@@ -192,10 +195,13 @@ const CourseUser = ({
                         <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
                     </FormItem>
 
+                    <FormItem>
+                        <Button type="primary" onClick={() => changeModalState('modalShow', true)}>开通精品课程</Button>
+                    </FormItem>
+
                     {
-                        courseButton && <FormItem>
-                            <Button type="primary" onClick={() => changeModalState('modalShow', true)}>
-                            开通精品课程</Button>
+                        tutuNumber && <FormItem>
+                            <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
                         </FormItem>
                     }
 

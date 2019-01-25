@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Form, Input, Button, message, Tooltip, Icon, Select } from 'antd';
+import { Form, Input, Button, Tooltip, Icon, Select } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';

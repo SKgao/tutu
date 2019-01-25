@@ -21,7 +21,7 @@ const BagActivity = ({
     ...props
 }) => {
 	let { dispatch, form } = props;
-	let { tableList, bookList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
+	let { tableList, bookList, modalShow, saleBeginAt, pageSize, pageNum, type } = bagActivity;
 	let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [

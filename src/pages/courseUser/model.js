@@ -1,6 +1,6 @@
 import api from './service';
 import { message } from 'antd';
-import { filterObj } from '@/utils/tools';
+import { filterObj, getUrlParams } from '@/utils/tools';
 
 export default {
 	namespace: 'courseUser',
@@ -29,7 +29,7 @@ export default {
 						payload: {
 							pageNum: 1,
 							pageSize: 10,
-							tutuNumber: '',
+							tutuNumber: getUrlParams('tutuNumber') || '',
                             mobile: '',
                             textbookId: '',
                             realName: '',
@@ -47,7 +47,7 @@ export default {
 
 	effects: {
 		// 是否有 开通精品课程按钮权限
-		*hasCourseButton({ }, { call, put, select }) {
+		*hasCourseButton({}, { call, put, select }) {
 			const { authsId } = yield select(state => state.app);
 
 			yield put({

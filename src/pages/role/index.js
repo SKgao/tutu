@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 
-import { Form, Input, Button, Popconfirm, Modal, notification, Icon, Tree, message } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tree, message } from 'antd';
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
 
@@ -51,7 +51,6 @@ const RoleSetting = ({
 
     // 点击权限数
     const checkTree = (checkedKeys, e) => {
-        const _checked = Array.from(new Set(checkedKeys.concat(e.halfCheckedKeys)));
         dispatch({
         	type: 'roleSetting/setParam',
         	payload: {

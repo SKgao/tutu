@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Icon, Button, Tooltip, Tree, Popover } from 'antd';
+import { Table, Icon, Tooltip, Tree, Popover } from 'antd';
 import { flatten, getField } from '@/utils/tools';
 const { Column, ColumnGroup } = Table;
 const { TreeNode } = Tree;
@@ -59,7 +59,7 @@ class TableLayout extends Component {
 		}
 	}
 
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		const { allColumns, filterColumns } = this.props
 		const getCheckedKeys = e => e.children && e.children.length ? e.title : e.dataIndex
 		const title = flatten(getField(allColumns, 'dataIndex'))

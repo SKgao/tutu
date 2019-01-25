@@ -48,19 +48,20 @@ const Session = ({
         	title: '大关卡图标',
         	dataIndex: 'icon',
             render: (text, record, index) => {
-                return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '状态',
             dataIndex: 'status',
             render: (txt) => {
-				switch (txt) {
-					case 1:
-						return <Badge status="processing" text="启用"/>;
-					default:
-                        return <Badge status="warning" text="禁用"/>;
-				}
-			}
+                if (txt === 1) {
+                    return <Badge status="processing" text="启用"/>;
+                } else {
+                    return <Badge status="warning" text="禁用"/>;
+                }
+            }
         }, {
         	title: '大关卡顺序',
         	dataIndex: 'sort',

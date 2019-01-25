@@ -13,7 +13,7 @@ import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Radio, Modal, Tooltip, Select,
+import { Form, DatePicker, Input, Button, Radio, Modal, Select,
     Icon, Upload, Tabs, message, Popconfirm, Table, notification } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -28,8 +28,8 @@ const Subject = ({
 }) => {
     let { dispatch, form } = props;
     let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize,
-        customsPassId, sort, sourceIds, activeKey, customsPassName, detpage, selectedRowKeys, idArr} = subject;
-    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
+        customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { getFieldDecorator, resetFields } = form;
 
     // 题目列表
     const subjectCol = [
@@ -101,7 +101,9 @@ const Subject = ({
             dataIndex: 'sceneGraph',
             sorter: true,
             render: (text) => {
-               return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+               return (text) ?  <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                <img alt="" src={ text } style={{ width: 35, height: 40 }}/>
+            </a> : <span>无</span>
             }
         }, {
             title: '操作场景图',
@@ -126,10 +128,6 @@ const Subject = ({
             render: (text, record) => {
                 return <span>
                     <Button type="primary" size="small" onClick={() => linktoDet(record)}>题目详情</Button>
-
-                    {/* <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
-                    </Popconfirm> */}
                 </span>
             }
         }
@@ -224,14 +222,6 @@ const Subject = ({
             pathname: '/subjects',
             search: `topicId=${record.id}&detpage=1`
         }))
-    }
-
-    // 删除题目
-    const handleDelete = (record) => {
-        dispatch({
-            type: 'subject/deleteSubject',
-            payload: record.id - 0
-        })
     }
 
     // 删除场景图
@@ -469,7 +459,6 @@ const Subject = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChange}
                                     />
                             </FormItem>

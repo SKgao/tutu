@@ -22,7 +22,7 @@ const SpecialCourse = ({
 }) => {
     let { dispatch, form } = props;
     let { tableData, modalShow, bookList, saleBeginAt, saleEndAt, pageSize, pageNum, type, userId } = specialCourse;
-    let { getFieldDecorator, resetFields, setFieldsValue, validateFieldsAndScroll } = form;
+    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
         {
@@ -67,13 +67,17 @@ const SpecialCourse = ({
             title: '详情图',
             dataIndex: 'iconDetail',
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+               return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '优惠卷图',
             dataIndex: 'iconTicket',
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+               return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '原始金额',
@@ -165,8 +169,8 @@ const SpecialCourse = ({
 							payload: {
 								textbookId: record.textbookId,
                                 type: v - 0,
-                                beginAt: (v == 1) ? record.beginAt : '',
-                                endAt: (v == 1) ? record.endAt : ''
+                                beginAt: (v === 1) ? record.beginAt : '',
+                                endAt: (v === 1) ? record.endAt : ''
 							}
 						})
 					}/>
@@ -305,29 +309,6 @@ const SpecialCourse = ({
     	})
     }
 
-    // 选择时间框
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'specialCourse/setParam',
-        	payload: {
-                startTime: t[0] ? t[0] + ':00' : '',
-                endTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
-
-    // 搜索
-    const handleSearch = (param) => {
-        dispatch({
-			type: 'specialCourse/setParam',
-			payload: {
-				pageSize: 10,
-				pageNum: 1
-			}
-		})
-        dispatch({ type: 'specialCourse/getCourse' })
-    }
-
     // 展示modal
     const changeModalState = (flag, show) => {
         dispatch({
@@ -421,16 +402,6 @@ const SpecialCourse = ({
         })
     }
 
-    // 修改封面图片
-    const modShareImage = (url) => {
-        dispatch({
-    		type: 'specialCourse/setParam',
-    		payload: {
-                shareimg: url
-            }
-        })
-    }
-
     // 返回
     const goBack = () => dispatch(routerRedux.goBack(-1))
 
@@ -438,10 +409,6 @@ const SpecialCourse = ({
 		<div>
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
-                    {/* <FormItem>
-                        <Button type="primary" icon="search" onClick={handleSearch}>搜索</Button>
-                    </FormItem> */}
-
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>添加精品课程</Button>
                     </FormItem>
@@ -642,7 +609,7 @@ const SpecialCourse = ({
                             {...formItemLayout}
                             >
                             {getFieldDecorator('chatNo', {
-                                //rules: [{ required: true, message: '请输入微信号!' }],
+                                rules: [{ required: false }],
                             })(
                                 <Input placeholder="请输入微信号"/>
                             )}

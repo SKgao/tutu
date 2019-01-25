@@ -172,4 +172,3 @@ ValidForm.propTypes = {
 };
 
 export default (Form.create()(ValidForm));
-	

@@ -1,4 +1,4 @@
-import { Layout, Dropdown, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
@@ -15,28 +15,6 @@ const SiderLayout = ({
 	const renderMenu = (item, showIcon) => {
 		if(item.children && item.children.length) {
 			let ico = (item.icon && item.icon !== 'tongji') ? item.icon: 'bars'
-			let arr = item.children.map(e => e.level)
-			// return ((arr && arr[0] < 2) || !arr[0])
-			// 	? (
-			// 		<SubMenu
-			// 			key={item.id}
-			// 			title={
-			// 				<span>
-			// 					<Icon type={ico} />
-			// 					<span>{item.name}</span>
-			// 				</span>
-			// 			}>
-			// 			{
-			// 				item.children.map(sub => renderMenu(sub, false))
-			// 			}
-			// 		</SubMenu>
-			// 	)
-			// 	: (
-			// 	    <Menu.Item key={path} title={item.name}>
-			// 			{ico && <Icon type={ico} />}
-			// 			<span>{item.name}</span>
-			// 		</Menu.Item>
-			// 	)
 			return (!item.path || item.path == 0) ? null : (
 			    <SubMenu
 					key={item.id}

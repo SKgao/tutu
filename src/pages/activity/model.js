@@ -15,12 +15,11 @@ export default {
 		endAt: '',
 		id: '',   // 活动id
 		pageSize: 10,
-    pageNum: 1,
+    	pageNum: 1,
 		totalCount: 0,
 		modalShow: false,
 		modal2Show: false,
 		addStatus: 1,   // 添加活动的状态
-		shareimg: 'http://web.chengxuyuantoutiao.com/static/share.png'
 	},
 
 	subscriptions: {
@@ -66,7 +65,7 @@ export default {
 		},
 
 		*getMemberLevel({ payload }, { call, put }) {
-      const res = yield call(api.getMemberLevel);
+			const res = yield call(api.getMemberLevel);
 			if (res) {
 				yield put({
 					type: 'save',
@@ -75,7 +74,7 @@ export default {
 					}
 				});
 			}
-    },
+		},
 
 		*addActivity({ payload }, { call, put, select }) {
 			const res = yield call(api.addActivity, payload);

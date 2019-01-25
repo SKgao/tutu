@@ -5,12 +5,10 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
-import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 
-import { Form, Input, Button, Modal, Icon, Popconfirm, Select, message } from 'antd';
+import { Form, Input, Button, Modal, Popconfirm, message } from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 const MemberLevel = ({
     memberLevel,
@@ -18,8 +16,8 @@ const MemberLevel = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { levelList, startTime, endTime, userLevel, modalShow} = memberLevel;
-    let { getFieldDecorator, getFieldValue, validateFieldsAndScroll, setFieldsValue, resetFields } = form;
+    let { levelList, modalShow} = memberLevel;
+    let { getFieldDecorator, validateFieldsAndScroll, setFieldsValue, resetFields } = form;
 
     const columns = [
         {
@@ -34,7 +32,7 @@ const MemberLevel = ({
 					title={'修改会员等级名称'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
@@ -51,7 +49,7 @@ const MemberLevel = ({
 					title={'修改等级描述'}
 					valueData={text || '无'}
 					defaultValue={text || '无'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
@@ -71,7 +69,7 @@ const MemberLevel = ({
 					title={'修改过期时间'}
 					valueData={ (text == 0) ? '永久有效' : text }
 					defaultValue={ (text == 0) ? '永久有效' : text }
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
@@ -89,7 +87,7 @@ const MemberLevel = ({
 					title={'修改原始价格'}
 					valueData={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
 					defaultValue={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
@@ -107,7 +105,7 @@ const MemberLevel = ({
 					title={'修改需充值金额'}
 					valueData={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
 					defaultValue={ (Number(text) / 100).toFixed(2) + '元' || '0元'}
-					onOk={v => 
+					onOk={v =>
 						dispatch({
 							type: 'memberLevel/updateMemberLevel',
 							payload: {
@@ -212,11 +210,11 @@ const MemberLevel = ({
 
    // 文件上传成功
    const uploadSuccess = (url) => setFieldsValue({'icon': url})
-   
+
 	return (
 		<div>
 			<FormInlineLayout>
-			    <Form layout="inline" style={{ marginLeft: 15 }}>            
+			    <Form layout="inline" style={{ marginLeft: 15 }}>
                     <FormItem>
                         <Button type="primary" onClick={() => changeModalState(true)}>添加会员等级</Button>
                     </FormItem>
@@ -292,7 +290,7 @@ const MemberLevel = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('icon', {
-                            
+
                         })(
                             <MyUpload uploadSuccess={uploadSuccess} uploadTxt={'上传图片'}></MyUpload>
                         )}
@@ -322,4 +320,3 @@ MemberLevel.propTypes = {
 };
 
 export default connect(({ memberLevel, loading }) => ({ memberLevel, loading }))(Form.create()(MemberLevel));
-	

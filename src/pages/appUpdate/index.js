@@ -380,7 +380,6 @@ const AppverUpdate = ({
 										hideDisabledOptions: true,
 										defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
 									}}
-									format="YYYY-MM-DD HH:mm"
 									onChange={datepickerChange}
 									/>
 							</FormItem>

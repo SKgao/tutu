@@ -1,5 +1,4 @@
 import BreadcrumbLayout from './BreadcrumbLayout';
-import FormInlineLayout from '@/components/FormInlineLayout';
 import { formItemLayout } from '@/configs/layout';
 import { axios } from '@/configs/request';
 import { Layout, Menu, Icon, Tooltip, Avatar, Modal, Button, Form, Input, message } from 'antd';
@@ -18,8 +17,8 @@ const HeaderLayout = ({
 	pathname,
 	...props
 }) => {
-	let { dispatch, form } = props;
-	let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
+	let { form } = props;
+	let { getFieldDecorator, validateFieldsAndScroll, resetFields } = form;
 
 	// 修改密码
 	const handlePassword = (e) => {

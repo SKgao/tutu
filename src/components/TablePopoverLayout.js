@@ -22,7 +22,7 @@ class TablePopoverLayout extends Component {
 		if(typeof(valueData) === 'object' && !valueData.length) {
 			focusSelect && focusSelect()
 		}
-		this.handleVisibleChange;
+		this.handleVisibleChange();
 	}
 
 	// 输入框或下拉
@@ -67,7 +67,7 @@ class TablePopoverLayout extends Component {
 
 	render() {
 		let { valueData, focusSelect, inputProps, selectProps, optionItem, optionKey, ...others } = this.props;
-		let { value, visible, newValue } = this.state;
+		let { value, visible } = this.state;
 		return (
 			<Popover
 				content={

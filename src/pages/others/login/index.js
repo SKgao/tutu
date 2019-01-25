@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import ReactEcharts from 'echarts-for-react';
 import { Form, Input, Button, Row, Icon } from 'antd';
 import './login.scss';
 

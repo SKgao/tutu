@@ -2,17 +2,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
-import TablePopoverLayout from '@/components/TablePopoverLayout';
 import TableLayout from '@/components/TableLayout';
-import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, DatePicker, Select, Tabs, Pagination, Radio} from 'antd';
+import { Form, Input, Button, Modal, DatePicker, Select, Tabs, Pagination} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
-const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
 
 const Member = ({
@@ -22,7 +19,7 @@ const Member = ({
 }) => {
     let { dispatch, form } = props;
     let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, vipButton} = member;
-    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
+    let { getFieldDecorator, resetFields } = form;
 
     const columns = [
         {
@@ -36,19 +33,17 @@ const Member = ({
             title: '用户头像',
             dataIndex: 'icon',
             render: (text) => {
-                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '邀请用户人数',
             dataIndex: 'inviteCount',
             sorter: true,
             render: (text, record) => <span
-                    onClick={() => {
-                        if (text && text > 0) {
-                            linktoInvite(record)
-                        }
-                    }}
                     style={ text && text > 0 ? {color: '#3f94e2', fontWeight: 900, cursor: 'pointer'} : null}>
+                    onClick={() =>  text && text > 0 && linktoInvite(record) }
                     { text ? text : 0 }
                 </span>
         }, {
@@ -146,14 +141,22 @@ const Member = ({
             render: (txt, record, index) => {
                 return <span>
                     {
-                        vipButton && <Button size="small" style={{ marginLeft: 5 }}
-                        onClick={() => handleAddvip(record)}>开通会员</Button>
+                        vipButton && <Button
+                            size="small"
+                            style={{ marginLeft: 5 }}
+                            onClick={() => handleAddvip(record)}>开通会员</Button>
                     }
 
-                    <Button type="primary" size="small" style={{ marginLeft: 5 }}
-                    onClick={() => handleUsing(record)}>启用</Button>
-                    <Button type="danger" size="small" style={{ marginLeft: 5 }}
-                    onClick={() => handleForbidden(record)}>禁用</Button>
+                    <Button
+                        type="primary"
+                        size="small"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => handleUsing(record)}>启用</Button>
+                    <Button
+                        type="danger"
+                        size="small"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => handleForbidden(record)}>禁用</Button>
                 </span>
             }
         }
@@ -182,11 +185,11 @@ const Member = ({
     const _tableCols = (activeKey === '0') ? columns : infoColumns
     const _tableList = (activeKey === '0') ? memberList : feedList
 
-    // 调转到关卡页面
+    // 调转到购买课程页面
     const linktoCourse= (record) => {
         dispatch(routerRedux.push({
-            pathname: '/specialCourse',
-            search: `userId=${record.tutuNumber}`
+            pathname: '/couUser',
+            search: `tutuNumber=${record.tutuNumber}`
         }))
     }
 
@@ -262,7 +265,6 @@ const Member = ({
             }
         })
     }
-
 
     // 选择下拉框
     const changeSelect = (v) => {
@@ -419,7 +421,6 @@ const Member = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChangeReg}
                                     />
                             </FormItem>
@@ -432,7 +433,6 @@ const Member = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChange2}
                                     />
                             </FormItem>
@@ -445,7 +445,6 @@ const Member = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChange}
                                     />
                             </FormItem>

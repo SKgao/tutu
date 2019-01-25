@@ -7,14 +7,11 @@ import PaginationLayout from '@/components/PaginationLayout';
 import TablePopoverLayout from '@/components/TablePopoverLayout';
 import MyUpload from '@/components/UploadComponent';
 
-import moment from 'moment';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Icon, Badge, Select, DatePicker } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Icon, Badge } from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
-const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 const UnitPart = ({
@@ -48,7 +45,9 @@ const UnitPart = ({
             title: '图片',
             dataIndex: 'icon',
             render: (text) => {
-                return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer"><img alt="" src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
              }
         }, {
         	title: '修改图片',
@@ -98,11 +97,10 @@ const UnitPart = ({
             dataIndex: 'canLock',
             sorter: true,
             render: (txt) => {
-                switch (txt) {
-                    case 2:
-                        return <Badge status="warning" text="已锁定"/>;
-                    case 1:
-                        return <Badge status="processing" text="已解锁"/>;
+                if (txt === 1) {
+                    return <Badge status="processing" text="已解锁"/>;
+                } else {
+                    return <Badge status="warning" text="已锁定"/>;
                 }
             }
         }, {

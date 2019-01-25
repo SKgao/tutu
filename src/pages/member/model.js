@@ -6,7 +6,6 @@ export default {
 	namespace: 'member',
 
 	state: {
-    bookList: [],
 		memberLevelList: [],
 		bookList: [],
 		feedList: [],    // 反馈列表
