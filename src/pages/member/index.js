@@ -42,9 +42,9 @@ const Member = ({
             dataIndex: 'inviteCount',
             sorter: true,
             render: (text, record) => <span
-                    style={ text && text > 0 ? {color: '#3f94e2', fontWeight: 900, cursor: 'pointer'} : null}>
-                    onClick={() =>  text && text > 0 && linktoInvite(record) }
-                    { text ? text : 0 }
+                onClick={() =>  text && text > 0 && linktoInvite(record) }
+                style={ text && text > 0 ? {color: '#3f94e2', fontWeight: 900, cursor: 'pointer'} : null}>
+                { text ? text : 0 }
                 </span>
         }, {
             title: '会员等级',

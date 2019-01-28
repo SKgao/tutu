@@ -103,7 +103,7 @@ const ValidForm = ({
                     label="手机号"
                     >
                     {getFieldDecorator('phone', {
-                        rules: [{ required: true, message: '请输入手机号!' }],
+                        rules: [{ required: true, message: '手机号格式有误!', pattern: /^[1][0-9]{10}$/ }]
                     })(
                         <Input style={{ width: '100%' }} placeholder="请输入手机号"/>
                     )}

@@ -234,7 +234,7 @@ const CourseUser = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('mobile', {
-                            rules: [{ required: true, message: '手机号格式有误!', pattern: /^[1][3,4,5,7,8][0-9]{9}$/ }],
+                            rules: [{ required: true, message: '手机号格式有误!', pattern: /^[1][0-9]{10}$/ }],
                         })(
                             <Input placeholder="请输入手机号"/>
                         )}

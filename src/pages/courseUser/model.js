@@ -29,7 +29,7 @@ export default {
 						payload: {
 							pageNum: 1,
 							pageSize: 10,
-							tutuNumber: getUrlParams('tutuNumber') || '',
+							tutuNumber: getUrlParams(location.search, 'tutuNumber') || '',
                             mobile: '',
                             textbookId: '',
                             realName: '',
