@@ -1,20 +1,18 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { withRouter, routerRedux } from 'dva/router';
-import axios from 'axios';
 // import pathToRegexp from 'path-to-regexp';
 import layoutConfig from './configs/layout';
 
 import './scss/layout.scss';
 
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import Loader from './components/Loader';
 
 import HeaderLayout from './components/HeaderLayout';
 import SiderLayout from './components/SiderLayout';
 import HistoryNavsLayout from './components/HistoryNavsLayout';
 
-const { SubMenu } = Menu;
 const { Content } = Layout;
 
 const App = ({
@@ -26,7 +24,7 @@ const App = ({
 }) => {
 	const { pathname } = location;
 	const { singleView, hideLeftView } = layoutConfig;
-	let { collapsed, datalist, siderList, breadCrumd, historyList, firstMenuText, firPath, secPath, modalShow } = app;
+	let { collapsed, siderList, breadCrumd, historyList, firstMenuText, firPath, secPath, modalShow } = app;
 
 
 	// 用户未登录跳转到登录页面

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Form, Input, Button, message, Tooltip, Icon, Select } from 'antd';
+import { Form, Input, Button, Tooltip, Icon, Select } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';
@@ -19,14 +19,14 @@ const AddProject = ({
 		e.preventDefault()
 		validateFieldsAndScroll((err, values) => {
 			if (!err) {
-                const { sentenceAudio, sceneGraph, partId } = customPass;
+                const { sentenceAudio, sceneGraph, partsId, sessionId } = customPass;
                 values.customsPassId && (values.customsPassId = values.customsPassId - 0);
-                values.id && (values.id = values.id - 0);
-                values.partId = partId - 0;
+                values.partId = partsId - 0;
+                values.sessionId = sessionId - 0;
                 values.sort && (values.sort = values.sort - 0);
                 values.sentenceAudio = sentenceAudio;
                 values.sceneGraph = sceneGraph;
-                values.showIndex = values.showIndex.split(/\s+/g);
+                values.showIndex = values.showIndex ? values.showIndex.split(/\s+/g) : '';
                 dispatch({
                     type: 'customPass/addTopic',
                     payload: filterObj(values)
@@ -82,17 +82,6 @@ const AddProject = ({
                                 )
                             }
                         </Select>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    label="题目id"
-                    {...formItemLayout}
-                    >
-                    {getFieldDecorator('id', {
-                        rules: [{ required: true, message: '请输入题目id!' }],
-                    })(
-                        <Input placeholder="请输入题目id"/>
                     )}
                 </FormItem>
 

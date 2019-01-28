@@ -1,6 +1,5 @@
 import api from './service';
 import { message } from 'antd';
-import api_teachingManage from '@/pages/teachingManage/book/service';
 import { getUrlParams } from '@/utils/tools';
 
 export default {

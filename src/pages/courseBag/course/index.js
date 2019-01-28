@@ -45,7 +45,9 @@ const CourseList = ({
             title: '封面',
             dataIndex: 'icon',
             render: (text) => {
-                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '状态',

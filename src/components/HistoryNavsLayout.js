@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
-import { Tabs, Button } from 'antd';
+import { Tabs } from 'antd';
 const TabPane = Tabs.TabPane;
 
 const HistoryNavsLayout = ({
 	historyList,
 	tabEdit,
 	tabChange
-}) => {	
+}) => {
 	let hs = window.location.hash.slice(1);
 	let idx = hs.indexOf('?');
 	idx > -1 && hs.slice(0, idx);

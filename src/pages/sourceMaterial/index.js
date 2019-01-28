@@ -7,15 +7,13 @@ import TablePopoverLayout from '@/components/TablePopoverLayout';
 import UploadProgress from '@/components/UploadProgress';
 import VaildForm from './VaildForm';
 import MyUpload from '@/components/UploadComponent';
-import MultipleUpload from '@/components/MultipleUpload';
-import EditForm from './editForm';
 
 import moment from 'moment';
 import { isPro } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, message, Tooltip, Checkbox } from 'antd';
+import { Form, Input, Button, Popconfirm, Modal, Tabs, Select, DatePicker, Upload, Icon, Checkbox } from 'antd';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -29,13 +27,9 @@ const sourceMaterial = ({
 }) => {
     let { dispatch, form } = props;
     let { materialList, modalShow, modal2Show, modal3Show, modal4Show, startTime, endTime, text, pageNum, pageSize, activeKey, audioArray, imageArray, sentensArray, openLike, explainsArray } = sourcematerial;
-    let { getFieldDecorator, getFieldValue, resetFields } = form;
+    let { getFieldDecorator, resetFields } = form;
 
 
-    // 鼠标放在图片上的事件
-    const mouseEnter=(e)=>{
-
-    }
     const columns = [
         {
             title: '素材内容',
@@ -56,19 +50,20 @@ const sourceMaterial = ({
 						})
 					}/>
         }, {
-          title: '素材图标',
-          dataIndex: 'icon',
-          render: (text) => {
-             return (text) ? <Popconfirm icon={<img src={ text } style={{ width: 110, height: 120 }}/>} cancelText="取消" okText="确定">
-                    <img src={ text } style={{ width: 30, height: 40 }}/>
-                </Popconfirm>: <span>无</span>
-          }
+            title: '素材图标',
+            dataIndex: 'icon',
+            render: (text) => {
+                return (text) ? <Popconfirm cancelText="取消" okText="确定"
+                        icon={<img alt="" src={ text } style={{ width: 110, height: 120 }}/>}>
+                        <img alt="" src={ text } style={{ width: 30, height: 40 }}/>
+                    </Popconfirm>: <span>无</span>
+            }
         }, {
-          title: '素材音频',
-          dataIndex: 'audio',
-          render: (audio) => {
-             return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
-          }
+            title: '素材音频',
+            dataIndex: 'audio',
+            render: (audio) => {
+                return (audio) ? <audio src={audio} controls="controls"></audio> : <span>无</span>
+            }
         },
         // {
         //     title: '音标',
@@ -143,7 +138,6 @@ const sourceMaterial = ({
                     <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
                         <Button type="danger" size="small" style={{ marginLeft: 10 }}>删除</Button>
                     </Popconfirm>
-                    {/* <Button type="primary" size="small" style={{ marginLeft: 10 }} onClick={()=>handleEdit(record)}>修改</Button> */}
                 </span>
             }
         }
@@ -228,30 +222,12 @@ const sourceMaterial = ({
     		type: 'sourcematerial/setParam',
     		payload: pageParam
         })
-      dispatch({
-        type: 'sourcematerial/getSource',
-        payload: filterObj({ startTime, endTime, text, openLike, ...pageParam })
-      })
+        dispatch({
+            type: 'sourcematerial/getSource',
+            payload: filterObj({ startTime, endTime, text, openLike, ...pageParam })
+        })
     }
-    // 添加素材
-    const submitForm = (e) => {
-        if (e!="false") {
-            let PP = {
-                // audio: getFieldValue('audio'),
-                // icon: getFieldValue('icon'),
-                // text: getFieldValue('text')
-                audio: e.audio,
-                icon: e.icon,
-                text: e.text
-            }
-            dispatch({
-                type: 'sourcematerial/addSource',
-                payload: filterObj(PP)
-            })
-        }else{
-            handleSubmit('modalShow',false)
-        }
-    }
+
     // 显示添加素材modal
     const handleSubmit=(flag, show)=>{
       dispatch({
@@ -272,22 +248,6 @@ const sourceMaterial = ({
                 audioArray: [],
                 imageArray: [],
                 sentensArray: []
-            }
-        })
-    }
-    // 编辑素材 显示modal
-    const handleEdit= (e) =>{
-        dispatch({
-            type: 'sourcematerial/setParam',
-            payload: {
-                modal2Show: true,
-                id: e.id,
-                icon: e.icon,
-                audio: e.audio,
-                text: e.text,
-                phonetic: e.phonetic,
-                translation: e.translation,
-                explainsArray: e.explainsArray
             }
         })
     }
@@ -427,7 +387,6 @@ const sourceMaterial = ({
 
     // 是否开启模糊搜索
     const handleOpenlike = (e) => {
-        let isopen = e.target.checked
         dispatch({
     		type: 'sourcematerial/setParam',
     		payload: {
@@ -454,7 +413,6 @@ const sourceMaterial = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
                     </FormItem>
@@ -476,10 +434,6 @@ const sourceMaterial = ({
                     <FormItem>
                         <Button type="primary" onClick={() => handleSubmit('modal3Show', true)}>导入素材</Button>
                     </FormItem>
-
-                    {/* <FormItem>
-                        <MultipleUpload></MultipleUpload>
-                    </FormItem> */}
 
                     <FormItem>
                         <Popconfirm title="是否删除选中素材?" onConfirm={handleBatchDelete}>

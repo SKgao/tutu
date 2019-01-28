@@ -1,7 +1,5 @@
 import dva from 'dva';
 import { message } from 'antd';
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
 import './scss/reset.scss';
 import './../public/iconfont/iconfont.css';
 // import { createLogger } from 'redux-logger';
@@ -24,13 +22,13 @@ app.use(createLoading());
 
 // 3. Model
 app.model(require('./model').default);
-	
+
 // 4. Router
 // 5. Start
 hashChangeFire()
 
 // url变化监听器 浏览器支持onhashchange事件
-if( ('onhashchange' in window) && ((typeof document.documentMode==='undefined') || document.documentMode==8)) {
+if( ('onhashchange' in window) && ((typeof document.documentMode==='undefined') || document.documentMode === 8)) {
     window.onhashchange = hashChangeFire;
 }
 
@@ -45,8 +43,6 @@ function hashChangeFire() {
 	// 	app.router(require('./router').default);
 	// 	app.start('#root');
 	// }
-	//NProgress.start();
 	app.router(require('./router').default);
 	app.start('#root');
-	//NProgress.done();
 }

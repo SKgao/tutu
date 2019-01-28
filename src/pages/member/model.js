@@ -6,14 +6,13 @@ export default {
 	namespace: 'member',
 
 	state: {
-        bookList: [],
 		memberLevelList: [],
 		bookList: [],
 		feedList: [],    // 反馈列表
-        pageSize: 10,
-        pageNum: 1,
-        totalCount: 0,
-        expireStartTime: '', // 会员到期起始时间
+		pageSize: 10,
+		pageNum: 1,
+		totalCount: 0,
+		expireStartTime: '', // 会员到期起始时间
 		expireEndTime : '',  // 会员到期截止时间
 		payStartTime: '',  // 会员开始起始时间
 		payEndTime: '',    // 会员开始截止时间
@@ -25,9 +24,12 @@ export default {
 		sex: '',  // 性别
 		tutuNumber: '', // 图图号
 		mobile: '',     // 手机号
+		sortInvite: '',   // 邀请人数排序
+		sortUserId: '',   // 图图号排序
 		modalShow: false,
 		hasSetPassword: '',   // 是否设置密码
 		activeKey: '0',       // 默认选中tabs
+		vipButton: false,     // 是否有开通会员按钮权限
 
 		// 开通用户模块
 		userid: '',      // 用户id
@@ -51,22 +53,38 @@ export default {
 							expireStartTime: '', // 会员起始时间
 							expireEndTime : '',  // 会员截止时间
 							payStartTime: '',  // 会员开始起始时间
-		                    payEndTime: '',    // 会员开始截止时间
+		          			payEndTime: '',    // 会员开始截止时间
 							registerStartTime: '', // 会员注册起始时间
-		                    registerEndTime: '',   // 会员注册截止时间
+		          			registerEndTime: '',   // 会员注册截止时间
 							bookVersionId: '',
 							sex: '',
-							addvips: ''
+							addvips: '',
+							sortInvite: '',   // 邀请人数排序
+							sortUserId: '',   // 图图号排序
 						}
-					});
-					dispatch({ type: 'getMember' });
-					dispatch({ type: 'getMemberLevel' });
+					}).then(() => {
+						dispatch({ type: 'getMember' }).then(() => {
+							dispatch({ type: 'hasVipButton' });
+						})
+						dispatch({ type: 'getMemberLevel' });
+					})
 				}
 			})
 		},
 	},
 
 	effects: {
+		// 是否有 开通会员按钮权限
+		*hasVipButton({ }, { put, select }) {
+			const { authsId } = yield select(state => state.app);
+			yield put({
+				type: 'save',
+				payload: {
+					vipButton: authsId.indexOf(147) > -1 // 147 - 开通会员功能
+				}
+			});
+		},
+
 		*getMember({ payload }, { call, put, select }) {
 			const _state = yield select(state => state.member);
 			const idArr = _state.userLevelIds.filter(e => e);
@@ -84,7 +102,10 @@ export default {
 				tutuNumber: _state.tutuNumber,
 				mobile: _state.mobile,
 				sex: _state.sex,
-				hasSetPassword: _state.hasSetPassword
+				hasSetPassword: _state.hasSetPassword,
+				sortInvite: _state.sortInvite,
+				sortUserId: _state.sortUserId
+
 			}));
 			if (res) {
 				yield put({

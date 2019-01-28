@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import ReactEcharts from 'echarts-for-react';
 import { Form, Input, Button, Row, Icon } from 'antd';
 import './login.scss';
 
@@ -31,7 +30,8 @@ const Login = ({
 	return (
 		<div className="form">
 		    <div className="logo">
-			    <img src="//test.web.admin.tutukids.com/static/assets/logo.png"/>
+			    {/* <img src="//test.web.admin.tutukids.com/static/assets/logo.png"/> */}
+				<div className="img"></div>
 				{/* <span>图图英语</span> */}
 			</div>
 			<form>

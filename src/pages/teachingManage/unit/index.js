@@ -48,7 +48,9 @@ const BookUnit = ({
         	title: '封面图',
         	dataIndex: 'icon',
             render: (text, record, index) => {
-                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
         	title: '单元排序',
@@ -73,11 +75,10 @@ const BookUnit = ({
             dataIndex: 'canLock',
             sorter: true,
             render: (txt) => {
-                switch (txt) {
-                    case 2:
-                        return <Badge status="warning" text="已锁定"/>;
-                    case 1:
-                        return <Badge status="processing" text="已解锁"/>;
+                if (txt === 1) {
+                    return <Badge status="processing" text="已解锁"/>;
+                } else {
+                    return <Badge status="warning" text="已锁定"/>;
                 }
             }
         }, {
@@ -262,7 +263,6 @@ const BookUnit = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
                     </FormItem>

@@ -380,7 +380,6 @@ const AppverUpdate = ({
 										hideDisabledOptions: true,
 										defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
 									}}
-									format="YYYY-MM-DD HH:mm"
 									onChange={datepickerChange}
 									/>
 							</FormItem>
@@ -484,7 +483,7 @@ const AppverUpdate = ({
 								{getFieldDecorator('updateDescribe', {
 									rules: [{ message: '输入版本描述' }],
 								})(
-									<TextArea placeholder="版本描述格式： 1.XXX 2.XXX 3.XXX" autosize={{ minRows: 3, maxRows: 6 }} />
+									<TextArea placeholder="版本描述格式： 1 描述内容# 2 描述内容# 3 描述内容" autosize={{ minRows: 3, maxRows: 6 }} />
 								)}
 							</FormItem>
 

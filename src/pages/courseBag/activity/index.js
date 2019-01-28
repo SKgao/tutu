@@ -21,7 +21,7 @@ const BagActivity = ({
     ...props
 }) => {
 	let { dispatch, form } = props;
-	let { tableList, bookList, modalShow, saleBeginAt, saleEndAt, pageSize, pageNum, type } = bagActivity;
+	let { tableList, bookList, modalShow, saleBeginAt, pageSize, pageNum, type } = bagActivity;
 	let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const columns = [
@@ -67,13 +67,17 @@ const BagActivity = ({
             title: '详情图',
             dataIndex: 'iconDetail',
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank'  rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '优惠卷图',
             dataIndex: 'iconTicket',
             render: (text) => {
-               return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+               return (text) ? <a href={ text } target='_blank'  rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
         }, {
             title: '原始金额',
@@ -441,18 +445,6 @@ const BagActivity = ({
                             )}
                         </FormItem>
 
-                        {/* <FormItem
-                            label="课程id"
-                            {...formItemLayout}
-                            >
-                            {getFieldDecorator('id', {
-                                //initialValue: bagActivity.id,
-                                rules: [{ required: true, message: '请输入课程id!' }],
-                            })(
-                                <Input placeholder="请输入课程id"/>
-                            )}
-                        </FormItem> */}
-
                         <FormItem
                             label="预售开始时间"
                             {...formItemLayout}
@@ -480,22 +472,6 @@ const BagActivity = ({
                                 <Input placeholder="请输入持续时间(以天为单位)" onChange={ (e) => onChangeDate('', e.target.value, 'alldate')}/>
                             )}
                         </FormItem>
-
-                        {/* <FormItem
-                            label="预售截止时间"
-                            {...formItemLayout}
-                            >
-                            {getFieldDecorator('saleEndAt', {
-                                rules: [{ required: true, message: '请选择预售截止时间!' }],
-                            })(
-                                <DatePicker
-                                    showTime
-                                    format="YYYY-MM-DD HH:mm:ss"
-                                    placeholder="请选择预售截止时间"
-                                    onChange={ (a, b) => onChangeDate(a, b, 'saleEndAt') }
-                                    />
-                            )}
-                        </FormItem> */}
 
                         <FormItem
                             label="辅导教师"

@@ -3,22 +3,18 @@ import { connect } from 'dva';
 import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import PaginationLayout from '@/components/PaginationLayout';
-import moment from 'moment';
-import { filterObj } from '@/utils/tools';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-const { RangePicker } = DatePicker;
 
 const Order = ({
     order,
     loading,
     ...props
 }) => {
-    let { dispatch, form } = props;
-    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, courseList, tutuNumber, startTime, endTime, levelList } = order;
-    let { getFieldDecorator, getFieldValue } = form;
+    let { dispatch } = props;
+    let { orderList, selectList, pageNum, pageSize, totalCount, orderNo, courseList, tutuNumber, levelList } = order;
 
     const columns = [
         {
@@ -85,17 +81,6 @@ const Order = ({
         dispatch({ type: 'order/getOrder' })
     }
 
-    // 选择时间框
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'order/setParam',
-        	payload: {
-                startTime: t[0] + ':00',
-                endTime: t[1] + ':00'
-            }
-        })
-    }
-
     // 输入框
     const handleInput = (e, m) => {
         dispatch({
@@ -118,18 +103,6 @@ const Order = ({
 		<div>
 			<FormInlineLayout>
 			    <Form layout="inline" style={{ marginLeft: 15 }}>
-                    {/*时间*/}
-                    {/* <FormItem label="时间">
-                        <RangePicker
-                            format="YYYY-MM-DD HH:mm"
-                            showTime={{
-                                hideDisabledOptions: true,
-                                defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
-                            }}
-                            format="YYYY-MM-DD HH:mm"
-                            onChange={datepickerChange}
-                            />
-                    </FormItem> */}
 
                     {/*图图号*/}
                     <FormItem label="图图号">

@@ -1,5 +1,4 @@
 import api from './service';
-import api_authmenu from '@/pages/authmenu/service';
 import { getField, flatten } from '@/utils/tools';
 import { message } from 'antd';
 

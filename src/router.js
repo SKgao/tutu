@@ -80,6 +80,16 @@ const Routers = ({
 			models: () => [import(/* webpackChunkName: "member" */ './pages/member/model')]
 		},
 		{
+			path: '/inviteCount',
+			component: () => import(/* webpackChunkName: "inviteCount" */ './pages/inviteCount/index'),
+			models: () => [import(/* webpackChunkName: "inviteCount" */ './pages/inviteCount/model')]
+		},
+		{
+			path: '/learningRecord',
+			component: () => import(/* webpackChunkName: "learningRecord" */ './pages/learningRecord/index'),
+			models: () => [import(/* webpackChunkName: "learningRecord" */ './pages/learningRecord/model')]
+		},
+		{
 			path: '/memberLevel',
 			component: () => import(/* webpackChunkName: "memberLevel" */ './pages/memberLevel/index'),
 			models: () => [import(/* webpackChunkName: "memberLevel" */ './pages/memberLevel/model')]
@@ -145,7 +155,7 @@ const Routers = ({
 							))
 						}
 						<Redirect exact from='/'  to='/userSetting'/>
-                        <Route exact path='*' component={ErrorPage} />
+            			<Route exact path='*' component={ErrorPage} />
 					</Switch>
 				</App>
 			</LocaleProvider>

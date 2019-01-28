@@ -122,7 +122,7 @@ export default {
         message.success(res.data.message);
         notification.info({
             message: '上传结果',
-            description: <div dangerouslySetInnerHTML={{__html: res.data.data}} />,
+            description: <div style={{maxHeight: '500px', overflow: 'auto'}} dangerouslySetInnerHTML={{__html: res.data.data}} />,
             duration: 0
         })
 				yield put({

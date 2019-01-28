@@ -13,7 +13,7 @@ import { axios } from '@/configs/request';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, DatePicker, Input, Button, Radio, Modal, Tooltip, Select,
+import { Form, DatePicker, Input, Button, Radio, Modal, Select,
     Icon, Upload, Tabs, message, Popconfirm, Table, notification } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -28,8 +28,8 @@ const Subject = ({
 }) => {
     let { dispatch, form } = props;
     let { modalShow, addType, modal3Show, startTime, endTime, pageNum, pageSize,
-        customsPassId, sort, sourceIds, activeKey, customsPassName, detpage, selectedRowKeys, idArr} = subject;
-    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
+        customsPassId, sort, sourceIds, activeKey, customsPassName, detpage} = subject;
+    let { getFieldDecorator, resetFields } = form;
 
     // 题目列表
     const subjectCol = [
@@ -56,7 +56,6 @@ const Subject = ({
 							payload: {
                                 id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
-                                sort: record.sort - 0,
 								customsPassName: v
 							}
 						})
@@ -75,7 +74,6 @@ const Subject = ({
 							payload: {
                                 id: record.id - 0,
                                 customsPassId: record.customsPassId - 0,
-                                sort: record.sort - 0,
 								sourceIds: v
 							}
 						})
@@ -83,13 +81,29 @@ const Subject = ({
         }, {
             title: '题目顺序',
             dataIndex: 'sort',
-            sorter: true
+            sorter: true,
+            render: (text, record) =>
+				<TablePopoverLayout
+					title={'修改题目顺序'}
+					valueData={text || '无'}
+					defaultValue={text || '无'}
+					onOk={v =>
+						dispatch({
+							type: 'subject/updateSubject',
+							payload: {
+                                id: record.id - 0,
+								sort: v - 0
+							}
+						})
+					}/>
         }, {
             title: '场景图',
             dataIndex: 'sceneGraph',
             sorter: true,
             render: (text) => {
-               return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+               return (text) ?  <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                <img alt="" src={ text } style={{ width: 35, height: 40 }}/>
+            </a> : <span>无</span>
             }
         }, {
             title: '操作场景图',
@@ -114,10 +128,6 @@ const Subject = ({
             render: (text, record) => {
                 return <span>
                     <Button type="primary" size="small" onClick={() => linktoDet(record)}>题目详情</Button>
-
-                    {/* <Popconfirm title="是否删除?" onConfirm={() => handleDelete(record)}>
-                        <Button icon="delete" type="danger" size="small" style={{ marginLeft: 5 }}>删除</Button>
-                    </Popconfirm> */}
                 </span>
             }
         }
@@ -214,14 +224,6 @@ const Subject = ({
         }))
     }
 
-    // 删除题目
-    const handleDelete = (record) => {
-        dispatch({
-            type: 'subject/deleteSubject',
-            payload: record.id - 0
-        })
-    }
-
     // 删除场景图
     const deletePic = (record) => {
         dispatch({
@@ -243,7 +245,7 @@ const Subject = ({
                     if (res.data.code === 0) {
                         notification.info({
                             message: addType == 1 ? '大纲检测结果' : '题目上传结果',
-                            description: <div dangerouslySetInnerHTML={{__html: res.data.data}} />,
+                            description: <div style={{maxHeight: '500px', overflow: 'auto'}} dangerouslySetInnerHTML={{__html: res.data.data}} />,
                             duration: 0,
                         })
                         dispatch({
@@ -457,7 +459,6 @@ const Subject = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChange}
                                     />
                             </FormItem>

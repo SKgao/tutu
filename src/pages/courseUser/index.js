@@ -9,7 +9,7 @@ import DragTableLayout from '@/components/DragTableLayout';
 import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 
-import { Form, Input, Button, Modal, Select, Pagination, Radio} from 'antd';
+import { Form, Input, Button, Modal, Select, Pagination, Radio, Icon} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -20,7 +20,7 @@ const CourseUser = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { tableList, pageNum, pageSize, totalCount, modalShow, bookList} = courseUser;
+    let { tableList, pageNum, pageSize, totalCount, modalShow, bookList, courseButton, tutuNumber } = courseUser;
     let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
 
     const allColumns = [
@@ -64,21 +64,14 @@ const CourseUser = ({
         },
     ]
 
-    // 调转到关卡页面
-    const linktoCourse= (record) => {
-        dispatch(routerRedux.push({
-            pathname: '/specialCourse',
-            search: `userId=${record.tutuNumber}`
-        }))
-    }
-
     // 操作分页
     const handleChange = (param) => {
         dispatch({
     		type: 'courseUser/setParam',
     		payload: param
+        }).then(() => {
+            dispatch({ type: 'courseUser/getUser' })
         })
-        dispatch({ type: 'courseUser/getUser' })
     }
 
     // 搜索
@@ -109,39 +102,6 @@ const CourseUser = ({
                 [m]: e.target.value
             }
     	})
-    }
-
-    // 时间选择
-    const datepickerChange = (d, t) => {
-        dispatch({
-        	type: 'courseUser/setParam',
-        	payload: {
-                expireStartTime: t[0] ? t[0] + ':00' : '',
-                expireEndTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
-
-    // 时间选择
-    const datepickerChange2 = (d, t) => {
-        dispatch({
-        	type: 'courseUser/setParam',
-        	payload: {
-                payStartTime: t[0] ? t[0] + ':00' : '',
-                payEndTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
-    }
-
-    // 时间选择
-    const datepickerChangeReg = (d, t) => {
-        dispatch({
-        	type: 'courseUser/setParam',
-        	payload: {
-                registerStartTime: t[0] ? t[0] + ':00' : '',
-                registerEndTime: t[1] ? t[1] + ':00' : ''
-            }
-        })
     }
 
     // 展示modal
@@ -183,26 +143,29 @@ const CourseUser = ({
     	})
     }
 
-    const SortingTable = DragDropContext(HTML5Backend)(DragTableLayout)
+    // 返回
+    const goBack = () => dispatch(routerRedux.goBack(-1))
+
+    // const SortingTable = DragDropContext(HTML5Backend)(DragTableLayout)
 
 	return (
 		<div>
             <FormInlineLayout>
                 <Form layout="inline" style={{ marginLeft: 15 }}>
-                <FormItem label="精品课程">
-                    <Select
-                        showSearch
-                        onFocus={() => dispatch({type: 'courseUser/getBooklist'})}
-                        placeholder="请选择精品课程"
-                        onChange={v => changeSelect({ textbookId: v })}
-                        >
-                        {
-                            [{textbookId: '', textbookName: '全部'}, ...bookList].map(item =>
-                                <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
-                            )
-                        }
-                    </Select>
-                </FormItem>
+                    <FormItem label="精品课程">
+                        <Select
+                            showSearch
+                            onFocus={() => dispatch({type: 'courseUser/getBooklist'})}
+                            placeholder="请选择精品课程"
+                            onChange={v => changeSelect({ textbookId: v })}
+                            >
+                            {
+                                [{textbookId: '', textbookName: '全部'}, ...bookList].map(item =>
+                                    <Option key={item.textbookId} value={item.textbookId}>{item.textbookName + ''}</Option>
+                                )
+                            }
+                        </Select>
+                    </FormItem>
 
                     <FormItem label="图图号">
                         <Input placeholder="输入图图号" value={courseUser.tutuNumber} onChange={(e) => handleInput(e, 'tutuNumber')}/>
@@ -236,6 +199,12 @@ const CourseUser = ({
                         <Button type="primary" onClick={() => changeModalState('modalShow', true)}>开通精品课程</Button>
                     </FormItem>
 
+                    {
+                        tutuNumber && <FormItem>
+                            <a className={'link-back'} onClick={goBack}><Icon type="arrow-left"/>后退</a>
+                        </FormItem>
+                    }
+
                 </Form>
             </FormInlineLayout>
 
@@ -265,7 +234,7 @@ const CourseUser = ({
                         {...formItemLayout}
                         >
                         {getFieldDecorator('mobile', {
-                            rules: [{ required: true, message: '手机号格式有误!', pattern: /^[1][3,4,5,7,8][0-9]{9}$/ }],
+                            rules: [{ required: true, message: '手机号格式有误!', pattern: /^[1][0-9]{10}$/ }],
                         })(
                             <Input placeholder="请输入手机号"/>
                         )}

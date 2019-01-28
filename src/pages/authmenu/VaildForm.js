@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
+import { Form, Input, Button, Radio } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -139,4 +139,3 @@ ValidForm.propTypes = {
 };
 
 export default (Form.create()(ValidForm));
-	

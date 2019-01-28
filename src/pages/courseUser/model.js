@@ -1,6 +1,6 @@
 import api from './service';
 import { message } from 'antd';
-import { filterObj } from '@/utils/tools';
+import { filterObj, getUrlParams } from '@/utils/tools';
 
 export default {
 	namespace: 'courseUser',
@@ -17,6 +17,7 @@ export default {
         realName: '',
         textbookId: '',
 		mobile: '',     // 手机号
+		courseButton: false  // 是否有 开通精品课程按钮权限
 	},
 
 	subscriptions: {
@@ -28,20 +29,36 @@ export default {
 						payload: {
 							pageNum: 1,
 							pageSize: 10,
-							tutuNumber: '',
+							tutuNumber: getUrlParams(location.search, 'tutuNumber') || '',
                             mobile: '',
                             textbookId: '',
                             realName: '',
 							sex: ''
 						}
-					});
-					dispatch({ type: 'getUser' });
+					}).then(() => {
+						dispatch({ type: 'getUser' }).then(() => {
+							dispatch({ type: 'hasCourseButton' });
+						})
+					})
 				}
 			})
 		},
 	},
 
 	effects: {
+		// 是否有 开通精品课程按钮权限
+		*hasCourseButton({}, { call, put, select }) {
+			const { authsId } = yield select(state => state.app);
+
+			yield put({
+				type: 'save',
+				payload: {
+					// 146 - 开通精品课程 148
+					courseButton: authsId.indexOf(146) > -1  || authsId.indexOf(148) > -1
+				}
+			});
+		},
+
 		*getUser({ payload }, { call, put, select }) {
 			const _state = yield select(state => state.courseUser);
 			const res = yield call(api.getUser, filterObj({

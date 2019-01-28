@@ -3,7 +3,6 @@
 import axios from 'axios';
 import { routes } from './configs/pages';
 import { routerRedux } from 'dva/router';
-import { message } from 'antd';
 import api_login from '@/pages/others/login/service';
 import api_role from '@/pages/role/service';
 import layoutConfig from '@/configs/layout';
@@ -33,6 +32,7 @@ export default {
 		modalShow: false,    // 修改密码
 		firPath: [],
 		secPath: [],
+		authsId: [],   // 权限id菜单
 		// firPath: localStorage.getItem('firPath') ? [localStorage.getItem('firPath')] : ['117'],
 		// secPath: localStorage.getItem('secPath') ? [localStorage.getItem('secPath')] : ['/userSetting']
 	},
@@ -77,9 +77,11 @@ export default {
 			yield put(routerRedux.push(_sec[0]))
 			localStorage.setItem('firPath', idArr[0])
 			localStorage.setItem('secPath', urlArr[0])
+
 			yield put({
 				type: 'save',
 				payload: {
+					authsId: idArr,
 					firPath: _fir,
 					secPath: _sec,
 					datalist: datalist,
@@ -90,13 +92,11 @@ export default {
 
 		// 渲染面包屑
 		*renderBread({ payload }, { put, select }) {
-			const datalist = yield select(state => state.app.datalist);
-
 			let b = {}
 			routes.map(item => {
 				if(item.url == payload) {
 					b = item
-					return
+					return false
 				}
 			})
 

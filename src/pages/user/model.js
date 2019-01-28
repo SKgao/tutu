@@ -22,8 +22,8 @@ export default {
 	},
 
 	subscriptions: {
-		setup({ dispatch, history }) {	
-			dispatch({ 
+		setup({ dispatch, history }) {
+			dispatch({
 				type: 'getUser',
 				payload: {
 					pageNum: 1,
@@ -44,7 +44,7 @@ export default {
 						type: 'setParam',
 						payload: pay
 					});
-					dispatch({ 
+					dispatch({
 						type: 'getUser',
 						payload: pay
 				    });
@@ -58,13 +58,13 @@ export default {
 			const res = yield call(api.getUser, filterObj(payload));
 			if (res) {
 				yield put({
-					type: 'save', 
+					type: 'save',
 					payload: {
 						tableData: []
 					}
 				})
 				yield put({
-					type: 'save', 
+					type: 'save',
 					payload: {
 						tableData: (res.data.data) ? res.data.data.data : [],
 						totalCount: (res.data.data) ? res.data.data.totalCount : 0
@@ -84,7 +84,7 @@ export default {
 				})
 			}
 		},
-		
+
 		*addUser({ payload }, { call, put, select }) {
 			const { startTime, endTime, pageNum, pageSize } = yield select(state => state.userSetting);
 			const res = yield call(api.addUser, payload);
@@ -169,4 +169,3 @@ export default {
 		}
 	},
 };
-	

@@ -1,19 +1,17 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { Form, Input, Row, Col, Checkbox, Button, Radio, message } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { formItemLayout } from '@/configs/layout';
-import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 
 const editForm = ({
     sourcematerial,
     ...props
 }) => {
     let { form,dispatch } = props;
-    const { getFieldDecorator, validateFieldsAndScroll, resetFields,setFieldsValue,getFieldsValue } = form;
-    let { materialList, modalShow, modal2Show, startTime, endTime, audio, icon,text,iconUrl, id, phonetic, translation, explainsArray } = sourcematerial;
+    const { getFieldDecorator, validateFieldsAndScroll, resetFields } = form;
+    let { audio, icon,text, id, phonetic, translation, explainsArray } = sourcematerial;
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -59,9 +57,9 @@ const editForm = ({
             }
         })
     }
+
     // 上传音频回调
     const iconUploadSuccess = (url) => {
-        // setFieldsValue({'icon': url})
         dispatch({
             type: 'sourcematerial/setParam',
             payload: {
@@ -69,13 +67,13 @@ const editForm = ({
             }
         })
     }
+
     // 上传音频回调
     const audioUploadSuccess = (url) => {
-        // setFieldsValue({'audio': url})
         dispatch({
             type: 'sourcematerial/setParam',
             payload: {
-                audio:url
+                audio: url
             }
         })
     }

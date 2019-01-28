@@ -20,7 +20,7 @@ const UserSetting = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
+    let { getFieldDecorator, validateFieldsAndScroll, resetFields } = form;
     let { tableData, account, startTime, endTime, modalShow, modal2Show, avatar, roleList, pageNum, pageSize, totalCount } = userSetting;
     const columns = [
         {
@@ -32,7 +32,9 @@ const UserSetting = ({
             dataIndex: 'avatar',
             render: (text) => {
                 let url = (text && text !== 'string') ? text : '//web.chengxuyuantoutiao.com/static/tutu_logo.png'
-                return (text && text !== 'string') ? <a href={ url } target='_blank'><img src={ url } style={{ width: 55, height: 45 }}/></a> : '无'
+                return (text && text !== 'string') ? <a href={ url } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ url } style={{ width: 55, height: 45 }}/>
+                </a> : '无'
             }
         }, {
         	title: '手机号',
@@ -142,15 +144,13 @@ const UserSetting = ({
         }, {
         	title: '用户状态',
             dataIndex: 'status',
-            render: (txt) => {
-				switch (txt) {
-					case 1:
-						return <Badge status="processing" text="正常"/>;
-					case 2:
-                        return <Badge status="warning" text="冻结"/>;
-                    case 3:
-						return <Badge status="error" text="已删除"/>;
-				}
+            render: (val) => {
+                const opt = [
+                    { val: 1, status: 'processing', text: '正常' },
+                    { val: 2, status: 'warning', text: '冻结' },
+                    { val: 3, status: 'error', text: '已删除' }
+                ].filter(e => e.val === val)
+                return <Badge status={opt.status} text={opt.text}/>;
 			}
         },
         {
@@ -358,7 +358,6 @@ const UserSetting = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('11:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
                     </FormItem>

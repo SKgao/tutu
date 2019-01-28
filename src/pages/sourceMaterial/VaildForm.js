@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { Form, Input, Row, Col, Checkbox, Button, Radio, message, Select } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
 import { formItemLayout } from '@/configs/layout';
 import { filterObj } from '@/utils/tools';
 import MyUpload from '@/components/UploadComponent';
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
 const ValidForm = ({
@@ -14,7 +13,7 @@ const ValidForm = ({
     ...props
 }) => {
     let { form, dispatch } = props;
-    const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue, getFieldsValue } = form;
+    const { getFieldDecorator, validateFieldsAndScroll, resetFields, setFieldsValue } = form;
     // 提交表单
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,8 +23,9 @@ const ValidForm = ({
                 dispatch({
                     type: 'sourcematerial/addSource',
                     payload: filterObj(values)
+                }).then(() => {
+                    handleReset()
                 })
-
             }
         });
     }

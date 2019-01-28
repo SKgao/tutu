@@ -99,7 +99,9 @@ const TeachingManage = ({
                 dataIndex: 'icon',
                 sorter: true,
                 render: (text) => {
-                   return (text) ?  <a href={ text } target='_blank'><img src={ text } style={{ width: 35, height: 40 }}/></a> : <span>无</span>
+                   return (text) ?  <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                        <img alt="" src={ text } style={{ width: 35, height: 40 }}/>
+                    </a> : <span>无</span>
                 }
             }, {
                 title: '年级顺序',
@@ -110,11 +112,10 @@ const TeachingManage = ({
                 dataIndex: 'canLock',
                 sorter: true,
                 render: (txt) => {
-                    switch (txt) {
-                        case 2:
-                            return <Badge status="warning" text="已锁定"/>;
-                        case 1:
-                            return <Badge status="processing" text="已解锁"/>;
+                    if (txt === 1) {
+                        return <Badge status="processing" text="已解锁"/>;
+                    } else {
+                        return <Badge status="warning" text="已锁定"/>;
                     }
                 }
             }, {
@@ -266,25 +267,18 @@ const TeachingManage = ({
 
     // 修改素材
     const changeImages = (url, record) => {
-        // dispatch({
-    	// 	type: 'teachingManage/updateBook',
-    	// 	payload: {
-        //         id: record.id,
-        //         icon: url
-        //     }
-        // })
         axios.post('book/update', {
-                id: record.id,
-                icon: url
-            })
-            .then((res) => {
-                if (res.data.code === 0) {
-                    message.success(res.data.message);
-                    dispatch({ type: 'getBook' })
-                } else {
-                    message.error(res.data.message)
-                }
-            })
+            id: record.id,
+            icon: url
+        })
+        .then((res) => {
+            if (res.data.code === 0) {
+                message.success(res.data.message);
+                dispatch({ type: 'getBook' })
+            } else {
+                message.error(res.data.message)
+            }
+        })
     }
 
 
@@ -403,16 +397,14 @@ const TeachingManage = ({
 
     // 添加书籍
     const handleSubmit = () => {
-        let PP = {
-            name: getFieldValue('name'),
-            icon: getFieldValue('icon'),
-            gradeId: getFieldValue('gradeId'),
-            bookVersionId: getFieldValue('bookVersionId'),
-            icon: getFieldValue('icon')
-        }
         dispatch({
         	type: 'teachingmanage/addBook',
-        	payload: filterObj(PP)
+        	payload: filterObj({
+                name: getFieldValue('name'),
+                icon: getFieldValue('icon'),
+                gradeId: getFieldValue('gradeId'),
+                bookVersionId: getFieldValue('bookVersionId')
+            })
         })
     }
 
@@ -693,7 +685,7 @@ const TeachingManage = ({
                     </Form>
                 </FormInlineLayout>
             </TabPane>
-            </Tabs>
+        </Tabs>
 
 
             <TableLayout

@@ -5,10 +5,9 @@ import FormInlineLayout from '@/components/FormInlineLayout';
 import TableLayout from '@/components/TableLayout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination } from 'antd';
+import { Form, Input, Button, DatePicker, Select, Pagination } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 const { RangePicker } = DatePicker;
 
 const MemberInfo = ({
@@ -17,7 +16,7 @@ const MemberInfo = ({
     ...props
 }) => {
     let { dispatch } = props;
-    let { memberList, memberLevelList, pageNum, pageSize, totalCount} = memberInfo;
+    let { memberList, pageNum, pageSize, totalCount} = memberInfo;
 
     const columns = [
         {
@@ -58,7 +57,8 @@ const MemberInfo = ({
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
+                        record.hasBuyTextbook !==  0 &&
+                        <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
                     }
                 </span>
             }
@@ -159,7 +159,6 @@ const MemberInfo = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChangeReg}
                             />
                     </FormItem>
@@ -172,7 +171,6 @@ const MemberInfo = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange2}
                             />
                     </FormItem>
@@ -185,7 +183,6 @@ const MemberInfo = ({
                                 hideDisabledOptions: true,
                                 defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                             }}
-                            format="YYYY-MM-DD HH:mm"
                             onChange={datepickerChange}
                             />
                     </FormItem>

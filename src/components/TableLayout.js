@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Icon, Button, Tooltip, Tree, Popover } from 'antd';
+import { Table, Icon, Tooltip, Tree, Popover } from 'antd';
 import { flatten, getField } from '@/utils/tools';
 const { Column, ColumnGroup } = Table;
 const { TreeNode } = Tree;
@@ -34,11 +34,12 @@ class TableLayout extends Component {
 				</ColumnGroup>
 			)
 		} else {
-			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1) || (showColumns && showColumns.indexOf(item.dataIndex) === -1);
+			let hideColumn = (filterColumns && filterColumns.indexOf(item.dataIndex) > -1)
+				|| (showColumns && showColumns.indexOf(item.dataIndex) === -1);
 			return hideColumn ? null : <Column
-			   key={item.dataIndex}
-			   sorter={item.sorter ? (a, b) => a[item.dataIndex] - b[item.dataIndex] : false}
-			   {...item}
+				{...item}
+			   	key={item.dataIndex}
+			   	sorter={item.sorter ? (a, b) => a[item.dataIndex] - b[item.dataIndex] : false}
 			/>
 		}
 	}
@@ -58,7 +59,7 @@ class TableLayout extends Component {
 		}
 	}
 
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		const { allColumns, filterColumns } = this.props
 		const getCheckedKeys = e => e.children && e.children.length ? e.title : e.dataIndex
 		const title = flatten(getField(allColumns, 'dataIndex'))
@@ -90,7 +91,7 @@ class TableLayout extends Component {
 	}
 
 	render() {
-		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading, rowSelection, expandedRowRender, expandRowByClick, scrollX } = this.props
+		let { allColumns, tableInfo, showToolbar, dataSource, scrollY, pagination, loading, rowSelection, expandedRowRender, expandRowByClick, scrollX, onChange } = this.props
 		return (
 			<div className="table-wrapper" style={{ padding: 10 }}>
 				{
@@ -138,6 +139,7 @@ class TableLayout extends Component {
 					expandedRowRender={expandedRowRender}
 					expandRowByClick={expandRowByClick}
 					rowKey={(record, index) => index}
+					onChange={onChange}
 					loading={{
 						spinning: loading,
 						delay: 100
@@ -170,6 +172,7 @@ TableLayout.propTypes = {
 	loading: PropTypes.bool,
 	rowSelection: PropTypes.object,
 	expandedRowRender: PropTypes.func,
+	onChange: PropTypes.func,
 	expandRowByClick: PropTypes.bool
 };
 

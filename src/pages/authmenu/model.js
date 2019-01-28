@@ -15,7 +15,7 @@ export default {
 	},
 
 	subscriptions: {
-		setup({ dispatch, history }) {	
+		setup({ dispatch, history }) {
             return history.listen(location => {
 				if (location.pathname === '/authMenu') {
 					dispatch({
@@ -52,7 +52,7 @@ export default {
 				});
 			}
 		},
-		
+
 		*addMenu({ payload }, { call, put, select }) {
 			const res = yield call(api.addMenu, payload);
 			if (res) {
@@ -68,7 +68,6 @@ export default {
 		},
 
 		*deleteMenu({ payload }, { call, select, put }) {
-			const { tableData } = yield select(state => state.authmenu);
 			const res = yield call(api.deleteMenu, payload);
 			if (res) {
 				message.success(res.data.message);
@@ -100,4 +99,3 @@ export default {
 		}
 	},
 };
-	

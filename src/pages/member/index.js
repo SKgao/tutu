@@ -2,17 +2,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import FormInlineLayout from '@/components/FormInlineLayout';
-import TablePopoverLayout from '@/components/TablePopoverLayout';
 import TableLayout from '@/components/TableLayout';
-import { filterObj } from '@/utils/tools';
 import { formItemLayout } from '@/configs/layout';
 import moment from 'moment';
 
-import { Form, Input, Button, Modal, Icon, DatePicker, Select, Tabs, Pagination, Radio} from 'antd';
+import { Form, Input, Button, Modal, DatePicker, Select, Tabs, Pagination} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
-const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
 
 const Member = ({
@@ -21,8 +18,8 @@ const Member = ({
     ...props
 }) => {
     let { dispatch, form } = props;
-    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, bookList} = member;
-    let { getFieldDecorator, resetFields, validateFieldsAndScroll } = form;
+    let { memberList, feedList, memberLevelList, pageNum, pageSize, totalCount, activeKey, modalShow, vipButton} = member;
+    let { getFieldDecorator, resetFields } = form;
 
     const columns = [
         {
@@ -36,11 +33,29 @@ const Member = ({
             title: '用户头像',
             dataIndex: 'icon',
             render: (text) => {
-                return (text) ? <a href={ text } target='_blank'><img src={ text } style={{ width: 50, height: 35 }}/></a> : <span>无</span>
+                return (text) ? <a href={ text } target='_blank' rel="nofollow noopener noreferrer">
+                    <img alt="" src={ text } style={{ width: 50, height: 35 }}/>
+                </a> : <span>无</span>
             }
+        }, {
+            title: '邀请用户人数',
+            dataIndex: 'inviteCount',
+            sorter: true,
+            render: (text, record) => <span
+                onClick={() =>  text && text > 0 && linktoInvite(record) }
+                style={ text && text > 0 ? {color: '#3f94e2', fontWeight: 900, cursor: 'pointer'} : null}>
+                { text ? text : 0 }
+                </span>
         }, {
             title: '会员等级',
             dataIndex: 'userLevelName'
+        }, {
+            title: '用户来源',
+            dataIndex: 'channel',
+            sorter: true,
+            render: (txt) => {
+                return txt === 1 ? '自主注册' : '后台添加'
+            }
         }, {
             title: '是否购买精品课程',
             dataIndex: 'hasBuyTextbook',
@@ -92,28 +107,56 @@ const Member = ({
             title: '练习教材名称',
             dataIndex: 'textbookNamePractice',
             render: (text) => <span>{ text ? text :  '无' }</span>
-        }, {
-            title: '配音教材名称',
-            dataIndex: 'textbookNameAudio',
-            render: (text) => <span>{ text ? text :  '无' }</span>
-        }, {
-            title: '闯关进度',
-            dataIndex: 'unitName',
-            render: (text, record) => {
-                let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
-                return <span>{ arr.filter(e => e).join(' > ') }</span>
+        },
+        // {
+        //     title: '配音教材名称',
+        //     dataIndex: 'textbookNameAudio',
+        //     render: (text) => <span>{ text ? text :  '无' }</span>
+        // },
+        // {
+        //     title: '闯关进度',
+        //     dataIndex: 'unitName',
+        //     render: (text, record) => {
+        //         let arr = [record.unitName, record.partTips, record.partName, record.customPassName]
+        //         return <span>{ arr.filter(e => e).join(' > ') }</span>
+        //     }
+        // },
+        {
+            title: '详情',
+            dataIndex: 'link',
+            render: (txt, record, index) => {
+                return <span>
+                    <a onClick={() => linktoLearing(record)} style={{ marginLeft: 10 }}>查看学习记录</a>
+
+                    {
+                        record.hasBuyTextbook !==  0 &&
+                        <a onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>查看已买课程</a>
+                    }
+                </span>
             }
-        }, {
+        },
+        {
         	title: '操作',
             dataIndex: 'action',
             render: (txt, record, index) => {
                 return <span>
                     {
-                        record.hasBuyTextbook !==  0 && <Button type="primary" size="small" onClick={() => linktoCourse(record)} style={{ marginLeft: 10 }}>已买课程</Button>
+                        vipButton && <Button
+                            size="small"
+                            style={{ marginLeft: 5 }}
+                            onClick={() => handleAddvip(record)}>开通会员</Button>
                     }
-                    <Button size="small" style={{ marginLeft: 5 }} onClick={() => handleAddvip(record)}>开通会员</Button>
-                    <Button type="primary" size="small" style={{ marginLeft: 5 }} onClick={() => handleUsing(record)}>启用</Button>
-                    <Button type="danger" size="small" style={{ marginLeft: 5 }} onClick={() => handleForbidden(record)}>禁用</Button>
+
+                    <Button
+                        type="primary"
+                        size="small"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => handleUsing(record)}>启用</Button>
+                    <Button
+                        type="danger"
+                        size="small"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => handleForbidden(record)}>禁用</Button>
                 </span>
             }
         }
@@ -142,12 +185,28 @@ const Member = ({
     const _tableCols = (activeKey === '0') ? columns : infoColumns
     const _tableList = (activeKey === '0') ? memberList : feedList
 
-    // 调转到关卡页面
+    // 调转到购买课程页面
     const linktoCourse= (record) => {
         dispatch(routerRedux.push({
-            pathname: '/specialCourse',
-            search: `userId=${record.tutuNumber}`
+            pathname: '/couUser',
+            search: `tutuNumber=${record.tutuNumber}`
         }))
+    }
+
+    // 调转到邀请统计页面
+    const linktoInvite = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/inviteCount',
+            search: `userId=${record.tutuNumber}`
+        }));
+    }
+
+    // 调转到学习记录页面
+    const linktoLearing = (record) => {
+        dispatch(routerRedux.push({
+            pathname: '/learningRecord',
+            search: `userId=${record.tutuNumber}`
+        }));
     }
 
     // 开通会员
@@ -206,7 +265,6 @@ const Member = ({
             }
         })
     }
-
 
     // 选择下拉框
     const changeSelect = (v) => {
@@ -316,6 +374,35 @@ const Member = ({
     	})
     }
 
+    // 操作表格排序
+    const handleTable = (a, b, c, d) => {
+        let field = ''
+        let cancleField = ''
+        if (c.field === 'tutuNumber') {
+            field = 'sortUserId'
+            cancleField = 'sortInvite'
+        } else if (c.field === 'inviteCount') {
+            field = 'sortInvite'
+            cancleField = 'sortUserId'
+        } else {
+            field = ''
+            cancleField = ''
+        }
+        if (field) {
+            dispatch({
+                type: 'member/setParam',
+                payload: {
+                    [field]: c.order === 'ascend' ? 1 : 0,
+                    [cancleField]: ''
+                }
+            }).then(() => {
+                dispatch({ type: 'member/getMember' })
+            })
+        } else {
+            return false
+        }
+    }
+
 	return (
 		<div>
             <Tabs
@@ -334,7 +421,6 @@ const Member = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChangeReg}
                                     />
                             </FormItem>
@@ -347,7 +433,6 @@ const Member = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChange2}
                                     />
                             </FormItem>
@@ -360,7 +445,6 @@ const Member = ({
                                         hideDisabledOptions: true,
                                         defaultValue: [moment('00:00', 'HH:mm'), moment('23:59', 'HH:mm')],
                                     }}
-                                    format="YYYY-MM-DD HH:mm"
                                     onChange={datepickerChange}
                                     />
                             </FormItem>
@@ -512,6 +596,7 @@ const Member = ({
                 allColumns={_tableCols}
                 loading={ loading.effects['member/getMember'] }
                 scrollX={true}
+                onChange={ handleTable }
                 />
 
             <div className="main-pagination">
